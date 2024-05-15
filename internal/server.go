@@ -1,30 +1,50 @@
 package internal
 
 import (
-	"monify/internal/handlers"
-	"net/http"
+	"context"
+	"fmt"
+	"google.golang.org/grpc"
+	"log"
+	"monify/internal/infra"
+	"monify/internal/middlewares"
+	"net"
 )
 
 type Server struct {
-	mux *http.ServeMux
+	server *grpc.Server
+	Config infra.Config
 }
 
-func NewProduction() Server {
+func NewServer(config infra.Config) Server {
 	s := Server{
-		mux: http.NewServeMux(),
+		server: grpc.NewServer(setupInterceptor(config)),
+		Config: config,
 	}
-	s.setupHandlers()
 	return s
 }
 
-func (s Server) setupHandlers() {
-	s.mux.HandleFunc("/", handlers.ExampleHandler)
+func setupInterceptor(config infra.Config) grpc.ServerOption {
+	authFn := middlewares.AuthMiddleware{JwtSecret: config.JwtSecret}
+	interceptor := func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
+		err := authFn.PreHandler(ctx, req, info)
+		if err != nil {
+			return nil, err
+		}
+
+		m, err := handler(ctx, req)
+
+		return m, err
+	}
+	return grpc.UnaryInterceptor(interceptor)
 }
 
 func (s Server) Start(port string) {
-	err := http.ListenAndServe(":"+port, s.mux)
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	if err != nil {
-		return
+		log.Fatalf("failed to listen: %v", err)
 	}
-
+	log.Printf("server listening at %v", lis.Addr())
+	if err := s.server.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
 }

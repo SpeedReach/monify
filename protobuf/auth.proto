@@ -1,0 +1,20 @@
+syntax = "proto3";
+option go_package = "github.com/SpeedReach/monify";
+
+
+service AuthService{
+  rpc EmailLogin(EmailLoginRequest) returns (EmailLoginResponse) {}
+}
+
+
+message EmailLoginRequest{
+  string email = 1;
+}
+
+
+message EmailLoginResponse{
+  string userId = 1;
+  string token = 2;
+}
+
+

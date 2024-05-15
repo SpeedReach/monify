@@ -1,0 +1,14 @@
+syntax = "proto3";
+option go_package = "github.com/SpeedReach/monify";
+
+
+service GroupService{
+  rpc CreateGroup(CreateGroupRequest) returns (CreateGroupResponse) {}
+}
+
+message CreateGroupRequest{}
+message CreateGroupResponse{}
+
+
+
+

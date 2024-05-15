@@ -1,0 +1,43 @@
+//built-in types: int, float, string, bool, array, struct
+
+
+json LoginRequest {
+    email: String,
+    password: String
+}
+
+json LoginResponse {
+    accessToken: String
+}
+
+json LoginFailResponse{
+    reason: String
+}
+
+
+@Security("Bearer")
+@Path("/User/Login")
+POST(body: LoginRequest) -> LoginResponse:200, LoginFailResponse:400
+
+
+json GetTopicQuery{
+    topicId: String
+}
+
+
+json Topic{
+    topicId: String,
+    title: String,
+    content: String,
+}
+
+
+@Security("Bearer")
+@Path("/Topic")
+GET(query: GetTopicQuery) -> Topic:200, Error:400
+
+@Security("Bearer")
+@Path("/Topic/{topicId}")
+GET() -> Topic:200, Error:400
+
+

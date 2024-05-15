@@ -1,8 +1,11 @@
 package main
 
-import "monify/internal"
+import (
+	"monify/internal"
+	"monify/internal/infra"
+)
 
 func main() {
-	s := internal.NewProduction()
+	s := internal.NewServer(infra.NewProductionConfig())
 	s.Start("8080")
 }
