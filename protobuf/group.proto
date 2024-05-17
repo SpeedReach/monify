@@ -6,8 +6,15 @@ service GroupService{
   rpc CreateGroup(CreateGroupRequest) returns (CreateGroupResponse) {}
 }
 
-message CreateGroupRequest{}
-message CreateGroupResponse{}
+message CreateGroupRequest{
+  string name = 1;
+  string description =2;
+}
+
+message CreateGroupResponse{
+  string group_id = 1;
+}
+
 
 
 

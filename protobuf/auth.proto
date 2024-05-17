@@ -14,7 +14,9 @@ message EmailLoginRequest{
 
 message EmailLoginResponse{
   string userId = 1;
-  string token = 2;
+  string access_token = 2;
+  string refresh_token = 3;
 }
+
 
 

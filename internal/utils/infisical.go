@@ -55,7 +55,7 @@ func GetSecrets(token string, environment string) (Secrets, error) {
 
 	req, _ := http.NewRequest("GET", url, nil)
 
-	req.Header.Add("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGl0eUlkIjoiZTUxODM5M2ItOTUxMC00NTRmLThjZGQtNDJlZjQ0ZjhjNDQ5IiwiY2xpZW50U2VjcmV0SWQiOiI2NWQ5MTkwNS1hNDdhLTQ5M2EtYjgwYi05YmI0MzM4YWJjMDAiLCJpZGVudGl0eUFjY2Vzc1Rva2VuSWQiOiJmNjA0ZmNjYi1lMWU2LTRjZTEtODE5Ni03MGJkYmU1NzI2MDYiLCJhdXRoVG9rZW5UeXBlIjoiaWRlbnRpdHlBY2Nlc3NUb2tlbiIsImlhdCI6MTcxNDk4MjQzNywiZXhwIjoxNzE3NTc0NDM3fQ.JJ5blvVrpQbxl5hcK57BpCEoxD3Zo64ph1SqB_7VA4E")
+	req.Header.Add("Authorization", "Bearer "+token)
 
 	res, _ := http.DefaultClient.Do(req)
 	defer res.Body.Close()
@@ -86,4 +86,21 @@ func LoadSecrets(env string) (map[string]string, error) {
 		secretsMap[s.SecretKey] = s.SecretValue
 	}
 	return secretsMap, nil
+}
+
+func LoadEnv() string {
+	env, ok := os.LookupEnv("ENVIRONMENT")
+	if !ok {
+		return "dev"
+	}
+	switch env {
+	case "dev":
+		return env
+	case "stage":
+		return env
+	case "production":
+		return env
+	default:
+		return "dev"
+	}
 }

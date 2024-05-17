@@ -1,2 +1,4 @@
-/.idea
+/.idea/
 .env
+/build/
+/migrations/.last_migration

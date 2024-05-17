@@ -2,28 +2,39 @@ package internal
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"google.golang.org/grpc"
-	"log"
 	"monify/internal/infra"
 	"monify/internal/middlewares"
+	"monify/internal/services"
+	monify "monify/protobuf"
 	"net"
 )
 
 type Server struct {
-	server *grpc.Server
-	Config infra.Config
+	server    *grpc.Server
+	Config    ServerConfig
+	resources infra.Resources
 }
 
-func NewServer(config infra.Config) Server {
-	s := Server{
-		server: grpc.NewServer(setupInterceptor(config)),
-		Config: config,
+func NewServer(config ServerConfig, resources infra.Resources) Server {
+	g := grpc.NewServer(setupInterceptor(resources, config))
+	SetupServices(g, config)
+	return Server{
+		server:    g,
+		Config:    config,
+		resources: resources,
 	}
-	return s
 }
 
-func setupInterceptor(config infra.Config) grpc.ServerOption {
+func SetupServices(g *grpc.Server, config ServerConfig) {
+	monify.RegisterAuthServiceServer(g, services.AuthService{
+		Secret: config.JwtSecret,
+	})
+}
+
+func setupInterceptor(resources infra.Resources, config ServerConfig) grpc.ServerOption {
 	authFn := middlewares.AuthMiddleware{JwtSecret: config.JwtSecret}
 	interceptor := func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
 		err := authFn.PreHandler(ctx, req, info)
@@ -31,6 +42,8 @@ func setupInterceptor(config infra.Config) grpc.ServerOption {
 			return nil, err
 		}
 
+		ctx = context.WithValue(ctx, middlewares.StorageContextKey{}, resources.DBConn)
+		ctx = context.WithValue(ctx, middlewares.LoggerContextKey{}, resources.Logger)
 		m, err := handler(ctx, req)
 
 		return m, err
@@ -38,13 +51,9 @@ func setupInterceptor(config infra.Config) grpc.ServerOption {
 	return grpc.UnaryInterceptor(interceptor)
 }
 
-func (s Server) Start(port string) {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-	log.Printf("server listening at %v", lis.Addr())
+func (s Server) Start(lis net.Listener) error {
 	if err := s.server.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+		return errors.New(fmt.Sprintf("failed to serve: %v", err))
 	}
+	return nil
 }
