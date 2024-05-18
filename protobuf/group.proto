@@ -1,11 +1,13 @@
 syntax = "proto3";
 option go_package = "github.com/SpeedReach/monify";
 
-
+message Empty {}
 service GroupService{
   rpc CreateGroup(CreateGroupRequest) returns (CreateGroupResponse) {}
+  rpc ListJoinedGroups(Empty) returns (ListJoinedGroupsResponse) {}
   rpc GenerateInviteCode(GenerateInviteCodeRequest) returns (GenerateInviteCodeResponse) {}
   rpc JoinGroup(JoinGroupRequest) returns (JoinGroupResponse) {}
+
 }
 
 message CreateGroupRequest{
@@ -17,7 +19,6 @@ message CreateGroupResponse{
   string group_id = 1;
   string member_id = 2;
 }
-
 
 message GenerateInviteCodeRequest{
   string group_id = 1;
@@ -38,3 +39,12 @@ message JoinGroupResponse{
 }
 
 
+message ListJoinedGroupsResponse{
+  repeated Group groups = 1;
+}
+
+message Group{
+  string group_id = 1;
+  string name = 2;
+  string description = 3;
+}
