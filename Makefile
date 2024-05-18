@@ -7,10 +7,11 @@ $(SUB_DIRS):
 	make -C $@
 
 test:
-	-@mkdir build
+	-mkdir build
 	go test $(PACKAGES) -v -cover -failfast
 
 clean:
 	-rm -rf build
 
 .PHONY: $(SUB_DIRS)
+

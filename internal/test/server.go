@@ -12,6 +12,7 @@ import (
 	monify "monify/protobuf"
 	"net"
 	"sync"
+	"testing"
 )
 
 var initialized = false
@@ -23,7 +24,7 @@ type Client struct {
 	monify.GroupServiceClient
 }
 
-func startUnitTestServer(lis net.Listener) {
+func startUnitTestServer(t *testing.T, lis net.Listener) {
 	//Load secrets
 	_ = godotenv.Load()
 	secrets, err := utils.LoadSecrets("dev")
@@ -32,7 +33,7 @@ func startUnitTestServer(lis net.Listener) {
 	}
 
 	//setup infrastructure
-	resources := SetupTestResource()
+	resources := SetupTestResource(t)
 	// load server config
 	serverCfg := internal.NewConfigFromSecrets(secrets)
 
@@ -48,7 +49,7 @@ func startUnitTestServer(lis net.Listener) {
 	}()
 }
 
-func GetTestClient() Client {
+func GetTestClient(t *testing.T) Client {
 	lock.Lock()
 	if initialized {
 		return client
@@ -57,7 +58,7 @@ func GetTestClient() Client {
 
 	buffer := 101024 * 1024
 	lis := bufconn.Listen(buffer)
-	startUnitTestServer(lis)
+	startUnitTestServer(t, lis)
 
 	conn, err := grpc.Dial("",
 		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {

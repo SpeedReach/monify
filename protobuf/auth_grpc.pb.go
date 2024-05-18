@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthServiceClient interface {
 	EmailLogin(ctx context.Context, in *EmailLoginRequest, opts ...grpc.CallOption) (*EmailLoginResponse, error)
+	EmailRegister(ctx context.Context, in *EmailRegisterRequest, opts ...grpc.CallOption) (*EmailRegisterResponse, error)
 }
 
 type authServiceClient struct {
@@ -42,11 +43,21 @@ func (c *authServiceClient) EmailLogin(ctx context.Context, in *EmailLoginReques
 	return out, nil
 }
 
+func (c *authServiceClient) EmailRegister(ctx context.Context, in *EmailRegisterRequest, opts ...grpc.CallOption) (*EmailRegisterResponse, error) {
+	out := new(EmailRegisterResponse)
+	err := c.cc.Invoke(ctx, "/AuthService/EmailRegister", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
 type AuthServiceServer interface {
 	EmailLogin(context.Context, *EmailLoginRequest) (*EmailLoginResponse, error)
+	EmailRegister(context.Context, *EmailRegisterRequest) (*EmailRegisterResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedAuthServiceServer struct {
 
 func (UnimplementedAuthServiceServer) EmailLogin(context.Context, *EmailLoginRequest) (*EmailLoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EmailLogin not implemented")
+}
+func (UnimplementedAuthServiceServer) EmailRegister(context.Context, *EmailRegisterRequest) (*EmailRegisterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EmailRegister not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -88,6 +102,24 @@ func _AuthService_EmailLogin_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_EmailRegister_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmailRegisterRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).EmailRegister(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/AuthService/EmailRegister",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).EmailRegister(ctx, req.(*EmailRegisterRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "EmailLogin",
 			Handler:    _AuthService_EmailLogin_Handler,
+		},
+		{
+			MethodName: "EmailRegister",
+			Handler:    _AuthService_EmailRegister_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

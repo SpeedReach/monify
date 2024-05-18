@@ -4,6 +4,7 @@ option go_package = "github.com/SpeedReach/monify";
 
 service AuthService{
   rpc EmailLogin(EmailLoginRequest) returns (EmailLoginResponse) {}
+  rpc EmailRegister(EmailRegisterRequest) returns (EmailRegisterResponse) {}
 }
 
 
@@ -19,4 +20,10 @@ message EmailLoginResponse{
 }
 
 
+message EmailRegisterRequest{
+  string email = 1;
+}
 
+message EmailRegisterResponse{
+  string userId = 1;
+}

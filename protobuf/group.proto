@@ -4,6 +4,8 @@ option go_package = "github.com/SpeedReach/monify";
 
 service GroupService{
   rpc CreateGroup(CreateGroupRequest) returns (CreateGroupResponse) {}
+  rpc GenerateInviteCode(GenerateInviteCodeRequest) returns (GenerateInviteCodeResponse) {}
+  rpc JoinGroup(JoinGroupRequest) returns (JoinGroupResponse) {}
 }
 
 message CreateGroupRequest{
@@ -13,9 +15,26 @@ message CreateGroupRequest{
 
 message CreateGroupResponse{
   string group_id = 1;
+  string member_id = 2;
 }
 
 
+message GenerateInviteCodeRequest{
+  string group_id = 1;
+}
 
+message GenerateInviteCodeResponse{
+  string invite_code = 1;
+}
+
+
+message JoinGroupRequest{
+  string group_id = 1;
+  string invite_code = 2;
+}
+
+message JoinGroupResponse{
+  string member_id = 1;
+}
 
 

@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"monify/internal/infra"
 	"monify/internal/middlewares"
-	"monify/internal/services"
+	"monify/internal/services/auth"
 	monify "monify/protobuf"
 	"net"
 )
@@ -29,7 +29,7 @@ func NewServer(config ServerConfig, resources infra.Resources) Server {
 }
 
 func SetupServices(g *grpc.Server, config ServerConfig) {
-	monify.RegisterAuthServiceServer(g, services.AuthService{
+	monify.RegisterAuthServiceServer(g, auth.Service{
 		Secret: config.JwtSecret,
 	})
 }
