@@ -41,4 +41,5 @@ func (g Service) CreateGroup(ctx context.Context, req *monify.CreateGroupRequest
 		GroupId:  groupId.String(),
 		MemberId: memberId.String(),
 	}, nil
+
 }

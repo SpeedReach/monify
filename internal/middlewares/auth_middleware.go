@@ -3,6 +3,7 @@ package middlewares
 import (
 	"context"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
@@ -31,7 +32,11 @@ func (m AuthMiddleware) PreHandler(ctx context.Context, req any, info *grpc.Unar
 			return []byte(m.JwtSecret), nil
 		})
 		if claims, ok := token.Claims.(*jwt.RegisteredClaims); ok {
-			ctx = context.WithValue(ctx, UserIdContextKey{}, claims.Subject)
+			userId, err := uuid.Parse(claims.Subject)
+			if err != nil {
+				return status.Error(codes.Unauthenticated, err.Error())
+			}
+			ctx = context.WithValue(ctx, UserIdContextKey{}, userId)
 		} else {
 			switch err {
 			case nil:

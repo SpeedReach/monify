@@ -28,14 +28,13 @@ message GenerateInviteCodeResponse{
   string invite_code = 1;
 }
 
-
 message JoinGroupRequest{
-  string group_id = 1;
-  string invite_code = 2;
+  string invite_code = 1;
 }
 
 message JoinGroupResponse{
-  string member_id = 1;
+  string group_id = 1;
+  string member_id = 2;
 }
 
 
@@ -48,3 +47,4 @@ message Group{
   string name = 2;
   string description = 3;
 }
+
