@@ -7,6 +7,7 @@ $(SUB_DIRS):
 	make -C $@
 
 test:
+	-mkdir build
 	go test $(PACKAGES) -v -cover -failfast
 
 test_docker:
@@ -16,6 +17,6 @@ test_docker:
 	go test $(PACKAGES) -v -cover -failfast -tags docker
 
 clean:
-
+	-rm -rf build
 .PHONY: $(SUB_DIRS)
 
