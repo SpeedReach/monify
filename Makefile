@@ -16,7 +16,7 @@ test:
 test_docker:
 	-docker stop monify-test-postgres
 	-docker rm monify-test-postgres
-	docker run --name monify-test-postgres -p 5432:5432 -e POSTGRES_PASSWORD=password -d postgres
+	docker run --name monify-test-postgres -p 5432:5432 --network host -e POSTGRES_PASSWORD=password -d postgres
 	go test $(PACKAGES) -v -cover -failfast -tags docker
 
 clean:

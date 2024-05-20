@@ -15,14 +15,14 @@ type AuthMiddleware struct {
 	JwtSecret string
 }
 
-func (m AuthMiddleware) PreHandler(ctx context.Context, req any, info *grpc.UnaryServerInfo) error {
+func (m AuthMiddleware) ExtractUserId(ctx context.Context, req any, info *grpc.UnaryServerInfo) (uuid.UUID, error) {
 	md, exists := metadata.FromIncomingContext(ctx)
 	if !exists {
-		return nil
+		return uuid.Nil, nil
 	}
 	auths := md.Get("authorization")
 	if len(auths) == 0 {
-		return nil
+		return uuid.Nil, nil
 	}
 	auth := auths[0]
 
@@ -34,17 +34,18 @@ func (m AuthMiddleware) PreHandler(ctx context.Context, req any, info *grpc.Unar
 		if claims, ok := token.Claims.(*jwt.RegisteredClaims); ok {
 			userId, err := uuid.Parse(claims.Subject)
 			if err != nil {
-				return status.Error(codes.Unauthenticated, err.Error())
+				return uuid.Nil, status.Error(codes.Unauthenticated, err.Error())
 			}
-			ctx = context.WithValue(ctx, UserIdContextKey{}, userId)
+
+			return userId, nil
 		} else {
 			switch err {
 			case nil:
-				return status.Error(codes.Unauthenticated, "Unauthenticated")
+				return uuid.Nil, status.Error(codes.Unauthenticated, "Unauthenticated")
 			default:
-				return status.Error(codes.Unauthenticated, err.Error())
+				return uuid.Nil, status.Error(codes.Unauthenticated, err.Error())
 			}
 		}
 	}
-	return nil
+	return uuid.Nil, nil
 }

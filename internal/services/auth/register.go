@@ -25,7 +25,7 @@ func emailExists(ctx context.Context, email string, db *sql.DB) (bool, error) {
 	return rows.Next(), nil
 }
 
-func createUser(ctx context.Context, db *sql.DB, email string, password string) (uuid.UUID, error) {
+func CreateUser(ctx context.Context, db *sql.DB, email string, password string) (uuid.UUID, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return [16]byte{}, err
@@ -58,7 +58,7 @@ func (s Service) EmailRegister(ctx context.Context, req *monify.EmailRegisterReq
 		return nil, status.Error(codes.AlreadyExists, "Email already exists.")
 	}
 
-	userId, err := createUser(ctx, db, req.Email, req.Password)
+	userId, err := CreateUser(ctx, db, req.Email, req.Password)
 	if err != nil {
 		logger.Error("failed to create user", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Internal err.")

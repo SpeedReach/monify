@@ -43,6 +43,7 @@ func SetupTestResource(t *testing.T) infra.Resources {
 	if err = db.Ping(); err != nil {
 		panic(err)
 	}
+
 	return infra.Resources{
 		DBConn: db,
 		Logger: logger,

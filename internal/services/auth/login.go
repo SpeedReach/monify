@@ -52,7 +52,7 @@ func generateAndInsertRefreshToken(ctx context.Context, userId uuid.UUID, db *sq
 	return refreshToken, err
 }
 
-func generateAccessToken(ctx context.Context, userId uuid.UUID, secret string) (string, error) {
+func GenerateAccessToken(ctx context.Context, userId uuid.UUID, secret string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
 		Subject:   userId.String(),
 		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour)),
@@ -81,7 +81,7 @@ func (s Service) EmailLogin(ctx context.Context, req *monify.EmailLoginRequest) 
 		return nil, status.Errorf(codes.Internal, "internal err.")
 	}
 
-	ss, err := generateAccessToken(ctx, userId, s.Secret)
+	ss, err := GenerateAccessToken(ctx, userId, s.Secret)
 
 	if err != nil {
 		logger.Error("", zap.Error(err))

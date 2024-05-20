@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -15,16 +16,26 @@ import (
 	"testing"
 )
 
-var initialized = false
-var lock = sync.Mutex{}
-var client Client
+type State struct {
+	initialized bool
+	lock        sync.Mutex
+	client      Client
+	server      internal.Server
+}
 
 type Client struct {
 	monify.AuthServiceClient
 	monify.GroupServiceClient
+	users       *map[string]string
+	currentUser *string
 }
 
-func startUnitTestServer(t *testing.T, lis net.Listener) {
+var state State = State{
+	initialized: false,
+	lock:        sync.Mutex{},
+}
+
+func startUnitTestServer(t *testing.T, lis net.Listener) internal.Server {
 	//Load secrets
 	_ = godotenv.Load()
 	secrets, err := utils.LoadSecrets("dev")
@@ -47,32 +58,59 @@ func startUnitTestServer(t *testing.T, lis net.Listener) {
 			log.Fatal(err)
 		}
 	}()
+	return s
 }
 
 func GetTestClient(t *testing.T) Client {
-	lock.Lock()
-	if initialized {
-		return client
+	state.lock.Lock()
+	defer state.lock.Unlock()
+	if state.initialized {
+		return state.client
 	}
-	initialized = true
-
-	buffer := 101024 * 1024
-	lis := bufconn.Listen(buffer)
+	lis := createBuffListener()
 	startUnitTestServer(t, lis)
+	state.client = createClient(lis)
+	state.initialized = true
+	return state.client
+}
+
+func createBuffListener() *bufconn.Listener {
+	return bufconn.Listen(101024 * 1024)
+}
+
+func createClient(lis *bufconn.Listener) Client {
+	users := map[string]string{}
+	currentUser := ""
 
 	conn, err := grpc.Dial("",
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {
 			return lis.Dial()
-		}), grpc.WithTransportCredentials(insecure.NewCredentials()))
+		}),
+		grpc.WithUnaryInterceptor(func(ctx context.Context, method string, req any, reply any, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+			return invoker(ctx, method, req, reply, cc, opts...)
+		}),
+	)
 
 	if err != nil {
-		log.Printf("error connecting to server: %v", err)
+		log.Fatalf("error connecting to server: %v", err)
 	}
 
-	client = Client{
+	return Client{
 		AuthServiceClient:  monify.NewAuthServiceClient(conn),
 		GroupServiceClient: monify.NewGroupServiceClient(conn),
+		users:              &users,
+		currentUser:        &currentUser,
 	}
-	lock.Unlock()
-	return client
+}
+
+// CreateTestUser creates a new user and returns the userId and accessToken
+func (c Client) CreateTestUser() (string, string) {
+	email := uuid.New().String() + "@gmail.com"
+	_, err := c.EmailRegister(context.TODO(), &monify.EmailRegisterRequest{Email: email, Password: "12345678"})
+	if err != nil {
+		log.Fatalf("error creating user: %v", err)
+	}
+	res, err := c.EmailLogin(context.TODO(), &monify.EmailLoginRequest{Email: email, Password: "12345678"})
+	return res.UserId, res.AccessToken
 }
