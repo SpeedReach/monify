@@ -1,4 +1,3 @@
-
 MODULES = $(wildcard *.proto)
 
 OUTPUT = $(MODULES:%.proto=%.pb.go)
