@@ -10,6 +10,7 @@ service AuthService{
 
 message EmailLoginRequest{
   string email = 1;
+  string password = 2;
 }
 
 
@@ -22,6 +23,7 @@ message EmailLoginResponse{
 
 message EmailRegisterRequest{
   string email = 1;
+  string password = 2;
 }
 
 message EmailRegisterResponse{

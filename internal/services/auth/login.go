@@ -3,9 +3,11 @@ package auth
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
+	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"monify/internal/middlewares"
@@ -13,9 +15,9 @@ import (
 	"time"
 )
 
-func findEmailUser(ctx context.Context, email string, db *sql.DB) (uuid.UUID, error) {
+func matchEmailUser(ctx context.Context, email string, password string, db *sql.DB) (uuid.UUID, error) {
 	query, err := db.QueryContext(ctx, `
-	SELECT user_id 
+	SELECT user_id, password 
 	FROM email_login 
 	WHERE email = $1`, email)
 	defer query.Close()
@@ -28,10 +30,17 @@ func findEmailUser(ctx context.Context, email string, db *sql.DB) (uuid.UUID, er
 	}
 
 	var userId uuid.UUID
-	err = query.Scan(&userId)
+	var hashedPassword string
+	err = query.Scan(&userId, &hashedPassword)
 	if err != nil {
 		return uuid.Nil, err
 	}
+
+	_ = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	if err != nil {
+		return uuid.Nil, errors.New("incorrect password")
+	}
+
 	return userId, nil
 }
 
@@ -55,7 +64,7 @@ func (s Service) EmailLogin(ctx context.Context, req *monify.EmailLoginRequest) 
 	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
 	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
 
-	userId, err := findEmailUser(ctx, req.Email, db)
+	userId, err := matchEmailUser(ctx, req.Email, req.Password, db)
 	if err != nil {
 		logger.Error("", zap.Error(err))
 		return nil, status.Errorf(codes.Internal, "internal err.")
