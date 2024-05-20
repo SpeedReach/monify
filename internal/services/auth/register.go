@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
+	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"monify/internal/middlewares"
@@ -24,15 +25,21 @@ func emailExists(ctx context.Context, email string, db *sql.DB) (bool, error) {
 	return rows.Next(), nil
 }
 
-func createUser(ctx context.Context, db *sql.DB, email string) (uuid.UUID, error) {
+func createUser(ctx context.Context, db *sql.DB, email string, password string) (uuid.UUID, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return [16]byte{}, err
+	}
+
 	userId := uuid.New()
-	_, err := db.ExecContext(ctx, `
+	_, err = db.ExecContext(ctx, `
 		INSERT INTO user_identity (user_id) VALUES ($1)
 	`, userId)
 	if err != nil {
 		return uuid.Nil, err
 	}
-	_, err = db.ExecContext(ctx, `INSERT INTO email_login(email, user_id) VALUES ($1, $2)`, email, userId)
+
+	_, err = db.ExecContext(ctx, `INSERT INTO email_login(email, user_id, password) VALUES ($1, $2, $3)`, email, userId, string(hashedPassword))
 	if err != nil {
 		return uuid.Nil, err
 	}
@@ -51,7 +58,7 @@ func (s Service) EmailRegister(ctx context.Context, req *monify.EmailRegisterReq
 		return nil, status.Error(codes.AlreadyExists, "Email already exists.")
 	}
 
-	userId, err := createUser(ctx, db, req.Email)
+	userId, err := createUser(ctx, db, req.Email, req.Password)
 	if err != nil {
 		logger.Error("failed to create user", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Internal err.")

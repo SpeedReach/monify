@@ -1,0 +1,1 @@
+ALTER TABLE email_login ADD COLUMN password CHAR(255) NOT NULL;

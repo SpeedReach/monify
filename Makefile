@@ -1,10 +1,13 @@
-SUB_DIRS = protobuf migrations
+SUB_DIRS = protobuf
 PACKAGES	?= $(shell go list ./...)
 
 all: $(SUB_DIRS)
 
 $(SUB_DIRS):
 	make -C $@
+
+migrations:
+	make -C migrations
 
 test:
 	-mkdir build
