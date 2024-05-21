@@ -6,6 +6,7 @@ import (
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/test/bufconn"
 	"log"
 	"monify/internal"
@@ -88,6 +89,10 @@ func createClient(lis *bufconn.Listener) Client {
 			return lis.Dial()
 		}),
 		grpc.WithUnaryInterceptor(func(ctx context.Context, method string, req any, reply any, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+			if currentUser != "" {
+				md := metadata.Pairs("authorization", "Bearer "+users[currentUser])
+				ctx = metadata.NewOutgoingContext(context.Background(), md)
+			}
 			return invoker(ctx, method, req, reply, cc, opts...)
 		}),
 	)
@@ -104,13 +109,24 @@ func createClient(lis *bufconn.Listener) Client {
 	}
 }
 
-// CreateTestUser creates a new user and returns the userId and accessToken
-func (c Client) CreateTestUser() (string, string) {
+// CreateTestUser creates a new user and returns the userId
+// and sets current user as the newly created user
+func (c Client) CreateTestUser() string {
 	email := uuid.New().String() + "@gmail.com"
 	_, err := c.EmailRegister(context.TODO(), &monify.EmailRegisterRequest{Email: email, Password: "12345678"})
 	if err != nil {
 		log.Fatalf("error creating user: %v", err)
 	}
 	res, err := c.EmailLogin(context.TODO(), &monify.EmailLoginRequest{Email: email, Password: "12345678"})
-	return res.UserId, res.AccessToken
+	*c.currentUser = res.UserId
+	(*c.users)[res.UserId] = res.AccessToken
+	return res.UserId
+}
+
+// SetTestUser sets the current user to the user with the given userId
+func (c Client) SetTestUser(userId string) {
+	if _, ok := (*c.users)[userId]; !ok {
+		log.Fatalf("user %s not found", userId)
+	}
+	*c.currentUser = userId
 }
