@@ -5,7 +5,7 @@ import (
 	monify "monify/protobuf"
 )
 
-func (g Service) ListJoinedGroups(context.Context, *monify.Empty) (*monify.ListJoinedGroupsResponse, error) {
+func (s Service) ListJoinedGroups(context.Context, *monify.Empty) (*monify.ListJoinedGroupsResponse, error) {
 	panic("")
 
 }

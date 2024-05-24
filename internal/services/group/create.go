@@ -18,7 +18,7 @@ func createGroup(ctx context.Context, db *sql.DB, name string) (uuid.UUID, error
 	return groupId, err
 }
 
-func (g Service) CreateGroup(ctx context.Context, req *monify.CreateGroupRequest) (*monify.CreateGroupResponse, error) {
+func (s Service) CreateGroup(ctx context.Context, req *monify.CreateGroupRequest) (*monify.CreateGroupResponse, error) {
 	userId := ctx.Value(middlewares.UserIdContextKey{})
 	if userId == nil {
 		return nil, status.Error(codes.Unauthenticated, "Unauthorized.")
