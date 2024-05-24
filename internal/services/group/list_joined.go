@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (g Service) ListJoinedGroups(ctx context.Context, empty *monify.Empty) (*monify.ListJoinedGroupsResponse, error) {
+func (s Service) ListJoinedGroups(ctx context.Context, empty *monify.Empty) (*monify.ListJoinedGroupsResponse, error) {
 	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
 	userId := ctx.Value(middlewares.UserIdContextKey{})
 	if userId == nil {

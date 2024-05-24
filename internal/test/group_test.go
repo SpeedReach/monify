@@ -14,6 +14,5 @@ func TestCreateGroup(t *testing.T) {
 	group, err := client.CreateGroup(context.TODO(), &monify.CreateGroupRequest{Name: "test"})
 	assert.NoError(t, err)
 	assert.NotEmpty(t, group)
-	//userId2 := client.CreateTestUser()
 	client.SetTestUser(userId1)
 }
