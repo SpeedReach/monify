@@ -32,6 +32,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	println("Server is running on port 8080")
 	err = s.Start(lis)
 	if err != nil {
 		log.Fatal(err)
