@@ -65,6 +65,7 @@ func GetSecrets(token string, environment string) (Secrets, error) {
 }
 
 func LoadSecrets(env string) (map[string]string, error) {
+	println("Loading secrets with env: ", env)
 	id, ok := os.LookupEnv("CLIENT_ID")
 	if !ok {
 		panic("cannot load client id for infisical")

@@ -1,5 +1,5 @@
 # List of SQL source files
-SRC = $(wildcard *.sql)
+SRC = $(wildcard *.sql) run.go
 
 # File to track the last migration run
 TIMESTAMP = .last_migration

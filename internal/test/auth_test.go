@@ -2,9 +2,10 @@ package test
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	monify "monify/protobuf"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestLogin(t *testing.T) {
@@ -17,4 +18,22 @@ func TestLogin(t *testing.T) {
 	res2, err := client.EmailLogin(context.TODO(), &monify.EmailLoginRequest{Email: email})
 	assert.NoError(t, err)
 	assert.Equal(t, res1.UserId, res2.UserId)
+}
+func TestRefreshToken(t *testing.T) {
+	email := "a0905373664@gmail.com"
+	client := GetTestClient(t)
+	res1, err := client.EmailRegister(context.TODO(), &monify.EmailRegisterRequest{Email: email})
+	assert.NoError(t, err)
+	res2, err := client.EmailLogin(context.TODO(), &monify.EmailLoginRequest{Email: email})
+	assert.NoError(t, err)
+	assert.Equal(t, res1.UserId, res2.UserId)
+
+	tokens1, err := client.RefreshToken(context.TODO(), &monify.RefreshTokenRequest{RefreshToken: res2.RefreshToken})
+	assert.NoError(t, err)
+	assert.NotEmpty(t, tokens1)
+
+	tokens2, err := client.RefreshToken(context.TODO(), &monify.RefreshTokenRequest{RefreshToken: tokens1.RefreshToken})
+	assert.NoError(t, err)
+	assert.NotEmpty(t, tokens2)
+
 }

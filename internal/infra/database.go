@@ -10,5 +10,8 @@ func SetupConnection(uri string) *sql.DB {
 	if err != nil {
 		panic(err)
 	}
+	if err = db.Ping(); err != nil {
+		panic(err)
+	}
 	return db
 }

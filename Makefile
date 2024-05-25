@@ -1,13 +1,10 @@
-SUB_DIRS = protobuf
+SUB_DIRS = protobuf migrations
 PACKAGES	?= $(shell go list ./...)
 
 all: $(SUB_DIRS)
 
 $(SUB_DIRS):
 	make -C $@
-
-migrations:
-	make -C migrations
 
 test:
 	-mkdir build
@@ -19,7 +16,14 @@ test_docker:
 	docker run --name monify-test-postgres -p 5432:5432 -e POSTGRES_PASSWORD=password -d postgres
 	go test $(PACKAGES) -v -cover -failfast -tags docker
 
+docker_push: docker_build
+	docker push registry.nccupass.com/monify
+
+docker_build:
+	 docker build -t registry.nccupass.com/monify .
+
 clean:
 	-rm -rf build
-.PHONY: $(SUB_DIRS)
 
+
+.PHONY: $(SUB_DIRS)

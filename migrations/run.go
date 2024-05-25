@@ -1,11 +1,13 @@
 package main
 
 import (
+	"database/sql"
 	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/cockroachdb"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	"github.com/golang-migrate/migrate/v4/database/cockroachdb"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/joho/godotenv"
+	"log"
 	"monify/internal/utils"
 )
 
@@ -16,19 +18,26 @@ func main() {
 	if err != nil {
 		panic(secrets)
 	}
-	m, err := migrate.New(
-		"file://.",
-		secrets["POSTGRES_URI"])
-	if err != nil {
 
-		panic(err)
-	}
-	err = m.Up()
+	db, err := sql.Open("pgx", secrets["POSTGRES_URI"])
 	if err != nil {
+		log.Fatal(err)
+	}
+	driver, err := cockroachdb.WithInstance(db, &cockroachdb.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	m, err := migrate.NewWithDatabaseInstance(
+		"file://.",
+		"postgres", driver)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err = m.Up(); err != nil {
 		if err != migrate.ErrNoChange {
-			panic(err)
-		} else {
-			println("No Change")
+			log.Fatal(err)
 		}
 	}
+
 }
