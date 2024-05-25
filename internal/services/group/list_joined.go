@@ -20,8 +20,8 @@ func (s Service) ListJoinedGroups(ctx context.Context, empty *monify.Empty) (*mo
 
 	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
 	query, err := db.Query(`
-		SELECT group_id 
-		FROM group_member 
+		SELECT "group".group_id, "group".name
+		FROM "group" JOIN group_member ON "group".group_id = group_member.group_id
 		WHERE user_id = $1`, userId)
 	if err != nil {
 		logger.Error("select group_id error", zap.Error(err))
@@ -35,7 +35,7 @@ func (s Service) ListJoinedGroups(ctx context.Context, empty *monify.Empty) (*mo
 			break
 		}
 		var group monify.Group
-		query.Scan(&group.GroupId)
+		query.Scan(&group.GroupId, &group.Name)
 		groups = append(groups, &group)
 	}
 	return &monify.ListJoinedGroupsResponse{
