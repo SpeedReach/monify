@@ -141,7 +141,7 @@ func RegisterGroupServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupService/CreateGroup", runtime.WithHTTPPathPattern("/group"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupService/CreateGroup", runtime.WithHTTPPathPattern("/v1/group"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -166,7 +166,7 @@ func RegisterGroupServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupService/ListJoinedGroups", runtime.WithHTTPPathPattern("/group/joined"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupService/ListJoinedGroups", runtime.WithHTTPPathPattern("/v1/group/joined"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -191,7 +191,7 @@ func RegisterGroupServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupService/GenerateInviteCode", runtime.WithHTTPPathPattern("/group/invite-code"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupService/GenerateInviteCode", runtime.WithHTTPPathPattern("/v1/group/invite-code"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -216,7 +216,7 @@ func RegisterGroupServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupService/JoinGroup", runtime.WithHTTPPathPattern("/group/join"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupService/JoinGroup", runtime.WithHTTPPathPattern("/v1/group/join"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -280,7 +280,7 @@ func RegisterGroupServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupService/CreateGroup", runtime.WithHTTPPathPattern("/group"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupService/CreateGroup", runtime.WithHTTPPathPattern("/v1/group"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -302,7 +302,7 @@ func RegisterGroupServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupService/ListJoinedGroups", runtime.WithHTTPPathPattern("/group/joined"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupService/ListJoinedGroups", runtime.WithHTTPPathPattern("/v1/group/joined"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -324,7 +324,7 @@ func RegisterGroupServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupService/GenerateInviteCode", runtime.WithHTTPPathPattern("/group/invite-code"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupService/GenerateInviteCode", runtime.WithHTTPPathPattern("/v1/group/invite-code"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -346,7 +346,7 @@ func RegisterGroupServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupService/JoinGroup", runtime.WithHTTPPathPattern("/group/join"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupService/JoinGroup", runtime.WithHTTPPathPattern("/v1/group/join"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -366,13 +366,13 @@ func RegisterGroupServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 }
 
 var (
-	pattern_GroupService_CreateGroup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"group"}, ""))
+	pattern_GroupService_CreateGroup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "group"}, ""))
 
-	pattern_GroupService_ListJoinedGroups_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"group", "joined"}, ""))
+	pattern_GroupService_ListJoinedGroups_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "group", "joined"}, ""))
 
-	pattern_GroupService_GenerateInviteCode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"group", "invite-code"}, ""))
+	pattern_GroupService_GenerateInviteCode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "group", "invite-code"}, ""))
 
-	pattern_GroupService_JoinGroup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"group", "join"}, ""))
+	pattern_GroupService_JoinGroup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "group", "join"}, ""))
 )
 
 var (

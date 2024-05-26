@@ -9,7 +9,6 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     version: "1.0"
   }
   host: "api.monify.dev:8081"
-  base_path: "/v1"
   security_definitions: {
     security: {
       key: "Bearer";
@@ -25,19 +24,19 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 service AuthService{
   rpc EmailLogin(EmailLoginRequest) returns (EmailLoginResponse) {
     option (google.api.http) = {
-      post: "/user/login"
+      post: "/v1/user/login"
       body: "*"
     };
   }
   rpc EmailRegister(EmailRegisterRequest) returns (EmailRegisterResponse) {
     option (google.api.http) = {
-      post: "/user/register"
+      post: "/v1/user/register"
       body: "*"
     };
   }
   rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {
     option (google.api.http) = {
-      post: "/user/refresh-token"
+      post: "/v1/user/refresh-token"
       body: "*"
     };
   }

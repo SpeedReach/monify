@@ -11,7 +11,7 @@ service GroupService{
 
   rpc CreateGroup(CreateGroupRequest) returns (CreateGroupResponse) {
     option (google.api.http) = {
-      post: "/group"
+      post: "/v1/group"
 
       body: "*"
     };
@@ -19,20 +19,20 @@ service GroupService{
 
   rpc ListJoinedGroups(Empty) returns (ListJoinedGroupsResponse) {
     option (google.api.http) = {
-      get: "/group/joined"
+      get: "/v1/group/joined"
     };
   }
 
   rpc GenerateInviteCode(GenerateInviteCodeRequest) returns (GenerateInviteCodeResponse) {
     option (google.api.http) = {
-      post: "/group/invite-code"
+      post: "/v1/group/invite-code"
       body: "*"
     };
   }
 
   rpc JoinGroup(JoinGroupRequest) returns (JoinGroupResponse) {
     option (google.api.http) = {
-      post: "/group/join"
+      post: "/v1/group/join"
       body: "*"
     };
   }
