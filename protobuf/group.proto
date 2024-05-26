@@ -1,14 +1,41 @@
 syntax = "proto3";
 option go_package = "github.com/SpeedReach/monify";
 
+import "google/api/annotations.proto";
+
+
+
 message Empty {}
 
 service GroupService{
 
-  rpc CreateGroup(CreateGroupRequest) returns (CreateGroupResponse) {}
-  rpc ListJoinedGroups(Empty) returns (ListJoinedGroupsResponse) {}
-  rpc GenerateInviteCode(GenerateInviteCodeRequest) returns (GenerateInviteCodeResponse) {}
-  rpc JoinGroup(JoinGroupRequest) returns (JoinGroupResponse) {}
+  rpc CreateGroup(CreateGroupRequest) returns (CreateGroupResponse) {
+    option (google.api.http) = {
+      post: "/group"
+
+      body: "*"
+    };
+  }
+
+  rpc ListJoinedGroups(Empty) returns (ListJoinedGroupsResponse) {
+    option (google.api.http) = {
+      get: "/group/joined"
+    };
+  }
+
+  rpc GenerateInviteCode(GenerateInviteCodeRequest) returns (GenerateInviteCodeResponse) {
+    option (google.api.http) = {
+      post: "/group/invite-code"
+      body: "*"
+    };
+  }
+
+  rpc JoinGroup(JoinGroupRequest) returns (JoinGroupResponse) {
+    option (google.api.http) = {
+      post: "/group/join"
+      body: "*"
+    };
+  }
 
 }
 

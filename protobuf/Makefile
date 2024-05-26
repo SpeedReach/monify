@@ -16,7 +16,7 @@ $(SWAGGER_DIR)/monify.swagger.json: $(MODULES)
 	-mkdir $(SWAGGER_DIR)
 	protoc -I . --openapiv2_out $(SWAGGER_DIR) --openapiv2_opt=preserve_rpc_order=true \
   		--openapiv2_opt=allow_merge=true \
-  		--openapiv2_opt=merge_file_name=monify $<
+  		--openapiv2_opt=merge_file_name=monify $(MODULES)
 
 $(O_DIR)/%.pb.go: %.proto $(O_DIR)
 	protoc --go_out=./gen/go --go_opt=paths=source_relative $<

@@ -2,23 +2,42 @@ syntax = "proto3";
 option go_package = "github.com/SpeedReach/monify";
 
 import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    version: "1.0"
+  }
+  host: "api.monify.dev:8081"
+  base_path: "/v1"
+  security_definitions: {
+    security: {
+      key: "Bearer";
+      value: {
+        type: TYPE_API_KEY,
+        name: "Authorization",
+        in: IN_HEADER,
+      }
+    }
+  }
+};
 
 service AuthService{
   rpc EmailLogin(EmailLoginRequest) returns (EmailLoginResponse) {
     option (google.api.http) = {
-      post: "/v1/user/login"
+      post: "/user/login"
       body: "*"
     };
   }
   rpc EmailRegister(EmailRegisterRequest) returns (EmailRegisterResponse) {
     option (google.api.http) = {
-      post: "/v1/user/register"
+      post: "/user/register"
       body: "*"
     };
   }
   rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {
     option (google.api.http) = {
-      post: "/v1/user/refresh-token"
+      post: "/user/refresh-token"
       body: "*"
     };
   }

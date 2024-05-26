@@ -2,13 +2,18 @@
   "swagger": "2.0",
   "info": {
     "title": "auth.proto",
-    "version": "version not set"
+    "version": "1.0"
   },
   "tags": [
     {
       "name": "AuthService"
+    },
+    {
+      "name": "GroupService"
     }
   ],
+  "host": "api.monify.dev:8081",
+  "basePath": "/v1",
   "consumes": [
     "application/json"
   ],
@@ -16,7 +21,7 @@
     "application/json"
   ],
   "paths": {
-    "/v1/user/login": {
+    "/user/login": {
       "post": {
         "operationId": "AuthService_EmailLogin",
         "responses": {
@@ -48,7 +53,7 @@
         ]
       }
     },
-    "/v1/user/register": {
+    "/user/register": {
       "post": {
         "operationId": "AuthService_EmailRegister",
         "responses": {
@@ -80,7 +85,7 @@
         ]
       }
     },
-    "/v1/user/refresh-token": {
+    "/user/refresh-token": {
       "post": {
         "operationId": "AuthService_RefreshToken",
         "responses": {
@@ -111,9 +116,149 @@
           "AuthService"
         ]
       }
+    },
+    "/group": {
+      "post": {
+        "operationId": "GroupService_CreateGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CreateGroupResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateGroupRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GroupService"
+        ]
+      }
+    },
+    "/group/joined": {
+      "get": {
+        "operationId": "GroupService_ListJoinedGroups",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ListJoinedGroupsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "GroupService"
+        ]
+      }
+    },
+    "/group/invite-code": {
+      "post": {
+        "operationId": "GroupService_GenerateInviteCode",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GenerateInviteCodeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GenerateInviteCodeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GroupService"
+        ]
+      }
+    },
+    "/group/join": {
+      "post": {
+        "operationId": "GroupService_JoinGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/JoinGroupResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/JoinGroupRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GroupService"
+        ]
+      }
     }
   },
   "definitions": {
+    "CreateGroupRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateGroupResponse": {
+      "type": "object",
+      "properties": {
+        "groupId": {
+          "type": "string"
+        },
+        "memberId": {
+          "type": "string"
+        }
+      }
+    },
     "EmailLoginRequest": {
       "type": "object",
       "properties": {
@@ -155,6 +300,67 @@
       "properties": {
         "userId": {
           "type": "string"
+        }
+      }
+    },
+    "GenerateInviteCodeRequest": {
+      "type": "object",
+      "properties": {
+        "groupId": {
+          "type": "string"
+        }
+      }
+    },
+    "GenerateInviteCodeResponse": {
+      "type": "object",
+      "properties": {
+        "inviteCode": {
+          "type": "string"
+        }
+      }
+    },
+    "Group": {
+      "type": "object",
+      "properties": {
+        "groupId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "JoinGroupRequest": {
+      "type": "object",
+      "properties": {
+        "inviteCode": {
+          "type": "string"
+        }
+      }
+    },
+    "JoinGroupResponse": {
+      "type": "object",
+      "properties": {
+        "groupId": {
+          "type": "string"
+        },
+        "memberId": {
+          "type": "string"
+        }
+      }
+    },
+    "ListJoinedGroupsResponse": {
+      "type": "object",
+      "properties": {
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Group"
+          }
         }
       }
     },
@@ -204,6 +410,13 @@
           }
         }
       }
+    }
+  },
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
     }
   }
 }
