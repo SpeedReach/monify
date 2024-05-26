@@ -1,7 +1,7 @@
 package auth
 
 import (
-	monify "monify/protobuf"
+	monify "monify/protobuf/gen/go"
 )
 
 type Service struct {

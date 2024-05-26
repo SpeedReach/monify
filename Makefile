@@ -16,14 +16,20 @@ test_docker:
 	docker run --name monify-test-postgres -p 5432:5432 -e POSTGRES_PASSWORD=password -d postgres
 	go test $(PACKAGES) -v -cover -failfast -tags docker
 
-docker_push: docker_build
+docker_push_proxy: docker_build_proxy
+	docker push registry.nccupass.com/monify_restful_proxy
+docker_push_monify: docker_build_monify
 	docker push registry.nccupass.com/monify
 
-docker_build:
-	 docker build -t registry.nccupass.com/monify .
+docker_push: docker_push_proxy docker_push_monify
+docker_build: docker_build_proxy docker_build_monify
+
+docker_build_proxy:
+	 docker build -f Dockerfile.proxy -t registry.nccupass.com/monify_restful_proxy .
+docker_build_monify:
+	 docker build -f Dockerfile.monify -t registry.nccupass.com/monify .
 
 clean:
 	-rm -rf build
-
 
 .PHONY: $(SUB_DIRS)

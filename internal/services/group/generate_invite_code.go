@@ -10,7 +10,7 @@ import (
 	"math"
 	"math/rand"
 	"monify/internal/middlewares"
-	monify "monify/protobuf"
+	monify "monify/protobuf/gen/go"
 	"time"
 )
 

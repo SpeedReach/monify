@@ -3,7 +3,7 @@ package group
 import (
 	"context"
 	"database/sql"
-	monify "monify/protobuf"
+	monify "monify/protobuf/gen/go"
 
 	"github.com/google/uuid"
 )

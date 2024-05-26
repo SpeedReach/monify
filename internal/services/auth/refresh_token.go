@@ -4,8 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"monify/internal/middlewares"
-
-	monify "monify/protobuf"
+	monify "monify/protobuf/gen/go"
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"

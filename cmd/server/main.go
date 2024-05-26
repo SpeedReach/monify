@@ -27,12 +27,13 @@ func main() {
 	//initialize server
 	s := internal.NewServer(serverCfg, resources)
 
+	port := "2302"
 	//start listening
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", "8080"))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	if err != nil {
 		panic(err)
 	}
-	println("Server is running on port 8080")
+	println("Server is running on port " + port)
 	err = s.Start(lis)
 	if err != nil {
 		log.Fatal(err)

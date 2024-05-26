@@ -1,11 +1,27 @@
 syntax = "proto3";
 option go_package = "github.com/SpeedReach/monify";
 
+import "google/api/annotations.proto";
 
 service AuthService{
-  rpc EmailLogin(EmailLoginRequest) returns (EmailLoginResponse) {}
-  rpc EmailRegister(EmailRegisterRequest) returns (EmailRegisterResponse) {}
-  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {}
+  rpc EmailLogin(EmailLoginRequest) returns (EmailLoginResponse) {
+    option (google.api.http) = {
+      post: "/v1/user/login"
+      body: "*"
+    };
+  }
+  rpc EmailRegister(EmailRegisterRequest) returns (EmailRegisterResponse) {
+    option (google.api.http) = {
+      post: "/v1/user/register"
+      body: "*"
+    };
+  }
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {
+    option (google.api.http) = {
+      post: "/v1/user/refresh-token"
+      body: "*"
+    };
+  }
 }
 
 

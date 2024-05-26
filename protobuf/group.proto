@@ -2,7 +2,9 @@ syntax = "proto3";
 option go_package = "github.com/SpeedReach/monify";
 
 message Empty {}
+
 service GroupService{
+
   rpc CreateGroup(CreateGroupRequest) returns (CreateGroupResponse) {}
   rpc ListJoinedGroups(Empty) returns (ListJoinedGroupsResponse) {}
   rpc GenerateInviteCode(GenerateInviteCodeRequest) returns (GenerateInviteCodeResponse) {}

@@ -11,7 +11,7 @@ import (
 	"log"
 	"monify/internal"
 	"monify/internal/utils"
-	monify "monify/protobuf"
+	monify "monify/protobuf/gen/go"
 	"net"
 	"sync"
 	"testing"

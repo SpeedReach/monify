@@ -2,7 +2,7 @@ package test
 
 import (
 	"context"
-	monify "monify/protobuf"
+	monify "monify/protobuf/gen/go"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

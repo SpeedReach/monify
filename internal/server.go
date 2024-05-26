@@ -10,7 +10,7 @@ import (
 	"monify/internal/middlewares"
 	"monify/internal/services/auth"
 	"monify/internal/services/group"
-	monify "monify/protobuf"
+	monify "monify/protobuf/gen/go"
 	"net"
 )
 
@@ -21,7 +21,11 @@ type Server struct {
 }
 
 func NewServer(config ServerConfig, resources infra.Resources) Server {
-	g := grpc.NewServer(setupInterceptor(resources, config))
+	g := grpc.NewServer(
+		setupInterceptor(resources, config),
+		grpc.MaxRecvMsgSize(16*1024*1024), // 16 MB, adjust as needed
+		grpc.MaxSendMsgSize(16*1024*1024), // 16 MB, adjust as needed
+	)
 	SetupServices(g, config)
 	return Server{
 		server:    g,
