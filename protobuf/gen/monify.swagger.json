@@ -12,7 +12,10 @@
       "name": "GroupService"
     }
   ],
-  "host": "http://api.monify.dev:8081",
+  "host": "api.monify.dev:8081",
+  "schemes": [
+    "http"
+  ],
   "consumes": [
     "application/json"
   ],
