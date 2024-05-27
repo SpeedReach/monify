@@ -213,9 +213,6 @@
       "properties": {
         "groupId": {
           "type": "string"
-        },
-        "memberId": {
-          "type": "string"
         }
       }
     },
@@ -305,9 +302,6 @@
       "type": "object",
       "properties": {
         "groupId": {
-          "type": "string"
-        },
-        "memberId": {
           "type": "string"
         }
       }

@@ -54,9 +54,9 @@ func (s Service) GenerateInviteCode(ctx context.Context, req *monify.GenerateInv
 	}
 	inviteCode := generateInviteCode()
 	_, err = db.Exec(`
-		INSERT INTO invite_code (group_id, code) VALUES ($1, $2)
+		INSERT INTO group_invite_code (group_id, invite_code) VALUES ($1, $2)
 	`, groupId, inviteCode)
-	return nil, err
+	return &monify.GenerateInviteCodeResponse{InviteCode: inviteCode}, err
 }
 
 func indexToChar(index int) byte {

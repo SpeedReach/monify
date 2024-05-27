@@ -46,7 +46,6 @@ message CreateGroupRequest{
 
 message CreateGroupResponse{
   string group_id = 1;
-  string member_id = 2;
 }
 
 message GenerateInviteCodeRequest{
@@ -63,7 +62,6 @@ message JoinGroupRequest{
 
 message JoinGroupResponse{
   string group_id = 1;
-  string member_id = 2;
 }
 
 

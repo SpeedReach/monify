@@ -30,8 +30,10 @@ func GetAccessToken(clientId string, clientSecret string) (string, error) {
 
 	req.Header.Add("Content-Type", "application/json")
 
-	res, _ := http.DefaultClient.Do(req)
-
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", err
+	}
 	defer res.Body.Close()
 	body := idLoginResponse{}
 	bodyBytes, err := io.ReadAll(res.Body)

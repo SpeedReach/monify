@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func createGroup(ctx context.Context, db *sql.DB, name string) (uuid.UUID, error) {
+func createGroup(ctx context.Context, db *sql.Tx, name string) (uuid.UUID, error) {
 	groupId := uuid.New()
 	_, err := db.Exec(`
 		INSERT INTO "group" (group_id, name) VALUES ($1, $2)
@@ -22,28 +22,49 @@ func createGroup(ctx context.Context, db *sql.DB, name string) (uuid.UUID, error
 
 func (s Service) CreateGroup(ctx context.Context, req *monify.CreateGroupRequest) (*monify.CreateGroupResponse, error) {
 	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
-	userId := ctx.Value(middlewares.UserIdContextKey{})
-	if userId == nil {
+	userId, ok := ctx.Value(middlewares.UserIdContextKey{}).(uuid.UUID)
+	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "Unauthorized.")
 	}
 
-	userUid := userId.(uuid.UUID)
-
 	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
-	groupId, err := createGroup(ctx, db, req.Name)
+	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadUncommitted})
 	if err != nil {
+		logger.Error("", zap.Error(err))
+		return nil, err
+	}
+
+	groupId, err := createGroup(ctx, tx, req.Name)
+	if err != nil {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			logger.Error("create group: unable to rollback", zap.Error(rollbackErr))
+		}
 		logger.Error("", zap.Error(err))
 		return nil, status.Error(codes.Internal, "internal")
 	}
 
-	memberId, err := createGroupMember(ctx, db, groupId, userUid)
+	err = createGroupLeader(ctx, tx, groupId, userId)
 	if err != nil {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			logger.Error("create group member: unable to rollback", zap.Error(rollbackErr))
+		}
 		logger.Error("", zap.Error(err))
 		return nil, status.Errorf(codes.Internal, "internal")
 	}
 
+	if err = tx.Commit(); err != nil {
+		logger.Error("failed to commit", zap.Error(err))
+		return nil, err
+	}
+
 	return &monify.CreateGroupResponse{
-		GroupId:  groupId.String(),
-		MemberId: memberId.String(),
+		GroupId: groupId.String(),
 	}, nil
+}
+
+func createGroupLeader(ctx context.Context, db *sql.Tx, groupId uuid.UUID, userId uuid.UUID) error {
+	_, err := db.Exec(`
+		INSERT INTO group_member (group_id, user_id) VALUES ($1,$2)
+	`, groupId, userId)
+	return err
 }

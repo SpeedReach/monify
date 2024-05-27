@@ -21,7 +21,6 @@ func TestIndexToChar(t *testing.T) {
 
 func TestGenerateInviteCodeUniqueness(t *testing.T) {
 	inviteCode := generateInviteCode()
-	println(inviteCode)
 	assert.Len(t, inviteCode, inviteCodeLength, "Expected invite code to be 6 characters long")
 	for _, char := range inviteCode {
 		assert.True(t, char >= '0' && char <= '9' || char >= 'a' && char <= 'z' || char >= 'A' && char <= 'Z', "Expected invite code to contain only alphanumeric characters")
@@ -40,6 +39,5 @@ func TestGenerateInviteCodeRandomness(t *testing.T) {
 			failCount++
 		}
 	}
-	println(failCount)
 	assert.LessOrEqual(t, failCount, 10, "Expected 990 out of 1000 invite codes to be unique")
 }
