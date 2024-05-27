@@ -14,7 +14,8 @@
   ],
   "host": "api.monify.dev:8081",
   "schemes": [
-    "http"
+    "http",
+    "https"
   ],
   "consumes": [
     "application/json"
