@@ -1,7 +1,7 @@
 MODULES = $(wildcard *.proto)
 
 O_DIR = gen/go
-SWAGGER_DIR = gen/swagger
+SWAGGER_DIR = gen
 OUTPUT = $(MODULES:%.proto=$(O_DIR)/%.pb.go)
 OUTPUT += $(MODULES:%.proto=$(O_DIR)/%_grpc.pb.go)
 OUTPUT += $(MODULES:%.proto=$(O_DIR)/%.pb.gw.go)
