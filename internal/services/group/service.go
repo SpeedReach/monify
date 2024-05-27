@@ -18,6 +18,7 @@ func createGroupMember(ctx context.Context, db *sql.DB, groupId uuid.UUID, userI
 		INSERT INTO group_member (group_id, user_id) VALUES ($1,$2)
 	`, groupId, userId)
 	if err != nil {
+
 		return uuid.Nil, err
 	}
 	return memberId, err
