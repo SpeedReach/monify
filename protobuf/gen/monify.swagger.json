@@ -29,12 +29,6 @@
             "schema": {
               "$ref": "#/definitions/EmailLoginResponse"
             }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
           }
         },
         "parameters": [
@@ -60,12 +54,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/EmailRegisterResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -93,12 +81,6 @@
             "schema": {
               "$ref": "#/definitions/RefreshTokenResponse"
             }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
           }
         },
         "parameters": [
@@ -124,12 +106,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/CreateGroupResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -157,12 +133,6 @@
             "schema": {
               "$ref": "#/definitions/ListJoinedGroupsResponse"
             }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
           }
         },
         "tags": [
@@ -178,12 +148,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/GenerateInviteCodeResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -210,12 +174,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/JoinGroupResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -379,34 +337,6 @@
         },
         "accessToken": {
           "type": "string"
-        }
-      }
-    },
-    "protobufAny": {
-      "type": "object",
-      "properties": {
-        "@type": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": {}
-    },
-    "rpcStatus": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "message": {
-          "type": "string"
-        },
-        "details": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/protobufAny"
-          }
         }
       }
     }
