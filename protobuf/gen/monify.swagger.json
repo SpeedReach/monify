@@ -10,6 +10,9 @@
     },
     {
       "name": "GroupService"
+    },
+    {
+      "name": "GroupsBillService"
     }
   ],
   "host": "api.monify.dev:8081",
@@ -194,9 +197,171 @@
           "GroupService"
         ]
       }
+    },
+    "/v1/groups_bill": {
+      "post": {
+        "operationId": "GroupsBillService_CreateBill",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CreateBillResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateBillRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GroupsBillService"
+        ]
+      },
+      "put": {
+        "operationId": "GroupsBillService_ModifyBill",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ModifyBillResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ModifyBillRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GroupsBillService"
+        ]
+      }
+    },
+    "/v1/groups_bill/{billId}": {
+      "delete": {
+        "operationId": "GroupsBillService_DeleteBill",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GroupBillEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "billId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GroupsBillService"
+        ]
+      }
+    },
+    "/v1/groups_bill/self_total_spend": {
+      "get": {
+        "operationId": "GroupsBillService_GetSelfTotalSpend",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetSelfTotalSpendResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "groupId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GroupsBillService"
+        ]
+      }
+    },
+    "/v1/groups_bill/group_bill": {
+      "get": {
+        "operationId": "GroupsBillService_GetGroupTotalSpend",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetGroupTotalSpendResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "groupId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GroupsBillService"
+        ]
+      }
     }
   },
   "definitions": {
+    "CreateBillRequest": {
+      "type": "object",
+      "properties": {
+        "groupId": {
+          "type": "string"
+        },
+        "totalMoney": {
+          "type": "number",
+          "format": "double"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "prepaidPeople": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/PrepaidPerson"
+          }
+        },
+        "splitPeople": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/SplitPerson"
+          }
+        }
+      }
+    },
+    "CreateBillResponse": {
+      "type": "object",
+      "properties": {
+        "billId": {
+          "type": "string"
+        }
+      }
+    },
     "CreateGroupRequest": {
       "type": "object",
       "properties": {
@@ -279,6 +444,24 @@
         }
       }
     },
+    "GetGroupTotalSpendResponse": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "GetSelfTotalSpendResponse": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
     "Group": {
       "type": "object",
       "properties": {
@@ -292,6 +475,9 @@
           "type": "string"
         }
       }
+    },
+    "GroupBillEmpty": {
+      "type": "object"
     },
     "JoinGroupRequest": {
       "type": "object",
@@ -324,6 +510,58 @@
         }
       }
     },
+    "ModifyBillRequest": {
+      "type": "object",
+      "properties": {
+        "billId": {
+          "type": "string"
+        }
+      }
+    },
+    "ModifyBillResponse": {
+      "type": "object",
+      "properties": {
+        "groupId": {
+          "type": "string"
+        },
+        "totalMoney": {
+          "type": "number",
+          "format": "double"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "prepaidPeople": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/PrepaidPerson"
+          }
+        },
+        "splitPeople": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/SplitPerson"
+          }
+        }
+      }
+    },
+    "PrepaidPerson": {
+      "type": "object",
+      "properties": {
+        "prepaidPerson": {
+          "type": "string"
+        },
+        "prepaidAmount": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
     "RefreshTokenRequest": {
       "type": "object",
       "properties": {
@@ -340,6 +578,18 @@
         },
         "accessToken": {
           "type": "string"
+        }
+      }
+    },
+    "SplitPerson": {
+      "type": "object",
+      "properties": {
+        "splitPerson": {
+          "type": "string"
+        },
+        "splitAmount": {
+          "type": "number",
+          "format": "double"
         }
       }
     }

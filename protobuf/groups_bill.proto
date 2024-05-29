@@ -1,0 +1,97 @@
+syntax = "proto3";
+option go_package = "github.com/SpeedReach/monify";
+
+import "google/api/annotations.proto";
+
+message GroupBillEmpty{}
+
+service GroupsBillService{
+    rpc CreateBill(CreateBillRequest) returns (CreateBillResponse){
+        option (google.api.http) = {
+            post: "/v1/groups_bill"
+            body: "*"
+        };
+    }
+
+    rpc DeleteBill(DeleteBillRequest) returns (GroupBillEmpty){
+        option (google.api.http) = {
+            delete: "/v1/groups_bill/{bill_id}"
+        };
+    }
+
+    rpc ModifyBill(ModifyBillRequest) returns (ModifyBillResponse){
+        option (google.api.http) = {
+            put: "/v1/groups_bill"
+            body: "*"
+        };
+    }
+
+    rpc GetSelfTotalSpend(GetSelfTotalSpendRequest) returns (GetSelfTotalSpendResponse){
+        option (google.api.http) = {
+            get: "/v1/groups_bill/self_total_spend"
+        };
+    }
+
+    rpc GetGroupTotalSpend(GetGroupTotalSpendRequest) returns (GetGroupTotalSpendResponse){
+        option (google.api.http) = {
+            get: "/v1/groups_bill/group_bill"
+        };
+    }
+
+}
+
+message CreateBillRequest{
+    string group_id = 1;
+    double total_money = 2;
+    string title = 3;
+    string description = 4;
+    repeated PrepaidPerson prepaid_people = 5;
+    repeated SplitPerson split_people = 6;
+}
+
+message PrepaidPerson{
+    string prepaid_person = 1;
+    double prepaid_amount = 2;
+}
+
+message SplitPerson{
+    string split_person = 1;
+    double split_amount = 2;
+}
+
+message CreateBillResponse{
+    string bill_id = 1;
+}
+
+message DeleteBillRequest{
+    string bill_id = 1;
+}
+
+message ModifyBillRequest{
+    string bill_id = 1;
+}
+
+message ModifyBillResponse{
+    string group_id = 1;
+    double total_money = 2;
+    string title = 3;
+    string description = 4;
+    repeated PrepaidPerson prepaid_people = 5;
+    repeated SplitPerson split_people = 6;
+}
+
+message GetSelfTotalSpendRequest{
+    string group_id = 1;
+}
+
+message GetSelfTotalSpendResponse{
+    double amount = 1;
+}
+
+message GetGroupTotalSpendRequest{
+    string group_id = 1;
+}
+
+message GetGroupTotalSpendResponse{
+    double amount = 1;
+}

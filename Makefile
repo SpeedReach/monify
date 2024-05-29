@@ -1,4 +1,4 @@
-SUB_DIRS = protobuf migrations
+SUB_DIRS = protobuf
 PACKAGES	?= $(shell go list ./...)
 
 all: $(SUB_DIRS)
