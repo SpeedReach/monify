@@ -117,6 +117,23 @@ func request_GroupsBillService_ModifyBill_0(ctx context.Context, marshaler runti
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["bill_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "bill_id")
+	}
+
+	protoReq.BillId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "bill_id", err)
+	}
+
 	msg, err := client.ModifyBill(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
@@ -128,6 +145,23 @@ func local_request_GroupsBillService_ModifyBill_0(ctx context.Context, marshaler
 
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["bill_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "bill_id")
+	}
+
+	protoReq.BillId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "bill_id", err)
 	}
 
 	msg, err := server.ModifyBill(ctx, &protoReq)
@@ -271,7 +305,7 @@ func RegisterGroupsBillServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupsBillService/ModifyBill", runtime.WithHTTPPathPattern("/v1/groups_bill"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupsBillService/ModifyBill", runtime.WithHTTPPathPattern("/v1/groups_bill/{bill_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -429,7 +463,7 @@ func RegisterGroupsBillServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupsBillService/ModifyBill", runtime.WithHTTPPathPattern("/v1/groups_bill"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupsBillService/ModifyBill", runtime.WithHTTPPathPattern("/v1/groups_bill/{bill_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -497,7 +531,7 @@ var (
 
 	pattern_GroupsBillService_DeleteBill_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "groups_bill", "bill_id"}, ""))
 
-	pattern_GroupsBillService_ModifyBill_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "groups_bill"}, ""))
+	pattern_GroupsBillService_ModifyBill_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "groups_bill", "bill_id"}, ""))
 
 	pattern_GroupsBillService_GetSelfTotalSpend_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "groups_bill", "self_total_spend"}, ""))
 

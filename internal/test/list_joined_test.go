@@ -40,4 +40,5 @@ func TestListJoinedWithMultiGroup(t *testing.T) {
 	for _, group := range groups.GetGroups() {
 		assert.Equal(t, createdGroups[group.GetName()], group.GetGroupId())
 	}
+
 }

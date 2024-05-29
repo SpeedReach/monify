@@ -222,30 +222,6 @@
         "tags": [
           "GroupsBillService"
         ]
-      },
-      "put": {
-        "operationId": "GroupsBillService_ModifyBill",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/ModifyBillResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/ModifyBillRequest"
-            }
-          }
-        ],
-        "tags": [
-          "GroupsBillService"
-        ]
       }
     },
     "/v1/groups_bill/{billId}": {
@@ -265,6 +241,36 @@
             "in": "path",
             "required": true,
             "type": "string"
+          }
+        ],
+        "tags": [
+          "GroupsBillService"
+        ]
+      },
+      "put": {
+        "operationId": "GroupsBillService_ModifyBill",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GroupBillEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "billId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GroupsBillServiceModifyBillBody"
+            }
           }
         ],
         "tags": [
@@ -479,46 +485,7 @@
     "GroupBillEmpty": {
       "type": "object"
     },
-    "JoinGroupRequest": {
-      "type": "object",
-      "properties": {
-        "inviteCode": {
-          "type": "string"
-        }
-      }
-    },
-    "JoinGroupResponse": {
-      "type": "object",
-      "properties": {
-        "groupId": {
-          "type": "string"
-        },
-        "memberId": {
-          "type": "string"
-        }
-      }
-    },
-    "ListJoinedGroupsResponse": {
-      "type": "object",
-      "properties": {
-        "groups": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/Group"
-          }
-        }
-      }
-    },
-    "ModifyBillRequest": {
-      "type": "object",
-      "properties": {
-        "billId": {
-          "type": "string"
-        }
-      }
-    },
-    "ModifyBillResponse": {
+    "GroupsBillServiceModifyBillBody": {
       "type": "object",
       "properties": {
         "groupId": {
@@ -546,6 +513,37 @@
           "items": {
             "type": "object",
             "$ref": "#/definitions/SplitPerson"
+          }
+        }
+      }
+    },
+    "JoinGroupRequest": {
+      "type": "object",
+      "properties": {
+        "inviteCode": {
+          "type": "string"
+        }
+      }
+    },
+    "JoinGroupResponse": {
+      "type": "object",
+      "properties": {
+        "groupId": {
+          "type": "string"
+        },
+        "memberId": {
+          "type": "string"
+        }
+      }
+    },
+    "ListJoinedGroupsResponse": {
+      "type": "object",
+      "properties": {
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Group"
           }
         }
       }

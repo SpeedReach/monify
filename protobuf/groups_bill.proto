@@ -19,9 +19,9 @@ service GroupsBillService{
         };
     }
 
-    rpc ModifyBill(ModifyBillRequest) returns (ModifyBillResponse){
+    rpc ModifyBill(ModifyBillRequest) returns (GroupBillEmpty){
         option (google.api.http) = {
-            put: "/v1/groups_bill"
+            put: "/v1/groups_bill/{bill_id}"
             body: "*"
         };
     }
@@ -68,11 +68,8 @@ message DeleteBillRequest{
 }
 
 message ModifyBillRequest{
-    string bill_id = 1;
-}
-
-message ModifyBillResponse{
     string group_id = 1;
+    string bill_id = 7;
     double total_money = 2;
     string title = 3;
     string description = 4;
