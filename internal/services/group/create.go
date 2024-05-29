@@ -43,7 +43,7 @@ func (s Service) CreateGroup(ctx context.Context, req *monify.CreateGroupRequest
 		return nil, status.Error(codes.Internal, "internal")
 	}
 
-	err = createGroupLeader(ctx, tx, groupId, userId)
+	memberId, err := createGroupLeader(ctx, tx, groupId, userId)
 	if err != nil {
 		if rollbackErr := tx.Rollback(); rollbackErr != nil {
 			logger.Error("create group member: unable to rollback", zap.Error(rollbackErr))
@@ -58,13 +58,18 @@ func (s Service) CreateGroup(ctx context.Context, req *monify.CreateGroupRequest
 	}
 
 	return &monify.CreateGroupResponse{
-		GroupId: groupId.String(),
+		GroupId:  groupId.String(),
+		MemberId: memberId.String(),
 	}, nil
 }
 
-func createGroupLeader(ctx context.Context, db *sql.Tx, groupId uuid.UUID, userId uuid.UUID) error {
+func createGroupLeader(ctx context.Context, db *sql.Tx, groupId uuid.UUID, userId uuid.UUID) (uuid.UUID, error) {
+	groupMemberId := uuid.New()
 	_, err := db.Exec(`
-		INSERT INTO group_member (group_id, user_id) VALUES ($1,$2)
-	`, groupId, userId)
-	return err
+		INSERT INTO group_member (group_member_id,group_id, user_id) VALUES ($1,$2,$3)
+	`, groupMemberId, groupId, userId)
+	if err != nil {
+		return uuid.Nil, err
+	}
+	return groupMemberId, nil
 }

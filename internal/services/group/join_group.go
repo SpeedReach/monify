@@ -25,11 +25,13 @@ func (s Service) JoinGroup(ctx context.Context, req *monify.JoinGroupRequest) (*
 	if groupId, err = findActiveInviteCode(ctx, db, logger, req.InviteCode); err != nil {
 		return nil, err
 	}
-	if err = createGroupMember(ctx, db, logger, groupId, userId); err != nil {
+	var memberId uuid.UUID
+	if memberId, err = createGroupMember(ctx, db, logger, groupId, userId); err != nil {
 		return nil, err
 	}
 	return &monify.JoinGroupResponse{
-		GroupId: groupId.String(),
+		GroupId:  groupId.String(),
+		MemberId: memberId.String(),
 	}, nil
 }
 
@@ -59,15 +61,17 @@ func findActiveInviteCode(ctx context.Context, db *sql.DB, logger *zap.Logger, i
 	return groupId, nil
 }
 
-func createGroupMember(ctx context.Context, db *sql.DB, logger *zap.Logger, groupId uuid.UUID, userId uuid.UUID) error {
+func createGroupMember(ctx context.Context, db *sql.DB, logger *zap.Logger, groupId uuid.UUID, userId uuid.UUID) (uuid.UUID, error) {
+	memberId := uuid.New()
 	_, err := db.Exec(`
-		INSERT INTO group_member (group_id, user_id) VALUES ($1,$2)
-	`, groupId, userId)
+		INSERT INTO group_member (group_member_id, group_id, user_id) VALUES ($1,$2,$3)
+	`, memberId, groupId, userId)
 	if utils.IsDuplicateKeyError(err) {
-		return status.Error(codes.AlreadyExists, "member already exists")
+		return uuid.Nil, status.Error(codes.AlreadyExists, "member already exists")
 	}
 	if err != nil {
 		logger.Error("failed to insert ", zap.Error(err))
+		return uuid.Nil, err
 	}
-	return err
+	return memberId, nil
 }
