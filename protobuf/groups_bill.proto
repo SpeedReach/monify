@@ -3,23 +3,23 @@ option go_package = "github.com/SpeedReach/monify";
 
 import "google/api/annotations.proto";
 
-message GroupBillEmpty{}
+message GroupGroupBillEmpty{}
 
 service GroupsBillService{
-    rpc CreateBill(CreateBillRequest) returns (CreateBillResponse){
+    rpc CreateGroupBill(CreateGroupBillRequest) returns (CreateGroupBillResponse){
         option (google.api.http) = {
             post: "/v1/groups_bill"
             body: "*"
         };
     }
 
-    rpc DeleteBill(DeleteBillRequest) returns (GroupBillEmpty){
+    rpc DeleteGroupBill(DeleteGroupBillRequest) returns (GroupGroupBillEmpty){
         option (google.api.http) = {
             delete: "/v1/groups_bill/{bill_id}"
         };
     }
 
-    rpc ModifyBill(ModifyBillRequest) returns (GroupBillEmpty){
+    rpc ModifyGroupBill(ModifyGroupBillRequest) returns (GroupGroupBillEmpty){
         option (google.api.http) = {
             put: "/v1/groups_bill/{bill_id}"
             body: "*"
@@ -40,7 +40,7 @@ service GroupsBillService{
 
 }
 
-message CreateBillRequest{
+message CreateGroupBillRequest{
     string group_id = 1;
     double total_money = 2;
     string title = 3;
@@ -50,24 +50,24 @@ message CreateBillRequest{
 }
 
 message PrepaidPerson{
-    string prepaid_person = 1;
-    double prepaid_amount = 2;
+    string member_id = 1;
+    double amount = 2;
 }
 
 message SplitPerson{
-    string split_person = 1;
-    double split_amount = 2;
+    string member_id = 1;
+    double amount = 2;
 }
 
-message CreateBillResponse{
+message CreateGroupBillResponse{
     string bill_id = 1;
 }
 
-message DeleteBillRequest{
+message DeleteGroupBillRequest{
     string bill_id = 1;
 }
 
-message ModifyBillRequest{
+message ModifyGroupBillRequest{
     string group_id = 1;
     string bill_id = 7;
     double total_money = 2;

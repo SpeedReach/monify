@@ -200,12 +200,12 @@
     },
     "/v1/groups_bill": {
       "post": {
-        "operationId": "GroupsBillService_CreateBill",
+        "operationId": "GroupsBillService_CreateGroupBill",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/CreateBillResponse"
+              "$ref": "#/definitions/CreateGroupBillResponse"
             }
           }
         },
@@ -215,7 +215,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/CreateBillRequest"
+              "$ref": "#/definitions/CreateGroupBillRequest"
             }
           }
         ],
@@ -226,12 +226,12 @@
     },
     "/v1/groups_bill/{billId}": {
       "delete": {
-        "operationId": "GroupsBillService_DeleteBill",
+        "operationId": "GroupsBillService_DeleteGroupBill",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/GroupBillEmpty"
+              "$ref": "#/definitions/GroupGroupBillEmpty"
             }
           }
         },
@@ -248,12 +248,12 @@
         ]
       },
       "put": {
-        "operationId": "GroupsBillService_ModifyBill",
+        "operationId": "GroupsBillService_ModifyGroupBill",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/GroupBillEmpty"
+              "$ref": "#/definitions/GroupGroupBillEmpty"
             }
           }
         },
@@ -269,7 +269,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/GroupsBillServiceModifyBillBody"
+              "$ref": "#/definitions/GroupsBillServiceModifyGroupBillBody"
             }
           }
         ],
@@ -328,7 +328,7 @@
     }
   },
   "definitions": {
-    "CreateBillRequest": {
+    "CreateGroupBillRequest": {
       "type": "object",
       "properties": {
         "groupId": {
@@ -360,7 +360,7 @@
         }
       }
     },
-    "CreateBillResponse": {
+    "CreateGroupBillResponse": {
       "type": "object",
       "properties": {
         "billId": {
@@ -482,10 +482,10 @@
         }
       }
     },
-    "GroupBillEmpty": {
+    "GroupGroupBillEmpty": {
       "type": "object"
     },
-    "GroupsBillServiceModifyBillBody": {
+    "GroupsBillServiceModifyGroupBillBody": {
       "type": "object",
       "properties": {
         "groupId": {
@@ -551,10 +551,10 @@
     "PrepaidPerson": {
       "type": "object",
       "properties": {
-        "prepaidPerson": {
+        "memberId": {
           "type": "string"
         },
-        "prepaidAmount": {
+        "amount": {
           "type": "number",
           "format": "double"
         }
@@ -582,10 +582,10 @@
     "SplitPerson": {
       "type": "object",
       "properties": {
-        "splitPerson": {
+        "memberId": {
           "type": "string"
         },
-        "splitAmount": {
+        "amount": {
           "type": "number",
           "format": "double"
         }

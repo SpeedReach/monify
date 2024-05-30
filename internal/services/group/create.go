@@ -33,21 +33,16 @@ func (s Service) CreateGroup(ctx context.Context, req *monify.CreateGroupRequest
 		logger.Error("", zap.Error(err))
 		return nil, err
 	}
+	defer tx.Rollback()
 
 	groupId, err := createGroup(ctx, tx, req.Name)
 	if err != nil {
-		if rollbackErr := tx.Rollback(); rollbackErr != nil {
-			logger.Error("create group: unable to rollback", zap.Error(rollbackErr))
-		}
 		logger.Error("", zap.Error(err))
 		return nil, status.Error(codes.Internal, "internal")
 	}
 
 	memberId, err := createGroupLeader(ctx, tx, groupId, userId)
 	if err != nil {
-		if rollbackErr := tx.Rollback(); rollbackErr != nil {
-			logger.Error("create group member: unable to rollback", zap.Error(rollbackErr))
-		}
 		logger.Error("", zap.Error(err))
 		return nil, status.Errorf(codes.Internal, "internal")
 	}

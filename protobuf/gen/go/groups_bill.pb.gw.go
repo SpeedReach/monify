@@ -31,34 +31,34 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_GroupsBillService_CreateBill_0(ctx context.Context, marshaler runtime.Marshaler, client GroupsBillServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateBillRequest
+func request_GroupsBillService_CreateGroupBill_0(ctx context.Context, marshaler runtime.Marshaler, client GroupsBillServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq CreateGroupBillRequest
 	var metadata runtime.ServerMetadata
 
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.CreateBill(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.CreateGroupBill(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_GroupsBillService_CreateBill_0(ctx context.Context, marshaler runtime.Marshaler, server GroupsBillServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateBillRequest
+func local_request_GroupsBillService_CreateGroupBill_0(ctx context.Context, marshaler runtime.Marshaler, server GroupsBillServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq CreateGroupBillRequest
 	var metadata runtime.ServerMetadata
 
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.CreateBill(ctx, &protoReq)
+	msg, err := server.CreateGroupBill(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_GroupsBillService_DeleteBill_0(ctx context.Context, marshaler runtime.Marshaler, client GroupsBillServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DeleteBillRequest
+func request_GroupsBillService_DeleteGroupBill_0(ctx context.Context, marshaler runtime.Marshaler, client GroupsBillServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq DeleteGroupBillRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -78,13 +78,13 @@ func request_GroupsBillService_DeleteBill_0(ctx context.Context, marshaler runti
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "bill_id", err)
 	}
 
-	msg, err := client.DeleteBill(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.DeleteGroupBill(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_GroupsBillService_DeleteBill_0(ctx context.Context, marshaler runtime.Marshaler, server GroupsBillServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DeleteBillRequest
+func local_request_GroupsBillService_DeleteGroupBill_0(ctx context.Context, marshaler runtime.Marshaler, server GroupsBillServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq DeleteGroupBillRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -104,43 +104,13 @@ func local_request_GroupsBillService_DeleteBill_0(ctx context.Context, marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "bill_id", err)
 	}
 
-	msg, err := server.DeleteBill(ctx, &protoReq)
+	msg, err := server.DeleteGroupBill(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_GroupsBillService_ModifyBill_0(ctx context.Context, marshaler runtime.Marshaler, client GroupsBillServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ModifyBillRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["bill_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "bill_id")
-	}
-
-	protoReq.BillId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "bill_id", err)
-	}
-
-	msg, err := client.ModifyBill(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_GroupsBillService_ModifyBill_0(ctx context.Context, marshaler runtime.Marshaler, server GroupsBillServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ModifyBillRequest
+func request_GroupsBillService_ModifyGroupBill_0(ctx context.Context, marshaler runtime.Marshaler, client GroupsBillServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq ModifyGroupBillRequest
 	var metadata runtime.ServerMetadata
 
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
@@ -164,7 +134,37 @@ func local_request_GroupsBillService_ModifyBill_0(ctx context.Context, marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "bill_id", err)
 	}
 
-	msg, err := server.ModifyBill(ctx, &protoReq)
+	msg, err := client.ModifyGroupBill(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_GroupsBillService_ModifyGroupBill_0(ctx context.Context, marshaler runtime.Marshaler, server GroupsBillServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq ModifyGroupBillRequest
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["bill_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "bill_id")
+	}
+
+	protoReq.BillId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "bill_id", err)
+	}
+
+	msg, err := server.ModifyGroupBill(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -247,7 +247,7 @@ func local_request_GroupsBillService_GetGroupTotalSpend_0(ctx context.Context, m
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterGroupsBillServiceHandlerFromEndpoint instead.
 func RegisterGroupsBillServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server GroupsBillServiceServer) error {
 
-	mux.Handle("POST", pattern_GroupsBillService_CreateBill_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_GroupsBillService_CreateGroupBill_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -255,12 +255,12 @@ func RegisterGroupsBillServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupsBillService/CreateBill", runtime.WithHTTPPathPattern("/v1/groups_bill"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupsBillService/CreateGroupBill", runtime.WithHTTPPathPattern("/v1/groups_bill"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_GroupsBillService_CreateBill_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_GroupsBillService_CreateGroupBill_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -268,11 +268,11 @@ func RegisterGroupsBillServiceHandlerServer(ctx context.Context, mux *runtime.Se
 			return
 		}
 
-		forward_GroupsBillService_CreateBill_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_GroupsBillService_CreateGroupBill_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_GroupsBillService_DeleteBill_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_GroupsBillService_DeleteGroupBill_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -280,12 +280,12 @@ func RegisterGroupsBillServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupsBillService/DeleteBill", runtime.WithHTTPPathPattern("/v1/groups_bill/{bill_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupsBillService/DeleteGroupBill", runtime.WithHTTPPathPattern("/v1/groups_bill/{bill_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_GroupsBillService_DeleteBill_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_GroupsBillService_DeleteGroupBill_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -293,11 +293,11 @@ func RegisterGroupsBillServiceHandlerServer(ctx context.Context, mux *runtime.Se
 			return
 		}
 
-		forward_GroupsBillService_DeleteBill_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_GroupsBillService_DeleteGroupBill_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_GroupsBillService_ModifyBill_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_GroupsBillService_ModifyGroupBill_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -305,12 +305,12 @@ func RegisterGroupsBillServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupsBillService/ModifyBill", runtime.WithHTTPPathPattern("/v1/groups_bill/{bill_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupsBillService/ModifyGroupBill", runtime.WithHTTPPathPattern("/v1/groups_bill/{bill_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_GroupsBillService_ModifyBill_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_GroupsBillService_ModifyGroupBill_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -318,7 +318,7 @@ func RegisterGroupsBillServiceHandlerServer(ctx context.Context, mux *runtime.Se
 			return
 		}
 
-		forward_GroupsBillService_ModifyBill_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_GroupsBillService_ModifyGroupBill_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -413,69 +413,69 @@ func RegisterGroupsBillServiceHandler(ctx context.Context, mux *runtime.ServeMux
 // "GroupsBillServiceClient" to call the correct interceptors.
 func RegisterGroupsBillServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client GroupsBillServiceClient) error {
 
-	mux.Handle("POST", pattern_GroupsBillService_CreateBill_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_GroupsBillService_CreateGroupBill_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupsBillService/CreateBill", runtime.WithHTTPPathPattern("/v1/groups_bill"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupsBillService/CreateGroupBill", runtime.WithHTTPPathPattern("/v1/groups_bill"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_GroupsBillService_CreateBill_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_GroupsBillService_CreateGroupBill_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_GroupsBillService_CreateBill_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_GroupsBillService_CreateGroupBill_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_GroupsBillService_DeleteBill_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_GroupsBillService_DeleteGroupBill_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupsBillService/DeleteBill", runtime.WithHTTPPathPattern("/v1/groups_bill/{bill_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupsBillService/DeleteGroupBill", runtime.WithHTTPPathPattern("/v1/groups_bill/{bill_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_GroupsBillService_DeleteBill_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_GroupsBillService_DeleteGroupBill_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_GroupsBillService_DeleteBill_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_GroupsBillService_DeleteGroupBill_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_GroupsBillService_ModifyBill_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_GroupsBillService_ModifyGroupBill_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupsBillService/ModifyBill", runtime.WithHTTPPathPattern("/v1/groups_bill/{bill_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupsBillService/ModifyGroupBill", runtime.WithHTTPPathPattern("/v1/groups_bill/{bill_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_GroupsBillService_ModifyBill_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_GroupsBillService_ModifyGroupBill_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_GroupsBillService_ModifyBill_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_GroupsBillService_ModifyGroupBill_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -527,11 +527,11 @@ func RegisterGroupsBillServiceHandlerClient(ctx context.Context, mux *runtime.Se
 }
 
 var (
-	pattern_GroupsBillService_CreateBill_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "groups_bill"}, ""))
+	pattern_GroupsBillService_CreateGroupBill_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "groups_bill"}, ""))
 
-	pattern_GroupsBillService_DeleteBill_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "groups_bill", "bill_id"}, ""))
+	pattern_GroupsBillService_DeleteGroupBill_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "groups_bill", "bill_id"}, ""))
 
-	pattern_GroupsBillService_ModifyBill_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "groups_bill", "bill_id"}, ""))
+	pattern_GroupsBillService_ModifyGroupBill_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "groups_bill", "bill_id"}, ""))
 
 	pattern_GroupsBillService_GetSelfTotalSpend_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "groups_bill", "self_total_spend"}, ""))
 
@@ -539,11 +539,11 @@ var (
 )
 
 var (
-	forward_GroupsBillService_CreateBill_0 = runtime.ForwardResponseMessage
+	forward_GroupsBillService_CreateGroupBill_0 = runtime.ForwardResponseMessage
 
-	forward_GroupsBillService_DeleteBill_0 = runtime.ForwardResponseMessage
+	forward_GroupsBillService_DeleteGroupBill_0 = runtime.ForwardResponseMessage
 
-	forward_GroupsBillService_ModifyBill_0 = runtime.ForwardResponseMessage
+	forward_GroupsBillService_ModifyGroupBill_0 = runtime.ForwardResponseMessage
 
 	forward_GroupsBillService_GetSelfTotalSpend_0 = runtime.ForwardResponseMessage
 
