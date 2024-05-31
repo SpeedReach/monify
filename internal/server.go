@@ -10,6 +10,7 @@ import (
 	"monify/internal/middlewares"
 	"monify/internal/services/auth"
 	"monify/internal/services/group"
+	"monify/internal/services/group_bill"
 	monify "monify/protobuf/gen/go"
 	"net"
 )
@@ -39,6 +40,7 @@ func SetupServices(g *grpc.Server, config ServerConfig) {
 		Secret: config.JwtSecret,
 	})
 	monify.RegisterGroupServiceServer(g, group.Service{})
+	monify.RegisterGroupsBillServiceServer(g, group_bill.Service{})
 }
 
 func setupInterceptor(resources infra.Resources, config ServerConfig) grpc.ServerOption {

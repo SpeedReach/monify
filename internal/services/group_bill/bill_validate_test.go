@@ -46,4 +46,30 @@ func TestBillValidate(t *testing.T) {
 	}
 	err = validateGroupBill(&test2)
 	assert.NoError(t, err)
+
+	test3 := monify.CreateGroupBillRequest{
+		GroupId:     "123",
+		TotalMoney:  250,
+		Title:       "test",
+		Description: "test",
+		SplitPeople: []*monify.SplitPerson{
+			{
+				MemberId: "",
+				Amount:   100,
+			},
+			{
+				MemberId: "",
+				Amount:   150,
+			},
+		},
+		PrepaidPeople: []*monify.PrepaidPerson{
+			{
+				MemberId: "",
+				Amount:   250,
+			},
+		},
+	}
+
+	err = validateGroupBill(&test3)
+	assert.NoError(t, err)
 }

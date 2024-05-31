@@ -11,7 +11,7 @@ import (
 	monify "monify/protobuf/gen/go"
 )
 
-func (s *Service) CreateBill(ctx context.Context, req *monify.CreateGroupBillRequest) (*monify.CreateGroupBillResponse, error) {
+func (s Service) CreateGroupBill(ctx context.Context, req *monify.CreateGroupBillRequest) (*monify.CreateGroupBillResponse, error) {
 	userId, ok := ctx.Value(middlewares.UserIdContextKey{}).(uuid.UUID)
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "Unauthorized")

@@ -224,6 +224,44 @@
         ]
       }
     },
+    "/v1/groups_bill/{groupId}/{skip}/{limit}": {
+      "get": {
+        "operationId": "GroupsBillService_GetGroupBills",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetGroupBillsResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "groupId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "skip",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "GroupsBillService"
+        ]
+      }
+    },
     "/v1/groups_bill/{billId}": {
       "delete": {
         "operationId": "GroupsBillService_DeleteGroupBill",
@@ -390,6 +428,41 @@
         }
       }
     },
+    "CreatedGroupBill": {
+      "type": "object",
+      "properties": {
+        "billId": {
+          "type": "string"
+        },
+        "groupId": {
+          "type": "string"
+        },
+        "totalMoney": {
+          "type": "number",
+          "format": "double"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "prepaidPeople": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/PrepaidPerson"
+          }
+        },
+        "splitPeople": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/SplitPerson"
+          }
+        }
+      }
+    },
     "EmailLoginRequest": {
       "type": "object",
       "properties": {
@@ -447,6 +520,18 @@
       "properties": {
         "inviteCode": {
           "type": "string"
+        }
+      }
+    },
+    "GetGroupBillsResponse": {
+      "type": "object",
+      "properties": {
+        "groupBills": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/CreatedGroupBill"
+          }
         }
       }
     },

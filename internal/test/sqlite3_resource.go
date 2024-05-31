@@ -55,7 +55,7 @@ func SetupTestResource(t *testing.T) infra.Resources {
 	if err = db.Ping(); err != nil {
 		log.Fatal(err)
 	}
-	db.SetMaxOpenConns(1)
+	//db.SetMaxOpenConns(1)
 	return infra.Resources{
 		DBConn: db,
 		Logger: logger,
