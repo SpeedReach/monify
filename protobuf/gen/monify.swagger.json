@@ -224,7 +224,7 @@
         ]
       }
     },
-    "/v1/groups_bill/{groupId}/{skip}/{limit}": {
+    "/v1/groups_bill/{groupId}": {
       "get": {
         "operationId": "GroupsBillService_GetGroupBills",
         "responses": {
@@ -241,20 +241,6 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "skip",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "limit",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "format": "int32"
           }
         ],
         "tags": [
@@ -316,7 +302,7 @@
         ]
       }
     },
-    "/v1/groups_bill/self_total_spend": {
+    "/v1/groups_bill/self_total": {
       "get": {
         "operationId": "GroupsBillService_GetSelfTotalSpend",
         "responses": {
@@ -340,7 +326,7 @@
         ]
       }
     },
-    "/v1/groups_bill/group_bill": {
+    "/v1/groups_bill/total": {
       "get": {
         "operationId": "GroupsBillService_GetGroupTotalSpend",
         "responses": {

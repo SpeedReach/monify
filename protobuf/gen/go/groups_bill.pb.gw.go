@@ -78,26 +78,6 @@ func request_GroupsBillService_GetGroupBills_0(ctx context.Context, marshaler ru
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "group_id", err)
 	}
 
-	val, ok = pathParams["skip"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "skip")
-	}
-
-	protoReq.Skip, err = runtime.Int32(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "skip", err)
-	}
-
-	val, ok = pathParams["limit"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "limit")
-	}
-
-	protoReq.Limit, err = runtime.Int32(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "limit", err)
-	}
-
 	msg, err := client.GetGroupBills(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
@@ -122,26 +102,6 @@ func local_request_GroupsBillService_GetGroupBills_0(ctx context.Context, marsha
 	protoReq.GroupId, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "group_id", err)
-	}
-
-	val, ok = pathParams["skip"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "skip")
-	}
-
-	protoReq.Skip, err = runtime.Int32(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "skip", err)
-	}
-
-	val, ok = pathParams["limit"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "limit")
-	}
-
-	protoReq.Limit, err = runtime.Int32(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "limit", err)
 	}
 
 	msg, err := server.GetGroupBills(ctx, &protoReq)
@@ -372,7 +332,7 @@ func RegisterGroupsBillServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupsBillService/GetGroupBills", runtime.WithHTTPPathPattern("/v1/groups_bill/{group_id}/{skip}/{limit}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupsBillService/GetGroupBills", runtime.WithHTTPPathPattern("/v1/groups_bill/{group_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -447,7 +407,7 @@ func RegisterGroupsBillServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupsBillService/GetSelfTotalSpend", runtime.WithHTTPPathPattern("/v1/groups_bill/self_total_spend"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupsBillService/GetSelfTotalSpend", runtime.WithHTTPPathPattern("/v1/groups_bill/self_total"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -472,7 +432,7 @@ func RegisterGroupsBillServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupsBillService/GetGroupTotalSpend", runtime.WithHTTPPathPattern("/v1/groups_bill/group_bill"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupsBillService/GetGroupTotalSpend", runtime.WithHTTPPathPattern("/v1/groups_bill/total"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -558,7 +518,7 @@ func RegisterGroupsBillServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupsBillService/GetGroupBills", runtime.WithHTTPPathPattern("/v1/groups_bill/{group_id}/{skip}/{limit}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupsBillService/GetGroupBills", runtime.WithHTTPPathPattern("/v1/groups_bill/{group_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -624,7 +584,7 @@ func RegisterGroupsBillServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupsBillService/GetSelfTotalSpend", runtime.WithHTTPPathPattern("/v1/groups_bill/self_total_spend"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupsBillService/GetSelfTotalSpend", runtime.WithHTTPPathPattern("/v1/groups_bill/self_total"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -646,7 +606,7 @@ func RegisterGroupsBillServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupsBillService/GetGroupTotalSpend", runtime.WithHTTPPathPattern("/v1/groups_bill/group_bill"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupsBillService/GetGroupTotalSpend", runtime.WithHTTPPathPattern("/v1/groups_bill/total"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -668,15 +628,15 @@ func RegisterGroupsBillServiceHandlerClient(ctx context.Context, mux *runtime.Se
 var (
 	pattern_GroupsBillService_CreateGroupBill_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "groups_bill"}, ""))
 
-	pattern_GroupsBillService_GetGroupBills_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "groups_bill", "group_id", "skip", "limit"}, ""))
+	pattern_GroupsBillService_GetGroupBills_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "groups_bill", "group_id"}, ""))
 
 	pattern_GroupsBillService_DeleteGroupBill_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "groups_bill", "bill_id"}, ""))
 
 	pattern_GroupsBillService_ModifyGroupBill_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "groups_bill", "bill_id"}, ""))
 
-	pattern_GroupsBillService_GetSelfTotalSpend_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "groups_bill", "self_total_spend"}, ""))
+	pattern_GroupsBillService_GetSelfTotalSpend_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "groups_bill", "self_total"}, ""))
 
-	pattern_GroupsBillService_GetGroupTotalSpend_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "groups_bill", "group_bill"}, ""))
+	pattern_GroupsBillService_GetGroupTotalSpend_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "groups_bill", "total"}, ""))
 )
 
 var (

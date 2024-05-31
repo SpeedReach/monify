@@ -15,7 +15,7 @@ service GroupsBillService{
 
     rpc GetGroupBills(GetGroupBillsRequest) returns (GetGroupBillsResponse){
         option (google.api.http) = {
-            get: "/v1/groups_bill/{group_id}/{skip}/{limit}"
+            get: "/v1/groups_bill/{group_id}"
         };
     }
 
@@ -34,13 +34,13 @@ service GroupsBillService{
 
     rpc GetSelfTotalSpend(GetSelfTotalSpendRequest) returns (GetSelfTotalSpendResponse){
         option (google.api.http) = {
-            get: "/v1/groups_bill/self_total_spend"
+            get: "/v1/groups_bill/self_total"
         };
     }
 
     rpc GetGroupTotalSpend(GetGroupTotalSpendRequest) returns (GetGroupTotalSpendResponse){
         option (google.api.http) = {
-            get: "/v1/groups_bill/group_bill"
+            get: "/v1/groups_bill/total"
         };
     }
 
@@ -101,8 +101,6 @@ message GetGroupTotalSpendResponse{
 
 message GetGroupBillsRequest {
     string group_id = 1;
-    int32 skip = 2;
-    int32 limit = 3;
 }
 
 
