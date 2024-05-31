@@ -11,14 +11,17 @@ import (
 
 func TestLogin(t *testing.T) {
 	email := "brian030128@gmail.com"
+	password := "qwer1234"
 	client := GetTestClient(t)
-	_, err := client.EmailLogin(context.TODO(), &monify.EmailLoginRequest{Email: email})
+	_, err := client.EmailLogin(context.TODO(), &monify.EmailLoginRequest{Email: email, Password: password})
 	assert.Error(t, err)
-	res1, err := client.EmailRegister(context.TODO(), &monify.EmailRegisterRequest{Email: email})
+	res1, err := client.EmailRegister(context.TODO(), &monify.EmailRegisterRequest{Email: email, Password: password})
 	assert.NoError(t, err)
-	res2, err := client.EmailLogin(context.TODO(), &monify.EmailLoginRequest{Email: email})
+	res2, err := client.EmailLogin(context.TODO(), &monify.EmailLoginRequest{Email: email, Password: password})
 	assert.NoError(t, err)
 	assert.Equal(t, res1.UserId, res2.UserId)
+	res2, err = client.EmailLogin(context.TODO(), &monify.EmailLoginRequest{Email: email, Password: "badpassword"})
+	assert.Error(t, err)
 }
 func TestRefreshToken(t *testing.T) {
 	email := "a0905373664@gmail.com"
