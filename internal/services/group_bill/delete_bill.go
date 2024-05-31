@@ -40,7 +40,7 @@ func (s *Service) DeleteBill(ctx context.Context, req *monify.DeleteGroupBillReq
 	}
 
 	_, err = tx.ExecContext(ctx,
-		`DELETE FROM group_split_bill WHERE bill_id = $1`, req.BillId
+		`DELETE FROM group_split_bill WHERE bill_id = $1`, req.BillId,
 	)
 	if err != nil {
 		logger.Error("Failed to delete group from group_split_bill", zap.Error(err))
@@ -48,15 +48,17 @@ func (s *Service) DeleteBill(ctx context.Context, req *monify.DeleteGroupBillReq
 	}
 
 	_, err = tx.ExecContext(ctx,
-		`DELETE FROM group_prepaid_bill WHERE bill_id = $1`, req.BillId
+		`DELETE FROM group_prepaid_bill WHERE bill_id = $1`, req.BillId,
 	)
 	if err != nil {
 		logger.Error("Failed to delete group from group_prepaid_bill", zap.Error(err))
 		return nil, err
 	}
-	
+
 	if err = tx.Commit(); err != nil {
 		logger.Error("Failed to commit transaction", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Internal")
 	}
+
+	return &monify.GroupGroupBillEmpty{}, err
 }
