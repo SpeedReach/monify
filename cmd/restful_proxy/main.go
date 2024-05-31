@@ -38,12 +38,7 @@ func run() error {
 	_ = gw.RegisterGroupServiceHandlerFromEndpoint(ctx, mux, *grpcServerEndpoint, opts)
 	_ = gw.RegisterGroupsBillServiceHandlerFromEndpoint(ctx, mux, *grpcServerEndpoint, opts)
 
-	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"}, // Allow all origins
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Content-Type", "Authorization"},
-		AllowCredentials: true,
-	})
+	c := cors.AllowAll()
 
 	handler := c.Handler(mux)
 
