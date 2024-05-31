@@ -36,7 +36,7 @@ func matchEmailUser(ctx context.Context, email string, password string, db *sql.
 		return uuid.Nil, err
 	}
 
-	_ = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 	if err != nil {
 		return uuid.Nil, errors.New("incorrect password")
 	}
@@ -66,7 +66,6 @@ func (s Service) EmailLogin(ctx context.Context, req *monify.EmailLoginRequest) 
 
 	userId, err := matchEmailUser(ctx, req.Email, req.Password, db)
 	if err != nil {
-		logger.Error("", zap.Error(err))
 		return nil, status.Errorf(codes.Internal, "internal err.")
 	}
 

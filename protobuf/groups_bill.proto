@@ -13,6 +13,12 @@ service GroupsBillService{
         };
     }
 
+    rpc GetGroupBills(GetGroupBillsRequest) returns (GetGroupBillsResponse){
+        option (google.api.http) = {
+            get: "/v1/groups_bill/{group_id}"
+        };
+    }
+
     rpc DeleteGroupBill(DeleteGroupBillRequest) returns (GroupGroupBillEmpty){
         option (google.api.http) = {
             delete: "/v1/groups_bill/{bill_id}"
@@ -28,13 +34,13 @@ service GroupsBillService{
 
     rpc GetSelfTotalSpend(GetSelfTotalSpendRequest) returns (GetSelfTotalSpendResponse){
         option (google.api.http) = {
-            get: "/v1/groups_bill/self_total_spend"
+            get: "/v1/groups_bill/self_total"
         };
     }
 
     rpc GetGroupTotalSpend(GetGroupTotalSpendRequest) returns (GetGroupTotalSpendResponse){
         option (google.api.http) = {
-            get: "/v1/groups_bill/group_bill"
+            get: "/v1/groups_bill/total"
         };
     }
 
@@ -91,4 +97,23 @@ message GetGroupTotalSpendRequest{
 
 message GetGroupTotalSpendResponse{
     double amount = 1;
+}
+
+message GetGroupBillsRequest {
+    string group_id = 1;
+}
+
+
+message GetGroupBillsResponse {
+    repeated CreatedGroupBill group_bills = 1;
+}
+
+message CreatedGroupBill{
+    string bill_id = 1;
+    string group_id = 2;
+    double total_money = 3;
+    string title = 4;
+    string description = 5;
+    repeated PrepaidPerson prepaid_people = 6;
+    repeated SplitPerson split_people = 7;
 }

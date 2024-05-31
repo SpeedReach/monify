@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	GroupsBillService_CreateGroupBill_FullMethodName    = "/GroupsBillService/CreateGroupBill"
+	GroupsBillService_GetGroupBills_FullMethodName      = "/GroupsBillService/GetGroupBills"
 	GroupsBillService_DeleteGroupBill_FullMethodName    = "/GroupsBillService/DeleteGroupBill"
 	GroupsBillService_ModifyGroupBill_FullMethodName    = "/GroupsBillService/ModifyGroupBill"
 	GroupsBillService_GetSelfTotalSpend_FullMethodName  = "/GroupsBillService/GetSelfTotalSpend"
@@ -31,6 +32,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type GroupsBillServiceClient interface {
 	CreateGroupBill(ctx context.Context, in *CreateGroupBillRequest, opts ...grpc.CallOption) (*CreateGroupBillResponse, error)
+	GetGroupBills(ctx context.Context, in *GetGroupBillsRequest, opts ...grpc.CallOption) (*GetGroupBillsResponse, error)
 	DeleteGroupBill(ctx context.Context, in *DeleteGroupBillRequest, opts ...grpc.CallOption) (*GroupGroupBillEmpty, error)
 	ModifyGroupBill(ctx context.Context, in *ModifyGroupBillRequest, opts ...grpc.CallOption) (*GroupGroupBillEmpty, error)
 	GetSelfTotalSpend(ctx context.Context, in *GetSelfTotalSpendRequest, opts ...grpc.CallOption) (*GetSelfTotalSpendResponse, error)
@@ -48,6 +50,15 @@ func NewGroupsBillServiceClient(cc grpc.ClientConnInterface) GroupsBillServiceCl
 func (c *groupsBillServiceClient) CreateGroupBill(ctx context.Context, in *CreateGroupBillRequest, opts ...grpc.CallOption) (*CreateGroupBillResponse, error) {
 	out := new(CreateGroupBillResponse)
 	err := c.cc.Invoke(ctx, GroupsBillService_CreateGroupBill_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *groupsBillServiceClient) GetGroupBills(ctx context.Context, in *GetGroupBillsRequest, opts ...grpc.CallOption) (*GetGroupBillsResponse, error) {
+	out := new(GetGroupBillsResponse)
+	err := c.cc.Invoke(ctx, GroupsBillService_GetGroupBills_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -95,6 +106,7 @@ func (c *groupsBillServiceClient) GetGroupTotalSpend(ctx context.Context, in *Ge
 // for forward compatibility
 type GroupsBillServiceServer interface {
 	CreateGroupBill(context.Context, *CreateGroupBillRequest) (*CreateGroupBillResponse, error)
+	GetGroupBills(context.Context, *GetGroupBillsRequest) (*GetGroupBillsResponse, error)
 	DeleteGroupBill(context.Context, *DeleteGroupBillRequest) (*GroupGroupBillEmpty, error)
 	ModifyGroupBill(context.Context, *ModifyGroupBillRequest) (*GroupGroupBillEmpty, error)
 	GetSelfTotalSpend(context.Context, *GetSelfTotalSpendRequest) (*GetSelfTotalSpendResponse, error)
@@ -108,6 +120,9 @@ type UnimplementedGroupsBillServiceServer struct {
 
 func (UnimplementedGroupsBillServiceServer) CreateGroupBill(context.Context, *CreateGroupBillRequest) (*CreateGroupBillResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateGroupBill not implemented")
+}
+func (UnimplementedGroupsBillServiceServer) GetGroupBills(context.Context, *GetGroupBillsRequest) (*GetGroupBillsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGroupBills not implemented")
 }
 func (UnimplementedGroupsBillServiceServer) DeleteGroupBill(context.Context, *DeleteGroupBillRequest) (*GroupGroupBillEmpty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteGroupBill not implemented")
@@ -148,6 +163,24 @@ func _GroupsBillService_CreateGroupBill_Handler(srv interface{}, ctx context.Con
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GroupsBillServiceServer).CreateGroupBill(ctx, req.(*CreateGroupBillRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GroupsBillService_GetGroupBills_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGroupBillsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GroupsBillServiceServer).GetGroupBills(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GroupsBillService_GetGroupBills_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GroupsBillServiceServer).GetGroupBills(ctx, req.(*GetGroupBillsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -234,6 +267,10 @@ var GroupsBillService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateGroupBill",
 			Handler:    _GroupsBillService_CreateGroupBill_Handler,
+		},
+		{
+			MethodName: "GetGroupBills",
+			Handler:    _GroupsBillService_GetGroupBills_Handler,
 		},
 		{
 			MethodName: "DeleteGroupBill",

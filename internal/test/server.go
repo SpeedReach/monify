@@ -27,6 +27,7 @@ type State struct {
 type Client struct {
 	monify.AuthServiceClient
 	monify.GroupServiceClient
+	monify.GroupsBillServiceClient
 	users       *map[string]string
 	currentUser *string
 }
@@ -102,10 +103,11 @@ func createClient(lis *bufconn.Listener) Client {
 	}
 
 	return Client{
-		AuthServiceClient:  monify.NewAuthServiceClient(conn),
-		GroupServiceClient: monify.NewGroupServiceClient(conn),
-		users:              &users,
-		currentUser:        &currentUser,
+		AuthServiceClient:       monify.NewAuthServiceClient(conn),
+		GroupServiceClient:      monify.NewGroupServiceClient(conn),
+		GroupsBillServiceClient: monify.NewGroupsBillServiceClient(conn),
+		users:                   &users,
+		currentUser:             &currentUser,
 	}
 }
 

@@ -22,17 +22,6 @@ const (
 	expiresInterval  = int64(time.Minute * 10)
 )
 
-func checkPermission(ctx context.Context, db *sql.DB, groupId uuid.UUID, userId uuid.UUID) (bool, error) {
-	var count int
-	err := db.QueryRow(`
-		SELECT COUNT(*) FROM group_member WHERE group_id = $1 AND user_id = $2
-	`, groupId, userId).Scan(&count)
-	if err != nil {
-		return false, err
-	}
-	return count > 0, nil
-}
-
 func (s Service) GenerateInviteCode(ctx context.Context, req *monify.GenerateInviteCodeRequest) (*monify.GenerateInviteCodeResponse, error) {
 	userId, ok := ctx.Value(middlewares.UserIdContextKey{}).(uuid.UUID)
 	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
@@ -44,7 +33,7 @@ func (s Service) GenerateInviteCode(ctx context.Context, req *monify.GenerateInv
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "Invalid group ID")
 	}
-	hasPerm, err := checkPermission(ctx, db, groupId, userId)
+	hasPerm, err := CheckPermission(ctx, db, groupId, userId)
 	if err != nil {
 		logger.Error("Failed to check permission", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Internal")

@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/rs/cors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	gw "monify/protobuf/gen/go"
@@ -36,16 +35,19 @@ func run() error {
 		return err
 	}
 	_ = gw.RegisterGroupServiceHandlerFromEndpoint(ctx, mux, *grpcServerEndpoint, opts)
+	_ = gw.RegisterGroupsBillServiceHandlerFromEndpoint(ctx, mux, *grpcServerEndpoint, opts)
 
-	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"}, // Allow all origins
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Content-Type", "Authorization"},
-		AllowCredentials: true,
-	})
-
-	handler := c.Handler(mux)
+	handler := CorsHandler(mux)
 
 	// Start HTTP server (and proxy calls to gRPC server endpoint)
 	return http.ListenAndServe(":8081", handler)
+}
+
+func CorsHandler(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		h.ServeHTTP(w, r)
+	})
 }
