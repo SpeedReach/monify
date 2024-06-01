@@ -7,7 +7,7 @@ CREATE TABLE group_bill (
     total_money double precision NOT NULL ,
     title varchar(30) NOT NULL ,
     description varchar(200) default '',
-    FOREIGN KEY (group_id) REFERENCES group_member(group_id),
+    FOREIGN KEY (group_id) REFERENCES "group"(group_id),
     FOREIGN KEY (created_by) REFERENCES group_member(group_member_id)
 );
 
