@@ -89,7 +89,11 @@ func getGroupBills(ctx context.Context, db *sql.DB, logger *zap.Logger, groupId 
 func getGroupBillSplits(ctx context.Context, db *sql.DB, logger *zap.Logger, billId uuid.UUID) ([]*monify.SplitPerson, error) {
 	var splits []*monify.SplitPerson
 	rows, err := db.QueryContext(ctx, `
-		SELECT person, amount FROM group_split_bill WHERE bill_id = $1
+		SELECT person, amount ,ui.name
+		FROM group_split_bill 
+		LEFT JOIN group_member gm ON group_split_bill.person = gm.group_member_id
+		LEFT JOIN user_identity ui ON gm.user_id = ui.user_id
+		WHERE bill_id = $1
 	`, billId)
 	if err != nil {
 		logger.Error("", zap.Error(err))
@@ -99,13 +103,15 @@ func getGroupBillSplits(ctx context.Context, db *sql.DB, logger *zap.Logger, bil
 	for rows.Next() {
 		var memberId uuid.UUID
 		var amount float64
-		err = rows.Scan(&memberId, &amount)
+		var username string
+		err = rows.Scan(&memberId, &amount, &username)
 		if err != nil {
 			return []*monify.SplitPerson{}, err
 		}
 		splits = append(splits, &monify.SplitPerson{
 			MemberId: memberId.String(),
 			Amount:   amount,
+			Username: username,
 		})
 	}
 	return splits, nil
@@ -114,7 +120,11 @@ func getGroupBillSplits(ctx context.Context, db *sql.DB, logger *zap.Logger, bil
 func getGroupBillPrepaid(ctx context.Context, db *sql.DB, logger *zap.Logger, billId uuid.UUID) ([]*monify.PrepaidPerson, error) {
 	var prepaid []*monify.PrepaidPerson
 	rows, err := db.QueryContext(ctx, `
-		SELECT person, amount FROM group_prepaid_bill WHERE bill_id = $1
+		SELECT person, amount , ui.name
+		FROM group_prepaid_bill 
+		LEFT JOIN group_member gm ON group_prepaid_bill.person = gm.group_member_id
+		LEFT JOIN user_identity ui ON gm.user_id = ui.user_id
+		WHERE bill_id = $1
 	`, billId)
 	if err != nil {
 		logger.Error("", zap.Error(err))
@@ -124,13 +134,15 @@ func getGroupBillPrepaid(ctx context.Context, db *sql.DB, logger *zap.Logger, bi
 	for rows.Next() {
 		var memberId uuid.UUID
 		var amount float64
-		err = rows.Scan(&memberId, &amount)
+		var username string
+		err = rows.Scan(&memberId, &amount, &username)
 		if err != nil {
 			return []*monify.PrepaidPerson{}, err
 		}
 		prepaid = append(prepaid, &monify.PrepaidPerson{
 			MemberId: memberId.String(),
 			Amount:   amount,
+			Username: username,
 		})
 	}
 	return prepaid, nil

@@ -640,6 +640,9 @@
         "amount": {
           "type": "number",
           "format": "double"
+        },
+        "username": {
+          "type": "string"
         }
       }
     },
@@ -671,6 +674,9 @@
         "amount": {
           "type": "number",
           "format": "double"
+        },
+        "username": {
+          "type": "string"
         }
       }
     }

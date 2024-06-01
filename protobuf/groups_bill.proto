@@ -52,11 +52,13 @@ message CreateGroupBillRequest{
 message PrepaidPerson{
     string member_id = 1;
     double amount = 2;
+    string username = 3;
 }
 
 message SplitPerson{
     string member_id = 1;
     double amount = 2;
+    string username = 3;
 }
 
 message CreateGroupBillResponse{
