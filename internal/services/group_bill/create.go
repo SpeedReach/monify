@@ -12,7 +12,9 @@ import (
 	monify "monify/protobuf/gen/go"
 )
 
+// CreateGroupBill Handler
 func (s Service) CreateGroupBill(ctx context.Context, req *monify.CreateGroupBillRequest) (*monify.CreateGroupBillResponse, error) {
+	//Parse ids
 	userId, ok := ctx.Value(middlewares.UserIdContextKey{}).(uuid.UUID)
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "Unauthorized")
@@ -22,12 +24,14 @@ func (s Service) CreateGroupBill(ctx context.Context, req *monify.CreateGroupBil
 		return nil, status.Error(codes.InvalidArgument, "Invalid group id")
 	}
 
+	//Validation
 	if err = validateGroupBill(req); err != nil {
 		return nil, err
 	}
 	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
 	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
 
+	//Check permission & get group_member_id of bill creator
 	memberId, err := group.GetMemberId(ctx, db, groupId, userId)
 	if err != nil {
 		logger.Error("Failed to get member id", zap.Error(err))
@@ -37,40 +41,34 @@ func (s Service) CreateGroupBill(ctx context.Context, req *monify.CreateGroupBil
 		return nil, status.Error(codes.PermissionDenied, "Permission denied")
 	}
 
+	//Begin Tx
 	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadUncommitted})
 	if err != nil {
 		logger.Error("Failed to begin transaction", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Internal")
 	}
 	defer tx.Rollback()
-
+	//Insert
 	billId := uuid.New()
-	_, err = tx.ExecContext(ctx, `
-		INSERT INTO group_bill (bill_id, group_id, created_by, total_money, title, description)
-		VALUES ($1, $2, $3, $4, $5, $6)
-	`, billId, groupId, memberId, req.TotalMoney, req.Title, req.Description)
-	if err != nil {
-		logger.Error("Failed to insert group bill", zap.Error(err))
-		return nil, err
-	}
-	for _, splitPerson := range req.SplitPeople {
-		_, err = tx.ExecContext(ctx, `
-			INSERT INTO group_split_bill (bill_id, person, amount) VALUES ($1, $2, $3)
-		`, billId, splitPerson.MemberId, splitPerson.Amount)
-		if err != nil {
-			logger.Error("Failed to insert group split bill", zap.Error(err))
-			return nil, err
-		}
+	if err = insertBill(ctx, tx, logger, insertBillInfo{
+		billId:      billId,
+		groupId:     groupId,
+		createdBy:   memberId,
+		totalMoney:  req.TotalMoney,
+		title:       req.Title,
+		description: req.Description,
+	}); err != nil {
+		return nil, status.Error(codes.Internal, "Internal")
 	}
 
-	for _, prepaidPerson := range req.PrepaidPeople {
-		_, err = tx.ExecContext(ctx, `
-			INSERT INTO group_prepaid_bill (bill_id, person, amount) VALUES ($1, $2, $3)
-			`, billId, prepaidPerson.MemberId, prepaidPerson.Amount)
-		if err != nil {
-			logger.Error("Failed to insert group prepaid bill", zap.Error(err))
-			return nil, err
-		}
+	if err = insertBillHistory(ctx, tx, billHistoryInsertion{
+		ty:       Create,
+		operator: memberId,
+		billId:   billId,
+		title:    req.Title,
+	}); err != nil {
+		logger.Error("", zap.Error(err))
+		return nil, status.Error(codes.Internal, "Internal")
 	}
 
 	if err = tx.Commit(); err != nil {
@@ -81,6 +79,50 @@ func (s Service) CreateGroupBill(ctx context.Context, req *monify.CreateGroupBil
 	return &monify.CreateGroupBillResponse{
 		BillId: billId.String(),
 	}, nil
+}
+
+type insertBillInfo struct {
+	billId        uuid.UUID
+	groupId       uuid.UUID
+	createdBy     uuid.UUID
+	totalMoney    float64
+	title         string
+	description   string
+	splitPeople   []*monify.SplitPerson
+	prepaidPeople []*monify.PrepaidPerson
+}
+
+func insertBill(ctx context.Context, tx *sql.Tx, logger *zap.Logger, info insertBillInfo) error {
+	_, err := tx.ExecContext(ctx, `
+		INSERT INTO group_bill (bill_id, group_id, created_by, total_money, title, description)
+		VALUES ($1, $2, $3, $4, $5, $6)
+	`, info.billId, info.groupId, info.createdBy, info.totalMoney, info.title, info.description)
+	if err != nil {
+		logger.Error("", zap.Error(err))
+		return err
+	}
+
+	for _, splitPerson := range info.splitPeople {
+		_, err := tx.ExecContext(ctx, `
+			INSERT INTO group_split_bill (bill_id, person, amount) VALUES ($1, $2, $3)
+		`, info.billId, splitPerson.MemberId, splitPerson.Amount)
+		if err != nil {
+			logger.Error("Failed to insert group split bill", zap.Error(err))
+			return err
+		}
+	}
+
+	for _, prepaidPerson := range info.prepaidPeople {
+		_, err = tx.ExecContext(ctx, `
+			INSERT INTO group_prepaid_bill (bill_id, person, amount) VALUES ($1, $2, $3)
+			`, info.billId, prepaidPerson.MemberId, prepaidPerson.Amount)
+		if err != nil {
+			logger.Error("Failed to insert group prepaid bill", zap.Error(err))
+			return err
+		}
+	}
+
+	return nil
 }
 
 func validateGroupBill(req *monify.CreateGroupBillRequest) error {

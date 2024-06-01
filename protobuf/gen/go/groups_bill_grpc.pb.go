@@ -23,6 +23,7 @@ const (
 	GroupsBillService_GetGroupBills_FullMethodName   = "/GroupsBillService/GetGroupBills"
 	GroupsBillService_DeleteGroupBill_FullMethodName = "/GroupsBillService/DeleteGroupBill"
 	GroupsBillService_ModifyGroupBill_FullMethodName = "/GroupsBillService/ModifyGroupBill"
+	GroupsBillService_GetHistory_FullMethodName      = "/GroupsBillService/GetHistory"
 )
 
 // GroupsBillServiceClient is the client API for GroupsBillService service.
@@ -33,6 +34,7 @@ type GroupsBillServiceClient interface {
 	GetGroupBills(ctx context.Context, in *GetGroupBillsRequest, opts ...grpc.CallOption) (*GetGroupBillsResponse, error)
 	DeleteGroupBill(ctx context.Context, in *DeleteGroupBillRequest, opts ...grpc.CallOption) (*GroupGroupBillEmpty, error)
 	ModifyGroupBill(ctx context.Context, in *ModifyGroupBillRequest, opts ...grpc.CallOption) (*GroupGroupBillEmpty, error)
+	GetHistory(ctx context.Context, in *GetHistoryRequest, opts ...grpc.CallOption) (*GetHistoryResponse, error)
 }
 
 type groupsBillServiceClient struct {
@@ -79,6 +81,15 @@ func (c *groupsBillServiceClient) ModifyGroupBill(ctx context.Context, in *Modif
 	return out, nil
 }
 
+func (c *groupsBillServiceClient) GetHistory(ctx context.Context, in *GetHistoryRequest, opts ...grpc.CallOption) (*GetHistoryResponse, error) {
+	out := new(GetHistoryResponse)
+	err := c.cc.Invoke(ctx, GroupsBillService_GetHistory_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GroupsBillServiceServer is the server API for GroupsBillService service.
 // All implementations must embed UnimplementedGroupsBillServiceServer
 // for forward compatibility
@@ -87,6 +98,7 @@ type GroupsBillServiceServer interface {
 	GetGroupBills(context.Context, *GetGroupBillsRequest) (*GetGroupBillsResponse, error)
 	DeleteGroupBill(context.Context, *DeleteGroupBillRequest) (*GroupGroupBillEmpty, error)
 	ModifyGroupBill(context.Context, *ModifyGroupBillRequest) (*GroupGroupBillEmpty, error)
+	GetHistory(context.Context, *GetHistoryRequest) (*GetHistoryResponse, error)
 	mustEmbedUnimplementedGroupsBillServiceServer()
 }
 
@@ -105,6 +117,9 @@ func (UnimplementedGroupsBillServiceServer) DeleteGroupBill(context.Context, *De
 }
 func (UnimplementedGroupsBillServiceServer) ModifyGroupBill(context.Context, *ModifyGroupBillRequest) (*GroupGroupBillEmpty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ModifyGroupBill not implemented")
+}
+func (UnimplementedGroupsBillServiceServer) GetHistory(context.Context, *GetHistoryRequest) (*GetHistoryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetHistory not implemented")
 }
 func (UnimplementedGroupsBillServiceServer) mustEmbedUnimplementedGroupsBillServiceServer() {}
 
@@ -191,6 +206,24 @@ func _GroupsBillService_ModifyGroupBill_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GroupsBillService_GetHistory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetHistoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GroupsBillServiceServer).GetHistory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GroupsBillService_GetHistory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GroupsBillServiceServer).GetHistory(ctx, req.(*GetHistoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GroupsBillService_ServiceDesc is the grpc.ServiceDesc for GroupsBillService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -213,6 +246,10 @@ var GroupsBillService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ModifyGroupBill",
 			Handler:    _GroupsBillService_ModifyGroupBill_Handler,
+		},
+		{
+			MethodName: "GetHistory",
+			Handler:    _GroupsBillService_GetHistory_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

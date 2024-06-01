@@ -301,6 +301,44 @@
           "GroupsBillService"
         ]
       }
+    },
+    "/v1/group_bill/history/{skip}/{limit}": {
+      "get": {
+        "operationId": "GroupsBillService_GetHistory",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetHistoryResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "groupId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GroupsBillService"
+        ]
+      }
     }
   },
   "definitions": {
@@ -473,6 +511,18 @@
         }
       }
     },
+    "GetHistoryResponse": {
+      "type": "object",
+      "properties": {
+        "histories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/GroupBillHistory"
+          }
+        }
+      }
+    },
     "Group": {
       "type": "object",
       "properties": {
@@ -486,6 +536,34 @@
           "type": "string"
         }
       }
+    },
+    "GroupBillHistory": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/GroupBillHistoryType"
+        },
+        "operator": {
+          "type": "string",
+          "title": "The member_name who did the operation"
+        },
+        "title": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "GroupBillHistoryType": {
+      "type": "string",
+      "enum": [
+        "create",
+        "delete",
+        "modify"
+      ],
+      "default": "create"
     },
     "GroupGroupBillEmpty": {
       "type": "object"

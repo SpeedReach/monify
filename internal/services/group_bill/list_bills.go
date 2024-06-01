@@ -12,6 +12,7 @@ import (
 	monify "monify/protobuf/gen/go"
 )
 
+// GetGroupBills Handler
 func (s Service) GetGroupBills(ctx context.Context, req *monify.GetGroupBillsRequest) (*monify.GetGroupBillsResponse, error) {
 	userId, ok := ctx.Value(middlewares.UserIdContextKey{}).(uuid.UUID)
 	if !ok {
@@ -80,7 +81,6 @@ func getGroupBills(ctx context.Context, db *sql.DB, logger *zap.Logger, groupId 
 		}
 		bills = append(bills, &bill)
 	}
-
 	return bills, nil
 }
 

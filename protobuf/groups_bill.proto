@@ -2,6 +2,7 @@ syntax = "proto3";
 option go_package = "github.com/SpeedReach/monify";
 
 import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
 
 message GroupGroupBillEmpty{}
 
@@ -32,6 +33,11 @@ service GroupsBillService{
         };
     }
 
+    rpc GetHistory(GetHistoryRequest) returns (GetHistoryResponse) {
+        option (google.api.http) = {
+            get: "/v1/group_bill/history/{skip}/{limit}"
+        };
+    }
 }
 
 message CreateGroupBillRequest{
@@ -104,4 +110,28 @@ message CreatedGroupBill{
     string description = 5;
     repeated PrepaidPerson prepaid_people = 6;
     repeated SplitPerson split_people = 7;
+}
+
+message GetHistoryRequest{
+    int32 skip=1;
+    int32 limit=2;
+    string group_id=3;
+}
+
+message GetHistoryResponse{
+    repeated GroupBillHistory histories = 1;
+}
+
+message GroupBillHistory{
+    GroupBillHistoryType type = 1;
+    //The member_name who did the operation
+    string operator = 2;
+    string title = 3;
+    google.protobuf.Timestamp timestamp = 4;
+}
+
+enum GroupBillHistoryType{
+    create=0;
+    delete=1;
+    modify=2;
 }
