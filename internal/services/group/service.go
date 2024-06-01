@@ -21,3 +21,22 @@ func CheckPermission(ctx context.Context, db *sql.DB, groupId uuid.UUID, userId 
 	}
 	return count > 0, nil
 }
+
+func GetMemberId(ctx context.Context, db *sql.DB, groupId uuid.UUID, userId uuid.UUID) (uuid.UUID, error) {
+	var memberId uuid.UUID
+	rows, err := db.QueryContext(ctx, `
+		SELECT group_member_id FROM group_member WHERE group_id = $1 AND user_id = $2
+	`, groupId, userId)
+	if err != nil {
+		return uuid.Nil, err
+	}
+	defer rows.Close()
+	if !rows.Next() {
+		return uuid.Nil, nil
+	}
+	err = rows.Scan(&memberId)
+	if err != nil {
+		return uuid.Nil, err
+	}
+	return memberId, nil
+}

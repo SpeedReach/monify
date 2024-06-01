@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"monify/internal/middlewares"
+	"monify/internal/services/group"
 	monify "monify/protobuf/gen/go"
 )
 
@@ -20,12 +21,22 @@ func (s Service) CreateGroupBill(ctx context.Context, req *monify.CreateGroupBil
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "Invalid group id")
 	}
+
 	if err = validateGroupBill(req); err != nil {
 		return nil, err
 	}
-
 	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
 	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
+
+	memberId, err := group.GetMemberId(ctx, db, groupId, userId)
+	if err != nil {
+		logger.Error("Failed to get member id", zap.Error(err))
+		return nil, status.Error(codes.Internal, "Internal")
+	}
+	if memberId == uuid.Nil {
+		return nil, status.Error(codes.PermissionDenied, "Permission denied")
+	}
+
 	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadUncommitted})
 	if err != nil {
 		logger.Error("Failed to begin transaction", zap.Error(err))
@@ -37,7 +48,7 @@ func (s Service) CreateGroupBill(ctx context.Context, req *monify.CreateGroupBil
 	_, err = tx.ExecContext(ctx, `
 		INSERT INTO group_bill (bill_id, group_id, created_by, total_money, title, description)
 		VALUES ($1, $2, $3, $4, $5, $6)
-	`, billId, groupId, userId, req.TotalMoney, req.Title, req.Description)
+	`, billId, groupId, memberId, req.TotalMoney, req.Title, req.Description)
 	if err != nil {
 		logger.Error("Failed to insert group bill", zap.Error(err))
 		return nil, err

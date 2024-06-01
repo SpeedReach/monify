@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (s *Service) DeleteBill(ctx context.Context, req *monify.DeleteGroupBillRequest) (*monify.GroupGroupBillEmpty, error) {
+func (s Service) DeleteBill(ctx context.Context, req *monify.DeleteGroupBillRequest) (*monify.GroupGroupBillEmpty, error) {
 	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
 
 	userId := ctx.Value(middlewares.UserIdContextKey{})

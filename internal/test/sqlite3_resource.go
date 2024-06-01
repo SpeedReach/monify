@@ -55,6 +55,10 @@ func SetupTestResource(t *testing.T) infra.Resources {
 	if err = db.Ping(); err != nil {
 		log.Fatal(err)
 	}
+	if _, err = db.Exec("PRAGMA foreign_keys = ON;"); err != nil {
+		log.Fatal(err)
+	}
+
 	//db.SetMaxOpenConns(1)
 	return infra.Resources{
 		DBConn: db,
