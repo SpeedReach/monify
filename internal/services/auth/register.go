@@ -26,6 +26,9 @@ func emailExists(ctx context.Context, email string, db *sql.DB) (bool, error) {
 }
 
 func CreateUser(ctx context.Context, db *sql.DB, email string, password string) (uuid.UUID, error) {
+	if email == "" || password == "" {
+		return uuid.Nil, status.Error(codes.InvalidArgument, "Email and password is required.")
+	}
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return [16]byte{}, err

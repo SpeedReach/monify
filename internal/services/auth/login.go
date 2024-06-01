@@ -62,6 +62,10 @@ func GenerateAccessToken(ctx context.Context, userId uuid.UUID, secret string) (
 }
 
 func (s Service) EmailLogin(ctx context.Context, req *monify.EmailLoginRequest) (*monify.EmailLoginResponse, error) {
+	if req.Email == "" || req.Password == "" {
+		return nil, status.Error(codes.InvalidArgument, "Email and password is required.")
+	}
+
 	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
 	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
 

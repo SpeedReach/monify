@@ -13,10 +13,17 @@ import (
 )
 
 func (s Service) DeleteGroupBill(ctx context.Context, req *monify.DeleteGroupBillRequest) (*monify.GroupGroupBillEmpty, error) {
+	if req.BillId == "" {
+		return nil, status.Error(codes.InvalidArgument, "Bill id is required")
+	}
 	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
 	userId, ok := ctx.Value(middlewares.UserIdContextKey{}).(uuid.UUID)
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "Unauthorized.")
+	}
+	billId, err := uuid.Parse(req.BillId)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "Invalid bill id")
 	}
 	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
 
@@ -25,9 +32,9 @@ func (s Service) DeleteGroupBill(ctx context.Context, req *monify.DeleteGroupBil
 		SELECT COUNT(*) FROM group_bill 
 		LEFT JOIN group_member gm ON group_bill.group_id = gm.group_id
 		WHERE group_bill.bill_id = $1 AND gm.user_id = $2
-	`, req.BillId, userId)
+	`, billId, userId)
 	var count int
-	err := rows.Scan(&count)
+	err = rows.Scan(&count)
 	if err != nil {
 		logger.Error("Failed to check permission", zap.Error(err))
 	}
@@ -45,7 +52,7 @@ func (s Service) DeleteGroupBill(ctx context.Context, req *monify.DeleteGroupBil
 
 	//Start delete
 	_, err = tx.ExecContext(ctx,
-		`DELETE FROM group_bill WHERE bill_id = $1`, req.BillId,
+		`DELETE FROM group_bill WHERE bill_id = $1`, billId,
 	)
 	if err != nil {
 		logger.Error("Failed to delete group from group_bill", zap.Error(err))
@@ -53,7 +60,7 @@ func (s Service) DeleteGroupBill(ctx context.Context, req *monify.DeleteGroupBil
 	}
 
 	_, err = tx.ExecContext(ctx,
-		`DELETE FROM group_split_bill WHERE bill_id = $1`, req.BillId,
+		`DELETE FROM group_split_bill WHERE bill_id = $1`, billId,
 	)
 	if err != nil {
 		logger.Error("Failed to delete group from group_split_bill", zap.Error(err))
@@ -61,7 +68,7 @@ func (s Service) DeleteGroupBill(ctx context.Context, req *monify.DeleteGroupBil
 	}
 
 	_, err = tx.ExecContext(ctx,
-		`DELETE FROM group_prepaid_bill WHERE bill_id = $1`, req.BillId,
+		`DELETE FROM group_prepaid_bill WHERE bill_id = $1`, billId,
 	)
 	if err != nil {
 		logger.Error("Failed to delete group from group_prepaid_bill", zap.Error(err))

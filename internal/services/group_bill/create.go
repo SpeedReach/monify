@@ -14,6 +14,9 @@ import (
 
 // CreateGroupBill Handler
 func (s Service) CreateGroupBill(ctx context.Context, req *monify.CreateGroupBillRequest) (*monify.CreateGroupBillResponse, error) {
+	if req.Title == "" {
+		return nil, status.Error(codes.InvalidArgument, "Title is required")
+	}
 	//Parse ids
 	userId, ok := ctx.Value(middlewares.UserIdContextKey{}).(uuid.UUID)
 	if !ok {
