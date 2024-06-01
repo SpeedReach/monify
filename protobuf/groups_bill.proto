@@ -32,18 +32,6 @@ service GroupsBillService{
         };
     }
 
-    rpc GetSelfTotalSpend(GetSelfTotalSpendRequest) returns (GetSelfTotalSpendResponse){
-        option (google.api.http) = {
-            get: "/v1/groups_bill/self_total"
-        };
-    }
-
-    rpc GetGroupTotalSpend(GetGroupTotalSpendRequest) returns (GetGroupTotalSpendResponse){
-        option (google.api.http) = {
-            get: "/v1/groups_bill/total"
-        };
-    }
-
 }
 
 message CreateGroupBillRequest{

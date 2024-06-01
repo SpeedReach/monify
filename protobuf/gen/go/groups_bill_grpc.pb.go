@@ -19,12 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	GroupsBillService_CreateGroupBill_FullMethodName    = "/GroupsBillService/CreateGroupBill"
-	GroupsBillService_GetGroupBills_FullMethodName      = "/GroupsBillService/GetGroupBills"
-	GroupsBillService_DeleteGroupBill_FullMethodName    = "/GroupsBillService/DeleteGroupBill"
-	GroupsBillService_ModifyGroupBill_FullMethodName    = "/GroupsBillService/ModifyGroupBill"
-	GroupsBillService_GetSelfTotalSpend_FullMethodName  = "/GroupsBillService/GetSelfTotalSpend"
-	GroupsBillService_GetGroupTotalSpend_FullMethodName = "/GroupsBillService/GetGroupTotalSpend"
+	GroupsBillService_CreateGroupBill_FullMethodName = "/GroupsBillService/CreateGroupBill"
+	GroupsBillService_GetGroupBills_FullMethodName   = "/GroupsBillService/GetGroupBills"
+	GroupsBillService_DeleteGroupBill_FullMethodName = "/GroupsBillService/DeleteGroupBill"
+	GroupsBillService_ModifyGroupBill_FullMethodName = "/GroupsBillService/ModifyGroupBill"
 )
 
 // GroupsBillServiceClient is the client API for GroupsBillService service.
@@ -35,8 +33,6 @@ type GroupsBillServiceClient interface {
 	GetGroupBills(ctx context.Context, in *GetGroupBillsRequest, opts ...grpc.CallOption) (*GetGroupBillsResponse, error)
 	DeleteGroupBill(ctx context.Context, in *DeleteGroupBillRequest, opts ...grpc.CallOption) (*GroupGroupBillEmpty, error)
 	ModifyGroupBill(ctx context.Context, in *ModifyGroupBillRequest, opts ...grpc.CallOption) (*GroupGroupBillEmpty, error)
-	GetSelfTotalSpend(ctx context.Context, in *GetSelfTotalSpendRequest, opts ...grpc.CallOption) (*GetSelfTotalSpendResponse, error)
-	GetGroupTotalSpend(ctx context.Context, in *GetGroupTotalSpendRequest, opts ...grpc.CallOption) (*GetGroupTotalSpendResponse, error)
 }
 
 type groupsBillServiceClient struct {
@@ -83,24 +79,6 @@ func (c *groupsBillServiceClient) ModifyGroupBill(ctx context.Context, in *Modif
 	return out, nil
 }
 
-func (c *groupsBillServiceClient) GetSelfTotalSpend(ctx context.Context, in *GetSelfTotalSpendRequest, opts ...grpc.CallOption) (*GetSelfTotalSpendResponse, error) {
-	out := new(GetSelfTotalSpendResponse)
-	err := c.cc.Invoke(ctx, GroupsBillService_GetSelfTotalSpend_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *groupsBillServiceClient) GetGroupTotalSpend(ctx context.Context, in *GetGroupTotalSpendRequest, opts ...grpc.CallOption) (*GetGroupTotalSpendResponse, error) {
-	out := new(GetGroupTotalSpendResponse)
-	err := c.cc.Invoke(ctx, GroupsBillService_GetGroupTotalSpend_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // GroupsBillServiceServer is the server API for GroupsBillService service.
 // All implementations must embed UnimplementedGroupsBillServiceServer
 // for forward compatibility
@@ -109,8 +87,6 @@ type GroupsBillServiceServer interface {
 	GetGroupBills(context.Context, *GetGroupBillsRequest) (*GetGroupBillsResponse, error)
 	DeleteGroupBill(context.Context, *DeleteGroupBillRequest) (*GroupGroupBillEmpty, error)
 	ModifyGroupBill(context.Context, *ModifyGroupBillRequest) (*GroupGroupBillEmpty, error)
-	GetSelfTotalSpend(context.Context, *GetSelfTotalSpendRequest) (*GetSelfTotalSpendResponse, error)
-	GetGroupTotalSpend(context.Context, *GetGroupTotalSpendRequest) (*GetGroupTotalSpendResponse, error)
 	mustEmbedUnimplementedGroupsBillServiceServer()
 }
 
@@ -129,12 +105,6 @@ func (UnimplementedGroupsBillServiceServer) DeleteGroupBill(context.Context, *De
 }
 func (UnimplementedGroupsBillServiceServer) ModifyGroupBill(context.Context, *ModifyGroupBillRequest) (*GroupGroupBillEmpty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ModifyGroupBill not implemented")
-}
-func (UnimplementedGroupsBillServiceServer) GetSelfTotalSpend(context.Context, *GetSelfTotalSpendRequest) (*GetSelfTotalSpendResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetSelfTotalSpend not implemented")
-}
-func (UnimplementedGroupsBillServiceServer) GetGroupTotalSpend(context.Context, *GetGroupTotalSpendRequest) (*GetGroupTotalSpendResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetGroupTotalSpend not implemented")
 }
 func (UnimplementedGroupsBillServiceServer) mustEmbedUnimplementedGroupsBillServiceServer() {}
 
@@ -221,42 +191,6 @@ func _GroupsBillService_ModifyGroupBill_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
-func _GroupsBillService_GetSelfTotalSpend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetSelfTotalSpendRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GroupsBillServiceServer).GetSelfTotalSpend(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: GroupsBillService_GetSelfTotalSpend_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GroupsBillServiceServer).GetSelfTotalSpend(ctx, req.(*GetSelfTotalSpendRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _GroupsBillService_GetGroupTotalSpend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetGroupTotalSpendRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GroupsBillServiceServer).GetGroupTotalSpend(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: GroupsBillService_GetGroupTotalSpend_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GroupsBillServiceServer).GetGroupTotalSpend(ctx, req.(*GetGroupTotalSpendRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // GroupsBillService_ServiceDesc is the grpc.ServiceDesc for GroupsBillService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -279,14 +213,6 @@ var GroupsBillService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ModifyGroupBill",
 			Handler:    _GroupsBillService_ModifyGroupBill_Handler,
-		},
-		{
-			MethodName: "GetSelfTotalSpend",
-			Handler:    _GroupsBillService_GetSelfTotalSpend_Handler,
-		},
-		{
-			MethodName: "GetGroupTotalSpend",
-			Handler:    _GroupsBillService_GetGroupTotalSpend_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

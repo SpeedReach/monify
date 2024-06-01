@@ -301,54 +301,6 @@
           "GroupsBillService"
         ]
       }
-    },
-    "/v1/groups_bill/self_total": {
-      "get": {
-        "operationId": "GroupsBillService_GetSelfTotalSpend",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/GetSelfTotalSpendResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "groupId",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "GroupsBillService"
-        ]
-      }
-    },
-    "/v1/groups_bill/total": {
-      "get": {
-        "operationId": "GroupsBillService_GetGroupTotalSpend",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/GetGroupTotalSpendResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "groupId",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "GroupsBillService"
-        ]
-      }
     }
   },
   "definitions": {
@@ -518,24 +470,6 @@
             "type": "object",
             "$ref": "#/definitions/CreatedGroupBill"
           }
-        }
-      }
-    },
-    "GetGroupTotalSpendResponse": {
-      "type": "object",
-      "properties": {
-        "amount": {
-          "type": "number",
-          "format": "double"
-        }
-      }
-    },
-    "GetSelfTotalSpendResponse": {
-      "type": "object",
-      "properties": {
-        "amount": {
-          "type": "number",
-          "format": "double"
         }
       }
     },
