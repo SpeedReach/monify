@@ -221,10 +221,6 @@ func local_request_GroupsBillService_ModifyGroupBill_0(ctx context.Context, mars
 
 }
 
-var (
-	filter_GroupsBillService_GetHistory_0 = &utilities.DoubleArray{Encoding: map[string]int{"skip": 0, "limit": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
-)
-
 func request_GroupsBillService_GetHistory_0(ctx context.Context, marshaler runtime.Marshaler, client GroupsBillServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetHistoryRequest
 	var metadata runtime.ServerMetadata
@@ -235,6 +231,16 @@ func request_GroupsBillService_GetHistory_0(ctx context.Context, marshaler runti
 		err error
 		_   = err
 	)
+
+	val, ok = pathParams["group_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "group_id")
+	}
+
+	protoReq.GroupId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "group_id", err)
+	}
 
 	val, ok = pathParams["skip"]
 	if !ok {
@@ -254,13 +260,6 @@ func request_GroupsBillService_GetHistory_0(ctx context.Context, marshaler runti
 	protoReq.Limit, err = runtime.Int32(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "limit", err)
-	}
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_GroupsBillService_GetHistory_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.GetHistory(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -279,6 +278,16 @@ func local_request_GroupsBillService_GetHistory_0(ctx context.Context, marshaler
 		_   = err
 	)
 
+	val, ok = pathParams["group_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "group_id")
+	}
+
+	protoReq.GroupId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "group_id", err)
+	}
+
 	val, ok = pathParams["skip"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "skip")
@@ -297,13 +306,6 @@ func local_request_GroupsBillService_GetHistory_0(ctx context.Context, marshaler
 	protoReq.Limit, err = runtime.Int32(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "limit", err)
-	}
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_GroupsBillService_GetHistory_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := server.GetHistory(ctx, &protoReq)
@@ -425,7 +427,7 @@ func RegisterGroupsBillServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupsBillService/GetHistory", runtime.WithHTTPPathPattern("/v1/group_bill/history/{skip}/{limit}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.GroupsBillService/GetHistory", runtime.WithHTTPPathPattern("/v1/group_bill/history/{group_id}/{skip}/{limit}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -577,7 +579,7 @@ func RegisterGroupsBillServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupsBillService/GetHistory", runtime.WithHTTPPathPattern("/v1/group_bill/history/{skip}/{limit}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.GroupsBillService/GetHistory", runtime.WithHTTPPathPattern("/v1/group_bill/history/{group_id}/{skip}/{limit}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -605,7 +607,7 @@ var (
 
 	pattern_GroupsBillService_ModifyGroupBill_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "groups_bill", "bill_id"}, ""))
 
-	pattern_GroupsBillService_GetHistory_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "group_bill", "history", "skip", "limit"}, ""))
+	pattern_GroupsBillService_GetHistory_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "group_bill", "history", "group_id", "skip", "limit"}, ""))
 )
 
 var (

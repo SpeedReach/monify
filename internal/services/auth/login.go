@@ -3,7 +3,6 @@ package auth
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
@@ -16,6 +15,7 @@ import (
 )
 
 func matchEmailUser(ctx context.Context, email string, password string, db *sql.DB) (uuid.UUID, error) {
+	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
 	query, err := db.QueryContext(ctx, `
 	SELECT user_id, password 
 	FROM email_login 
@@ -33,12 +33,13 @@ func matchEmailUser(ctx context.Context, email string, password string, db *sql.
 	var hashedPassword string
 	err = query.Scan(&userId, &hashedPassword)
 	if err != nil {
-		return uuid.Nil, err
+		logger.Error("", zap.Error(err))
+		return uuid.Nil, status.Error(codes.Internal, "internal err.")
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 	if err != nil {
-		return uuid.Nil, errors.New("incorrect password")
+		return uuid.Nil, status.Error(codes.PermissionDenied, "Password incorrect.")
 	}
 
 	return userId, nil
@@ -66,7 +67,7 @@ func (s Service) EmailLogin(ctx context.Context, req *monify.EmailLoginRequest) 
 
 	userId, err := matchEmailUser(ctx, req.Email, req.Password, db)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "internal err.")
+		return nil, err
 	}
 
 	if userId == uuid.Nil {

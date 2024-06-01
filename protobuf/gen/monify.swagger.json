@@ -302,7 +302,7 @@
         ]
       }
     },
-    "/v1/group_bill/history/{skip}/{limit}": {
+    "/v1/group_bill/history/{groupId}/{skip}/{limit}": {
       "get": {
         "operationId": "GroupsBillService_GetHistory",
         "responses": {
@@ -314,6 +314,12 @@
           }
         },
         "parameters": [
+          {
+            "name": "groupId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
           {
             "name": "skip",
             "in": "path",
@@ -327,12 +333,6 @@
             "required": true,
             "type": "integer",
             "format": "int32"
-          },
-          {
-            "name": "groupId",
-            "in": "query",
-            "required": false,
-            "type": "string"
           }
         ],
         "tags": [
