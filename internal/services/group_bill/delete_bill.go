@@ -3,6 +3,7 @@ package group_bill
 import (
 	"context"
 	"database/sql"
+	"github.com/google/uuid"
 	"monify/internal/middlewares"
 	monify "monify/protobuf/gen/go"
 
@@ -11,16 +12,30 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (s Service) DeleteBill(ctx context.Context, req *monify.DeleteGroupBillRequest) (*monify.GroupGroupBillEmpty, error) {
+func (s Service) DeleteGroupBill(ctx context.Context, req *monify.DeleteGroupBillRequest) (*monify.GroupGroupBillEmpty, error) {
 	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
-
-	userId := ctx.Value(middlewares.UserIdContextKey{})
-	if userId == nil {
+	userId, ok := ctx.Value(middlewares.UserIdContextKey{}).(uuid.UUID)
+	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "Unauthorized.")
 	}
-
 	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
 
+	//Check permission
+	rows := db.QueryRowContext(ctx, `
+		SELECT COUNT(*) FROM group_bill 
+		LEFT JOIN group_member gm ON group_bill.group_id = gm.group_id
+		WHERE group_bill.bill_id = $1 AND gm.user_id = $2
+	`, req.BillId, userId)
+	var count int
+	err := rows.Scan(&count)
+	if err != nil {
+		logger.Error("Failed to check permission", zap.Error(err))
+	}
+	if count != 1 {
+		return nil, status.Error(codes.PermissionDenied, "No permission")
+	}
+
+	//START transaction
 	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadUncommitted})
 	if err != nil {
 		logger.Error("Failed to begin transaction", zap.Error(err))
@@ -28,9 +43,7 @@ func (s Service) DeleteBill(ctx context.Context, req *monify.DeleteGroupBillRequ
 	}
 	defer tx.Rollback()
 
-	crearte_group_bill_response := &monify.CreateGroupBillResponse{}
-	req.BillId = crearte_group_bill_response.GetBillId()
-
+	//Start delete
 	_, err = tx.ExecContext(ctx,
 		`DELETE FROM group_bill WHERE bill_id = $1`, req.BillId,
 	)
@@ -55,6 +68,7 @@ func (s Service) DeleteBill(ctx context.Context, req *monify.DeleteGroupBillRequ
 		return nil, err
 	}
 
+	//Commit
 	if err = tx.Commit(); err != nil {
 		logger.Error("Failed to commit transaction", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Internal")

@@ -9,8 +9,9 @@ import (
 
 func TestCreateAndGetGroupBill(t *testing.T) {
 	client := GetTestClient(t)
-	_ = client.CreateTestUser()
+	user1 := client.CreateTestUser()
 
+	//Create two users and join same group
 	group, err := client.CreateGroup(context.TODO(), &monify.CreateGroupRequest{Name: "test"})
 	assert.NoError(t, err)
 	inviteCode, err := client.GenerateInviteCode(context.Background(), &monify.GenerateInviteCodeRequest{GroupId: group.GroupId})
@@ -41,9 +42,9 @@ func TestCreateAndGetGroupBill(t *testing.T) {
 			},
 		},
 	})
-
 	assert.NoError(t, err)
 
+	//Check group bill exists
 	response2, err := client.GetGroupBills(context.TODO(), &monify.GetGroupBillsRequest{GroupId: group.GroupId})
 	assert.NoError(t, err)
 	assert.Len(t, response2.GroupBills[0].SplitPeople, 2)
@@ -51,4 +52,18 @@ func TestCreateAndGetGroupBill(t *testing.T) {
 	assert.Equal(t, response1.BillId, response2.GroupBills[0].BillId)
 	assert.Equal(t, group.MemberId, response2.GroupBills[0].PrepaidPeople[0].MemberId)
 	assert.Equal(t, 250.0, response2.GroupBills[0].PrepaidPeople[0].Amount)
+
+	//Test with no permission user
+	client.CreateTestUser()
+	_, err = client.GetGroupBills(context.TODO(), &monify.GetGroupBillsRequest{GroupId: group.GroupId})
+	assert.Error(t, err, "Should have no permission")
+	_, err = client.DeleteGroupBill(context.Background(), &monify.DeleteGroupBillRequest{BillId: response1.BillId})
+	assert.Error(t, err, "Should have no permission")
+
+	//Test delete with permission user
+	client.SetTestUser(user1)
+	_, err = client.DeleteGroupBill(context.Background(), &monify.DeleteGroupBillRequest{BillId: response1.BillId})
+	assert.NoError(t, err)
+	response2, err = client.GetGroupBills(context.TODO(), &monify.GetGroupBillsRequest{GroupId: group.GroupId})
+	assert.Empty(t, response2.GroupBills)
 }
