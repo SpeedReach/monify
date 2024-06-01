@@ -2,9 +2,10 @@ package test
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	monify "monify/protobuf/gen/go"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateAndGetGroupBill(t *testing.T) {
