@@ -54,12 +54,14 @@ func (s Service) CreateGroupBill(ctx context.Context, req *monify.CreateGroupBil
 	//Insert
 	billId := uuid.New()
 	if err = insertBill(ctx, tx, logger, insertBillInfo{
-		billId:      billId,
-		groupId:     groupId,
-		createdBy:   memberId,
-		totalMoney:  req.TotalMoney,
-		title:       req.Title,
-		description: req.Description,
+		billId:        billId,
+		groupId:       groupId,
+		createdBy:     memberId,
+		totalMoney:    req.TotalMoney,
+		title:         req.Title,
+		description:   req.Description,
+		splitPeople:   req.SplitPeople,
+		prepaidPeople: req.PrepaidPeople,
 	}); err != nil {
 		return nil, status.Error(codes.Internal, "Internal")
 	}

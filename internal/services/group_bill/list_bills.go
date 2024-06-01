@@ -67,6 +67,7 @@ func getGroupBills(ctx context.Context, db *sql.DB, logger *zap.Logger, groupId 
 		if err != nil {
 			return nil, err
 		}
+		println(len(splits))
 		prepaid, err := getGroupBillPrepaid(ctx, db, logger, billId)
 		if err != nil {
 			return nil, err
@@ -79,6 +80,7 @@ func getGroupBills(ctx context.Context, db *sql.DB, logger *zap.Logger, groupId 
 			SplitPeople:   splits,
 			PrepaidPeople: prepaid,
 		}
+
 		bills = append(bills, &bill)
 	}
 	return bills, nil
