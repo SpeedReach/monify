@@ -8,8 +8,8 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
     version: "1.0"
   }
-  schemes: HTTP
-  host: "api.monify.dev:8081"
+  schemes: HTTPS
+  host: "api.monify.dev"
   security_definitions: {
     security: {
       key: "Bearer";

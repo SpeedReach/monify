@@ -15,9 +15,9 @@
       "name": "GroupsBillService"
     }
   ],
-  "host": "api.monify.dev:8081",
+  "host": "api.monify.dev",
   "schemes": [
-    "http"
+    "https"
   ],
   "consumes": [
     "application/json"
