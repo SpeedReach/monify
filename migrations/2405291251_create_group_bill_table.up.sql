@@ -3,7 +3,7 @@
 CREATE TABLE group_bill (
     bill_id uuid PRIMARY KEY,
     group_id uuid REFERENCES "group" (group_id),
-    created_by uuid REFERENCES "group_member" (group_member_id),
+    created_by uuid REFERENCES group_member (group_member_id),
     total_money double precision NOT NULL ,
     title varchar(30) NOT NULL ,
     description varchar(200) default ''
