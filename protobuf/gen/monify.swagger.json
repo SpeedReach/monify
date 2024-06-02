@@ -379,6 +379,9 @@
       "properties": {
         "billId": {
           "type": "string"
+        },
+        "memberId": {
+          "type": "string"
         }
       }
     },
@@ -571,7 +574,7 @@
     "GroupsBillServiceModifyGroupBillBody": {
       "type": "object",
       "properties": {
-        "groupId": {
+        "memberId": {
           "type": "string"
         },
         "totalMoney": {

@@ -41,3 +41,35 @@ func insertBillHistory(ctx context.Context, db *sql.Tx, history billHistoryInser
 	`, uuid.New(), history.ty, history.billId, history.title, history.operator, groupId)
 	return err
 }
+
+func getBillGroupId(ctx context.Context, db *sql.DB, billId uuid.UUID) (uuid.UUID, error) {
+	row := db.QueryRowContext(ctx, `
+		SELECT group_id FROM group_bill WHERE bill_id = $1
+	`, billId)
+
+	var groupId uuid.UUID
+	if err := row.Scan(&groupId); err != nil {
+		if err == sql.ErrNoRows {
+			return uuid.Nil, nil
+		}
+		return uuid.Nil, err
+	}
+	return groupId, nil
+}
+
+// Returns group_id then created_by
+func getBillGroupIdAndCreator(ctx context.Context, db *sql.DB, billId uuid.UUID) (uuid.UUID, uuid.UUID, error) {
+	row := db.QueryRowContext(ctx, `
+		SELECT group_id, created_by FROM group_bill WHERE bill_id = $1
+	`, billId)
+
+	var groupId uuid.UUID
+	var createdBy uuid.UUID
+	if err := row.Scan(&groupId, &createdBy); err != nil {
+		if err == sql.ErrNoRows {
+			return uuid.Nil, uuid.Nil, nil
+		}
+		return uuid.Nil, uuid.Nil, err
+	}
+	return groupId, createdBy, nil
+}

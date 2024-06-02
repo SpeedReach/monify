@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"monify/internal/middlewares"
+	"monify/internal/services/group"
 	monify "monify/protobuf/gen/go"
 
 	"github.com/google/uuid"
@@ -19,20 +20,26 @@ func (s Service) DeleteGroupBill(ctx context.Context, req *monify.DeleteGroupBil
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "Unauthorized.")
 	}
+	billId, err := uuid.Parse(req.BillId)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "Invalid bill id")
+	}
 	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
 
 	//Check permission
-	rows := db.QueryRowContext(ctx, `
-		SELECT COUNT(*) FROM group_bill 
-		LEFT JOIN group_member gm ON group_bill.group_id = gm.group_id
-		WHERE group_bill.bill_id = $1 AND gm.user_id = $2
-	`, req.BillId, userId)
-	var count int
-	err := rows.Scan(&count)
-	if err != nil {
-		logger.Error("Failed to check permission", zap.Error(err))
+	groupId, err := getBillGroupId(ctx, db, billId)
+	if groupId == uuid.Nil {
+		if err != nil {
+			logger.Error("", zap.Error(err))
+			return nil, status.Error(codes.Internal, "Internal")
+		}
+		return nil, status.Error(codes.NotFound, "Not found")
 	}
-	if count != 1 {
+	memberId, err := group.GetMemberId(ctx, db, groupId, userId)
+	if memberId == uuid.Nil {
+		if err != nil {
+			logger.Error("", zap.Error(err))
+		}
 		return nil, status.Error(codes.PermissionDenied, "No permission")
 	}
 
@@ -45,29 +52,9 @@ func (s Service) DeleteGroupBill(ctx context.Context, req *monify.DeleteGroupBil
 	defer tx.Rollback()
 
 	//Start delete
-
-	_, err = tx.ExecContext(ctx,
-		`DELETE FROM group_split_bill WHERE bill_id = $1`, req.BillId,
-	)
-	if err != nil {
-		logger.Error("Failed to delete group from group_split_bill", zap.Error(err))
-		return nil, err
-	}
-
-	_, err = tx.ExecContext(ctx,
-		`DELETE FROM group_prepaid_bill WHERE bill_id = $1`, req.BillId,
-	)
-	if err != nil {
-		logger.Error("Failed to delete group from group_prepaid_bill", zap.Error(err))
-		return nil, err
-	}
-
-	_, err = tx.ExecContext(ctx,
-		`DELETE FROM group_bill WHERE bill_id = $1`, req.BillId,
-	)
-	if err != nil {
-		logger.Error("Failed to delete group from group_bill", zap.Error(err))
-		return nil, err
+	if err = deleteBill(ctx, tx, billId); err != nil {
+		logger.Error("", zap.Error(err))
+		return nil, status.Error(codes.Internal, "Internal")
 	}
 
 	//Commit
@@ -77,4 +64,29 @@ func (s Service) DeleteGroupBill(ctx context.Context, req *monify.DeleteGroupBil
 	}
 
 	return &monify.GroupGroupBillEmpty{}, err
+}
+
+func deleteBill(ctx context.Context, tx *sql.Tx, billId uuid.UUID) error {
+	_, err := tx.ExecContext(ctx,
+		`DELETE FROM group_split_bill WHERE bill_id = $1`, billId,
+	)
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.ExecContext(ctx,
+		`DELETE FROM group_prepaid_bill WHERE bill_id = $1`, billId,
+	)
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.ExecContext(ctx,
+		`DELETE FROM group_bill WHERE bill_id = $1`, billId,
+	)
+
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -63,6 +63,7 @@ message SplitPerson{
 
 message CreateGroupBillResponse{
     string bill_id = 1;
+    string member_id = 2;
 }
 
 message DeleteGroupBillRequest{
@@ -70,7 +71,7 @@ message DeleteGroupBillRequest{
 }
 
 message ModifyGroupBillRequest{
-    string group_id = 1;
+    reserved 1, 8;
     string bill_id = 7;
     double total_money = 2;
     string title = 3;
