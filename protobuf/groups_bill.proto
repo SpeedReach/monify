@@ -45,8 +45,18 @@ message CreateGroupBillRequest{
     double total_money = 2;
     string title = 3;
     string description = 4;
-    repeated PrepaidPerson prepaid_people = 5;
-    repeated SplitPerson split_people = 6;
+    repeated InsertPrepaidPerson prepaid_people = 5;
+    repeated InsertSplitPerson split_people = 6;
+}
+
+message InsertPrepaidPerson{
+    string member_id = 1;
+    double amount = 2;
+}
+
+message InsertSplitPerson{
+    string member_id = 1;
+    double amount = 2;
 }
 
 message PrepaidPerson{
@@ -76,8 +86,8 @@ message ModifyGroupBillRequest{
     double total_money = 2;
     string title = 3;
     string description = 4;
-    repeated PrepaidPerson prepaid_people = 5;
-    repeated SplitPerson split_people = 6;
+    repeated InsertPrepaidPerson prepaid_people = 5;
+    repeated InsertSplitPerson split_people = 6;
 }
 
 message GetSelfTotalSpendRequest{
@@ -128,7 +138,7 @@ message GetHistoryResponse{
 message GroupBillHistory{
     GroupBillHistoryType type = 1;
     //The member_name who did the operation
-    string operator = 2;
+    string operator_name = 2;
     string title = 3;
     google.protobuf.Timestamp timestamp = 4;
 }
