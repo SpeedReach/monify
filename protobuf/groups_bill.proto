@@ -71,9 +71,8 @@ message DeleteGroupBillRequest{
 }
 
 message ModifyGroupBillRequest{
-    string group_id = 1;
+    reserved 1, 8;
     string bill_id = 7;
-    string member_id = 8;
     double total_money = 2;
     string title = 3;
     string description = 4;

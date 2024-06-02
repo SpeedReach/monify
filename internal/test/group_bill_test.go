@@ -57,7 +57,6 @@ func TestCreateAndGetGroupBill(t *testing.T) {
 	//Test modify with permission user
 	client.SetTestUser(user1)
 	_, err = client.ModifyGroupBill(context.Background(), &monify.ModifyGroupBillRequest{
-		GroupId:     group.GroupId,
 		BillId:      response1.BillId,
 		MemberId:    response1.MemberId,
 		TotalMoney:  500,
@@ -87,8 +86,8 @@ func TestCreateAndGetGroupBill(t *testing.T) {
 	assert.Len(t, response4.GroupBills[0].SplitPeople, 1)
 	assert.Len(t, response4.GroupBills[0].PrepaidPeople, 2)
 	//assert.Equal(t, response3.BillId, response4.GroupBills[0].BillId)
-	assert.Equal(t, group.MemberId, response4.GroupBills[0].PrepaidPeople[0].MemberId)
-	assert.Equal(t, 500.0, response4.GroupBills[0].PrepaidPeople[0].Amount)
+	assert.Equal(t, memberId2.MemberId, response4.GroupBills[0].SplitPeople[0].MemberId)
+	assert.Equal(t, 500.0, response4.GroupBills[0].SplitPeople[0].Amount)
 
 	//Test delete with no permission user
 	client.CreateTestUser()
