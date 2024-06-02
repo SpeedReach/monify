@@ -12,7 +12,7 @@ func TestBillValidate(t *testing.T) {
 		TotalMoney:  100,
 		Title:       "test",
 		Description: "test",
-		SplitPeople: []*monify.SplitPerson{
+		SplitPeople: []*monify.InsertSplitPerson{
 			{
 				MemberId: "123",
 				Amount:   100,
@@ -27,7 +27,7 @@ func TestBillValidate(t *testing.T) {
 		TotalMoney:  100,
 		Title:       "test",
 		Description: "test",
-		SplitPeople: []*monify.SplitPerson{
+		SplitPeople: []*monify.InsertSplitPerson{
 			{
 				MemberId: "123",
 				Amount:   50,
@@ -37,7 +37,7 @@ func TestBillValidate(t *testing.T) {
 				Amount:   50,
 			},
 		},
-		PrepaidPeople: []*monify.PrepaidPerson{
+		PrepaidPeople: []*monify.InsertPrepaidPerson{
 			{
 				MemberId: "123",
 				Amount:   100,
@@ -52,7 +52,7 @@ func TestBillValidate(t *testing.T) {
 		TotalMoney:  250,
 		Title:       "test",
 		Description: "test",
-		SplitPeople: []*monify.SplitPerson{
+		SplitPeople: []*monify.InsertSplitPerson{
 			{
 				MemberId: "",
 				Amount:   100,
@@ -62,7 +62,7 @@ func TestBillValidate(t *testing.T) {
 				Amount:   150,
 			},
 		},
-		PrepaidPeople: []*monify.PrepaidPerson{
+		PrepaidPeople: []*monify.InsertPrepaidPerson{
 			{
 				MemberId: "",
 				Amount:   250,

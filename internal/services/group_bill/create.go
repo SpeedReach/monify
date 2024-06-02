@@ -93,8 +93,8 @@ type insertBillInfo struct {
 	totalMoney    float64
 	title         string
 	description   string
-	splitPeople   []*monify.SplitPerson
-	prepaidPeople []*monify.PrepaidPerson
+	splitPeople   []*monify.InsertSplitPerson
+	prepaidPeople []*monify.InsertPrepaidPerson
 }
 
 func insertBill(ctx context.Context, tx *sql.Tx, logger *zap.Logger, info insertBillInfo) error {
