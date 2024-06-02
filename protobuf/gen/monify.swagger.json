@@ -9,10 +9,10 @@
       "name": "AuthService"
     },
     {
-      "name": "GroupService"
+      "name": "GroupsBillService"
     },
     {
-      "name": "GroupsBillService"
+      "name": "GroupService"
     }
   ],
   "host": "api.monify.dev",
@@ -101,100 +101,6 @@
         ],
         "tags": [
           "AuthService"
-        ]
-      }
-    },
-    "/v1/group": {
-      "post": {
-        "operationId": "GroupService_CreateGroup",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/CreateGroupResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/CreateGroupRequest"
-            }
-          }
-        ],
-        "tags": [
-          "GroupService"
-        ]
-      }
-    },
-    "/v1/group/joined": {
-      "get": {
-        "operationId": "GroupService_ListJoinedGroups",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/ListJoinedGroupsResponse"
-            }
-          }
-        },
-        "tags": [
-          "GroupService"
-        ]
-      }
-    },
-    "/v1/group/invite-code": {
-      "post": {
-        "operationId": "GroupService_GenerateInviteCode",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/GenerateInviteCodeResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/GenerateInviteCodeRequest"
-            }
-          }
-        ],
-        "tags": [
-          "GroupService"
-        ]
-      }
-    },
-    "/v1/group/join": {
-      "post": {
-        "operationId": "GroupService_JoinGroup",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/JoinGroupResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/JoinGroupRequest"
-            }
-          }
-        ],
-        "tags": [
-          "GroupService"
         ]
       }
     },
@@ -339,6 +245,100 @@
           "GroupsBillService"
         ]
       }
+    },
+    "/v1/group": {
+      "post": {
+        "operationId": "GroupService_CreateGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CreateGroupResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateGroupRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GroupService"
+        ]
+      }
+    },
+    "/v1/group/joined": {
+      "get": {
+        "operationId": "GroupService_ListJoinedGroups",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ListJoinedGroupsResponse"
+            }
+          }
+        },
+        "tags": [
+          "GroupService"
+        ]
+      }
+    },
+    "/v1/group/invite-code": {
+      "post": {
+        "operationId": "GroupService_GenerateInviteCode",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GenerateInviteCodeResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GenerateInviteCodeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GroupService"
+        ]
+      }
+    },
+    "/v1/group/join": {
+      "post": {
+        "operationId": "GroupService_JoinGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/JoinGroupResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/JoinGroupRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GroupService"
+        ]
+      }
     }
   },
   "definitions": {
@@ -378,6 +378,9 @@
       "type": "object",
       "properties": {
         "billId": {
+          "type": "string"
+        },
+        "memberId": {
           "type": "string"
         }
       }
@@ -572,6 +575,9 @@
       "type": "object",
       "properties": {
         "groupId": {
+          "type": "string"
+        },
+        "memberId": {
           "type": "string"
         },
         "totalMoney": {

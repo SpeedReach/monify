@@ -54,7 +54,43 @@ func TestCreateAndGetGroupBill(t *testing.T) {
 	assert.Equal(t, group.MemberId, response2.GroupBills[0].PrepaidPeople[0].MemberId)
 	assert.Equal(t, 250.0, response2.GroupBills[0].PrepaidPeople[0].Amount)
 
-	//Test with no permission user
+	//Test modify with permission user
+	client.SetTestUser(user1)
+	_, err = client.ModifyGroupBill(context.Background(), &monify.ModifyGroupBillRequest{
+		GroupId:     group.GroupId,
+		BillId:      response1.BillId,
+		MemberId:    response1.MemberId,
+		TotalMoney:  500,
+		Title:       "test_modify",
+		Description: "test_modify",
+		SplitPeople: []*monify.SplitPerson{
+			{
+				MemberId: memberId2.MemberId,
+				Amount:   500,
+			},
+		},
+		PrepaidPeople: []*monify.PrepaidPerson{
+			{
+				MemberId: memberId2.MemberId,
+				Amount:   200,
+			},
+			{
+				MemberId: group.MemberId,
+				Amount:   300,
+			},
+		},
+	})
+	assert.NoError(t, err)
+	//Check group bill correctness
+	response4, err := client.GetGroupBills(context.TODO(), &monify.GetGroupBillsRequest{GroupId: group.GroupId})
+	assert.NoError(t, err)
+	assert.Len(t, response4.GroupBills[0].SplitPeople, 1)
+	assert.Len(t, response4.GroupBills[0].PrepaidPeople, 2)
+	//assert.Equal(t, response3.BillId, response4.GroupBills[0].BillId)
+	assert.Equal(t, group.MemberId, response4.GroupBills[0].PrepaidPeople[0].MemberId)
+	assert.Equal(t, 500.0, response4.GroupBills[0].PrepaidPeople[0].Amount)
+
+	//Test delete with no permission user
 	client.CreateTestUser()
 	_, err = client.GetGroupBills(context.TODO(), &monify.GetGroupBillsRequest{GroupId: group.GroupId})
 	assert.Error(t, err, "Should have no permission")
@@ -67,4 +103,5 @@ func TestCreateAndGetGroupBill(t *testing.T) {
 	assert.NoError(t, err)
 	response2, err = client.GetGroupBills(context.TODO(), &monify.GetGroupBillsRequest{GroupId: group.GroupId})
 	assert.Empty(t, response2.GroupBills)
+
 }
