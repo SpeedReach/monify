@@ -2,7 +2,7 @@ syntax = "proto3";
 option go_package = "github.com/SpeedReach/monify";
 
 import "google/api/annotations.proto";
-
+import "protoc-gen-openapiv2/options/annotations.proto";
 
 
 message Empty {}
@@ -13,6 +13,13 @@ service GroupService{
     option (google.api.http) = {
       post: "/v1/group"
       body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={
+      security: {
+        security_requirement: {
+          key: "Bearer"
+        }
+      }
     };
   }
 
@@ -36,7 +43,11 @@ service GroupService{
     };
   }
 
-
+  rpc GetGroupMembers(GetGroupMembersRequest) returns (GetGroupMembersResponse) {
+    option (google.api.http) = {
+      get: "/v1/group/members/{group_id}"
+    };
+  }
 
 }
 
@@ -83,3 +94,17 @@ message Group{
   string description = 3;
 }
 
+message GetGroupMembersRequest{
+  string group_id = 1;
+}
+
+message GetGroupMembersResponse{
+  repeated GroupMember members = 1;
+}
+
+message GroupMember{
+  string member_id = 1;
+  string user_id = 2;
+  string user_name = 3;
+  string avatar_url = 4;
+}

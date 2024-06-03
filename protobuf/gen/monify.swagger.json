@@ -362,14 +362,14 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/InsertPrepaidPerson"
+            "$ref": "#/definitions/PrepaidPerson"
           }
         },
         "splitPeople": {
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/InsertSplitPerson"
+            "$ref": "#/definitions/SplitPerson"
           }
         }
       }
@@ -546,7 +546,7 @@
         "type": {
           "$ref": "#/definitions/GroupBillHistoryType"
         },
-        "operatorName": {
+        "operator": {
           "type": "string",
           "title": "The member_name who did the operation"
         },
@@ -574,6 +574,9 @@
     "GroupsBillServiceModifyGroupBillBody": {
       "type": "object",
       "properties": {
+        "memberId": {
+          "type": "string"
+        },
         "totalMoney": {
           "type": "number",
           "format": "double"
@@ -588,39 +591,15 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/InsertPrepaidPerson"
+            "$ref": "#/definitions/PrepaidPerson"
           }
         },
         "splitPeople": {
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/InsertSplitPerson"
+            "$ref": "#/definitions/SplitPerson"
           }
-        }
-      }
-    },
-    "InsertPrepaidPerson": {
-      "type": "object",
-      "properties": {
-        "memberId": {
-          "type": "string"
-        },
-        "amount": {
-          "type": "number",
-          "format": "double"
-        }
-      }
-    },
-    "InsertSplitPerson": {
-      "type": "object",
-      "properties": {
-        "memberId": {
-          "type": "string"
-        },
-        "amount": {
-          "type": "number",
-          "format": "double"
         }
       }
     },
