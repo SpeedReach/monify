@@ -127,6 +127,11 @@
         ],
         "tags": [
           "GroupService"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ]
       }
     },
@@ -191,6 +196,30 @@
             "schema": {
               "$ref": "#/definitions/JoinGroupRequest"
             }
+          }
+        ],
+        "tags": [
+          "GroupService"
+        ]
+      }
+    },
+    "/v1/group/members/{groupId}": {
+      "get": {
+        "operationId": "GroupService_GetGroupMembers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetGroupMembersResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "groupId",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
         "tags": [
@@ -362,14 +391,14 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/PrepaidPerson"
+            "$ref": "#/definitions/InsertPrepaidPerson"
           }
         },
         "splitPeople": {
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/SplitPerson"
+            "$ref": "#/definitions/InsertSplitPerson"
           }
         }
       }
@@ -514,6 +543,18 @@
         }
       }
     },
+    "GetGroupMembersResponse": {
+      "type": "object",
+      "properties": {
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/GroupMember"
+          }
+        }
+      }
+    },
     "GetHistoryResponse": {
       "type": "object",
       "properties": {
@@ -546,7 +587,7 @@
         "type": {
           "$ref": "#/definitions/GroupBillHistoryType"
         },
-        "operator": {
+        "operatorName": {
           "type": "string",
           "title": "The member_name who did the operation"
         },
@@ -571,12 +612,26 @@
     "GroupGroupBillEmpty": {
       "type": "object"
     },
-    "GroupsBillServiceModifyGroupBillBody": {
+    "GroupMember": {
       "type": "object",
       "properties": {
         "memberId": {
           "type": "string"
         },
+        "userId": {
+          "type": "string"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "GroupsBillServiceModifyGroupBillBody": {
+      "type": "object",
+      "properties": {
         "totalMoney": {
           "type": "number",
           "format": "double"
@@ -591,15 +646,39 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/PrepaidPerson"
+            "$ref": "#/definitions/InsertPrepaidPerson"
           }
         },
         "splitPeople": {
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/SplitPerson"
+            "$ref": "#/definitions/InsertSplitPerson"
           }
+        }
+      }
+    },
+    "InsertPrepaidPerson": {
+      "type": "object",
+      "properties": {
+        "memberId": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "InsertSplitPerson": {
+      "type": "object",
+      "properties": {
+        "memberId": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "number",
+          "format": "double"
         }
       }
     },

@@ -26,6 +26,7 @@ service GroupService{
   rpc ListJoinedGroups(Empty) returns (ListJoinedGroupsResponse) {
     option (google.api.http) = {
       get: "/v1/group/joined"
+
     };
   }
 
