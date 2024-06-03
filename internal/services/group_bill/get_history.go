@@ -48,7 +48,7 @@ func (s Service) GetHistory(ctx context.Context, req *monify.GetHistoryRequest) 
 	var histories []*monify.GroupBillHistory
 	for rows.Next() {
 		var history monify.GroupBillHistory
-		if err := rows.Scan(&history.Type, &history.Title, &history.Timestamp, &history.Operator); err != nil {
+		if err := rows.Scan(&history.Type, &history.Title, &history.Timestamp, &history.OperatorName); err != nil {
 			logger.Error("Failed to scan group bill history", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Internal")
 		}

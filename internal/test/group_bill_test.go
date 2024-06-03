@@ -26,7 +26,7 @@ func TestCreateAndGetGroupBill(t *testing.T) {
 		TotalMoney:  250,
 		Title:       "test",
 		Description: "test",
-		SplitPeople: []*monify.SplitPerson{
+		SplitPeople: []*monify.InsertSplitPerson{
 			{
 				MemberId: memberId2.MemberId,
 				Amount:   100,
@@ -36,7 +36,7 @@ func TestCreateAndGetGroupBill(t *testing.T) {
 				Amount:   150,
 			},
 		},
-		PrepaidPeople: []*monify.PrepaidPerson{
+		PrepaidPeople: []*monify.InsertPrepaidPerson{
 			{
 				MemberId: group.MemberId,
 				Amount:   250,
@@ -58,17 +58,16 @@ func TestCreateAndGetGroupBill(t *testing.T) {
 	client.SetTestUser(user1)
 	_, err = client.ModifyGroupBill(context.Background(), &monify.ModifyGroupBillRequest{
 		BillId:      response1.BillId,
-		MemberId:    response1.MemberId,
 		TotalMoney:  500,
 		Title:       "test_modify",
 		Description: "test_modify",
-		SplitPeople: []*monify.SplitPerson{
+		SplitPeople: []*monify.InsertSplitPerson{
 			{
 				MemberId: memberId2.MemberId,
 				Amount:   500,
 			},
 		},
-		PrepaidPeople: []*monify.PrepaidPerson{
+		PrepaidPeople: []*monify.InsertPrepaidPerson{
 			{
 				MemberId: memberId2.MemberId,
 				Amount:   200,
