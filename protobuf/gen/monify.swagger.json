@@ -408,9 +408,6 @@
       "properties": {
         "billId": {
           "type": "string"
-        },
-        "memberId": {
-          "type": "string"
         }
       }
     },
