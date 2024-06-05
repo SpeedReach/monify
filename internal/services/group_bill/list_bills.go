@@ -22,10 +22,10 @@ func (s Service) GetGroupBills(ctx context.Context, req *monify.GetGroupBillsReq
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "Invalid group id")
 	}
-	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
+	db := ctx.Value(middlewares.DatabaseContextKey{}).(*sql.DB)
 	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
 
-	permission, err := group.CheckPermission(ctx, db, groupId, userId)
+	permission, err := group.CheckPermission(ctx, groupId, userId)
 	if err != nil {
 		logger.Error("Failed to check permission", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Internal")

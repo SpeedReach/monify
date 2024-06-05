@@ -18,15 +18,15 @@ func (s Service) JoinGroup(ctx context.Context, req *monify.JoinGroupRequest) (*
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "Unauthorized.")
 	}
-	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
+
 	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
 	var groupId uuid.UUID
 	var err error
-	if groupId, err = findActiveInviteCode(ctx, db, logger, req.InviteCode); err != nil {
+	if groupId, err = findActiveInviteCode(ctx, logger, req.InviteCode); err != nil {
 		return nil, err
 	}
 	var memberId uuid.UUID
-	if memberId, err = createGroupMember(ctx, db, logger, groupId, userId); err != nil {
+	if memberId, err = createGroupMember(ctx, logger, groupId, userId); err != nil {
 		return nil, err
 	}
 	return &monify.JoinGroupResponse{
@@ -35,7 +35,10 @@ func (s Service) JoinGroup(ctx context.Context, req *monify.JoinGroupRequest) (*
 	}, nil
 }
 
-func findActiveInviteCode(ctx context.Context, db *sql.DB, logger *zap.Logger, inviteCode string) (uuid.UUID, error) {
+// findActiveInviteCode
+// context requires middlewares.DatabaseContextKey:*sql.DB
+func findActiveInviteCode(ctx context.Context, logger *zap.Logger, inviteCode string) (uuid.UUID, error) {
+	db := ctx.Value(middlewares.DatabaseContextKey{}).(*sql.DB)
 	rows, err := db.QueryContext(ctx, `
 		SELECT group_id, created_at FROM group_invite_code WHERE invite_code = $1
 	`, inviteCode)
@@ -61,7 +64,9 @@ func findActiveInviteCode(ctx context.Context, db *sql.DB, logger *zap.Logger, i
 	return groupId, nil
 }
 
-func createGroupMember(ctx context.Context, db *sql.DB, logger *zap.Logger, groupId uuid.UUID, userId uuid.UUID) (uuid.UUID, error) {
+// context requires middlewares.DatabaseContextKey:*sql.DB
+func createGroupMember(ctx context.Context, logger *zap.Logger, groupId uuid.UUID, userId uuid.UUID) (uuid.UUID, error) {
+	db := ctx.Value(middlewares.DatabaseContextKey{}).(*sql.DB)
 	memberId := uuid.New()
 	_, err := db.Exec(`
 		INSERT INTO group_member (group_member_id, group_id, user_id) VALUES ($1,$2,$3)

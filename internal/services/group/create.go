@@ -12,9 +12,9 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func createGroup(ctx context.Context, db *sql.Tx, name string) (uuid.UUID, error) {
+func createGroup(ctx context.Context, tx *sql.Tx, name string) (uuid.UUID, error) {
 	groupId := uuid.New()
-	_, err := db.Exec(`
+	_, err := tx.ExecContext(ctx, `
 		INSERT INTO "group" (group_id, name) VALUES ($1, $2)
 	`, groupId, name)
 	return groupId, err
@@ -27,7 +27,7 @@ func (s Service) CreateGroup(ctx context.Context, req *monify.CreateGroupRequest
 		return nil, status.Error(codes.Unauthenticated, "Unauthorized.")
 	}
 
-	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
+	db := ctx.Value(middlewares.DatabaseContextKey{}).(*sql.DB)
 	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadUncommitted})
 	if err != nil {
 		logger.Error("", zap.Error(err))
@@ -58,9 +58,9 @@ func (s Service) CreateGroup(ctx context.Context, req *monify.CreateGroupRequest
 	}, nil
 }
 
-func createGroupLeader(ctx context.Context, db *sql.Tx, groupId uuid.UUID, userId uuid.UUID) (uuid.UUID, error) {
+func createGroupLeader(ctx context.Context, tx *sql.Tx, groupId uuid.UUID, userId uuid.UUID) (uuid.UUID, error) {
 	groupMemberId := uuid.New()
-	_, err := db.Exec(`
+	_, err := tx.ExecContext(ctx, `
 		INSERT INTO group_member (group_member_id,group_id, user_id) VALUES ($1,$2,$3)
 	`, groupMemberId, groupId, userId)
 	if err != nil {

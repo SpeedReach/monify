@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"monify/internal/infra"
 	"monify/internal/middlewares"
@@ -53,10 +54,10 @@ func setupInterceptor(resources infra.Resources, config ServerConfig) grpc.Serve
 		if userId != uuid.Nil {
 			ctx = context.WithValue(ctx, middlewares.UserIdContextKey{}, userId)
 		}
-		ctx = context.WithValue(ctx, middlewares.StorageContextKey{}, resources.DBConn)
-		ctx = context.WithValue(ctx, middlewares.LoggerContextKey{}, resources.Logger)
+		requestId := uuid.New()
+		ctx = context.WithValue(ctx, middlewares.DatabaseContextKey{}, resources.DBConn)
+		ctx = context.WithValue(ctx, middlewares.LoggerContextKey{}, resources.Logger.With(zap.String("request_id", requestId.String())))
 		m, err := handler(ctx, req)
-
 		return m, err
 	}
 	return grpc.UnaryInterceptor(interceptor)

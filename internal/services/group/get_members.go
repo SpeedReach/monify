@@ -20,9 +20,9 @@ func (s Service) GetGroupMembers(ctx context.Context, req *monify.GetGroupMember
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid group id")
 	}
-	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
+	db := ctx.Value(middlewares.DatabaseContextKey{}).(*sql.DB)
 	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
-	permission, err := CheckPermission(ctx, db, groupId, userId)
+	permission, err := CheckPermission(ctx, groupId, userId)
 	if err != nil {
 		logger.Error("failed to check permission", zap.Error(err))
 		return nil, status.Error(codes.Internal, "failed to check permission")

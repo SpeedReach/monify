@@ -23,10 +23,10 @@ func (s Service) ModifyGroupBill(ctx context.Context, req *monify.ModifyGroupBil
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "Invalid bill id")
 	}
-	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
+	db := ctx.Value(middlewares.DatabaseContextKey{}).(*sql.DB)
 
 	//Check permission
-	groupId, createdBy, err := getBillGroupIdAndCreator(ctx, db, billId)
+	groupId, createdBy, err := getBillGroupIdAndCreator(ctx, billId)
 	if groupId == uuid.Nil {
 		if err != nil {
 			logger.Error("", zap.Error(err))
@@ -34,7 +34,7 @@ func (s Service) ModifyGroupBill(ctx context.Context, req *monify.ModifyGroupBil
 		}
 		return nil, status.Error(codes.NotFound, "Not found")
 	}
-	memberId, err := group.GetMemberId(ctx, db, groupId, userId)
+	memberId, err := group.GetMemberId(ctx, groupId, userId)
 	if memberId == uuid.Nil {
 		if err != nil {
 			logger.Error("", zap.Error(err))
@@ -52,7 +52,8 @@ func (s Service) ModifyGroupBill(ctx context.Context, req *monify.ModifyGroupBil
 
 	//Start modify (Delete -> Insert)
 	//Delete
-	if err = deleteBill(ctx, tx, billId); err != nil {
+	var title string
+	if title, err = deleteBill(ctx, tx, billId); err != nil {
 		return nil, status.Error(codes.Internal, "Internal")
 	}
 
@@ -66,6 +67,15 @@ func (s Service) ModifyGroupBill(ctx context.Context, req *monify.ModifyGroupBil
 		description:   req.Description,
 		splitPeople:   req.SplitPeople,
 		prepaidPeople: req.PrepaidPeople,
+	}); err != nil {
+		return nil, status.Error(codes.Internal, "Internal")
+	}
+
+	if err = insertBillHistory(ctx, tx, billHistoryInsertion{
+		billId:   billId,
+		ty:       Modify,
+		operator: memberId,
+		title:    title,
 	}); err != nil {
 		return nil, status.Error(codes.Internal, "Internal")
 	}

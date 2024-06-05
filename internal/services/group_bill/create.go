@@ -32,10 +32,10 @@ func (s Service) CreateGroupBill(ctx context.Context, req *monify.CreateGroupBil
 		return nil, err
 	}
 	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
-	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
+	db := ctx.Value(middlewares.DatabaseContextKey{}).(*sql.DB)
 
 	//Check permission & get group_member_id of bill creator
-	memberId, err := group.GetMemberId(ctx, db, groupId, userId)
+	memberId, err := group.GetMemberId(ctx, groupId, userId)
 	if err != nil {
 		logger.Error("Failed to get member id", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Internal")

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/google/uuid"
+	"monify/internal/middlewares"
 	monify "monify/protobuf/gen/go"
 )
 
@@ -11,7 +12,8 @@ type Service struct {
 	monify.UnimplementedGroupServiceServer
 }
 
-func CheckPermission(ctx context.Context, db *sql.DB, groupId uuid.UUID, userId uuid.UUID) (bool, error) {
+func CheckPermission(ctx context.Context, groupId uuid.UUID, userId uuid.UUID) (bool, error) {
+	db := ctx.Value(middlewares.DatabaseContextKey{}).(*sql.DB)
 	var count int
 	err := db.QueryRow(`
 		SELECT COUNT(*) FROM group_member WHERE group_id = $1 AND user_id = $2
@@ -22,7 +24,8 @@ func CheckPermission(ctx context.Context, db *sql.DB, groupId uuid.UUID, userId 
 	return count > 0, nil
 }
 
-func GetMemberId(ctx context.Context, db *sql.DB, groupId uuid.UUID, userId uuid.UUID) (uuid.UUID, error) {
+func GetMemberId(ctx context.Context, groupId uuid.UUID, userId uuid.UUID) (uuid.UUID, error) {
+	db := ctx.Value(middlewares.DatabaseContextKey{}).(*sql.DB)
 	var memberId uuid.UUID
 	rows, err := db.QueryContext(ctx, `
 		SELECT group_member_id FROM group_member WHERE group_id = $1 AND user_id = $2

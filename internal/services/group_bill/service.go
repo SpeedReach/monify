@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/google/uuid"
+	"monify/internal/middlewares"
 	monify "monify/protobuf/gen/go"
 )
 
@@ -42,7 +43,9 @@ func insertBillHistory(ctx context.Context, db *sql.Tx, history billHistoryInser
 	return err
 }
 
-func getBillGroupId(ctx context.Context, db *sql.DB, billId uuid.UUID) (uuid.UUID, error) {
+// context requires middlewares.DatabaseContextKey:*sql.DB
+func getBillGroupId(ctx context.Context, billId uuid.UUID) (uuid.UUID, error) {
+	db := ctx.Value(middlewares.DatabaseContextKey{}).(*sql.DB)
 	row := db.QueryRowContext(ctx, `
 		SELECT group_id FROM group_bill WHERE bill_id = $1
 	`, billId)
@@ -58,7 +61,9 @@ func getBillGroupId(ctx context.Context, db *sql.DB, billId uuid.UUID) (uuid.UUI
 }
 
 // Returns group_id then created_by
-func getBillGroupIdAndCreator(ctx context.Context, db *sql.DB, billId uuid.UUID) (uuid.UUID, uuid.UUID, error) {
+// context requires middlewares.DatabaseContextKey:*sql.DB
+func getBillGroupIdAndCreator(ctx context.Context, billId uuid.UUID) (uuid.UUID, uuid.UUID, error) {
+	db := ctx.Value(middlewares.DatabaseContextKey{}).(*sql.DB)
 	row := db.QueryRowContext(ctx, `
 		SELECT group_id, created_by FROM group_bill WHERE bill_id = $1
 	`, billId)

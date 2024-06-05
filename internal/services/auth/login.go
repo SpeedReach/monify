@@ -14,8 +14,9 @@ import (
 	"time"
 )
 
-func matchEmailUser(ctx context.Context, email string, password string, db *sql.DB) (uuid.UUID, error) {
+func matchEmailUser(ctx context.Context, email string, password string) (uuid.UUID, error) {
 	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
+	db := ctx.Value(middlewares.DatabaseContextKey{}).(*sql.DB)
 	query, err := db.QueryContext(ctx, `
 	SELECT user_id, password 
 	FROM email_login 
@@ -45,7 +46,8 @@ func matchEmailUser(ctx context.Context, email string, password string, db *sql.
 	return userId, nil
 }
 
-func generateAndInsertRefreshToken(ctx context.Context, userId uuid.UUID, db *sql.DB) (string, error) {
+func generateAndInsertRefreshToken(ctx context.Context, userId uuid.UUID) (string, error) {
+	db := ctx.Value(middlewares.DatabaseContextKey{}).(*sql.DB)
 	var refreshToken string = uuid.New().String()
 	_, err := db.ExecContext(ctx, `
 	UPDATE user_identity SET refresh_token=$1 WHERE user_id = $2
@@ -65,11 +67,9 @@ func (s Service) EmailLogin(ctx context.Context, req *monify.EmailLoginRequest) 
 	if req.Email == "" || req.Password == "" {
 		return nil, status.Error(codes.InvalidArgument, "Email and password is required.")
 	}
-
 	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
-	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
 
-	userId, err := matchEmailUser(ctx, req.Email, req.Password, db)
+	userId, err := matchEmailUser(ctx, req.Email, req.Password)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func (s Service) EmailLogin(ctx context.Context, req *monify.EmailLoginRequest) 
 	}
 
 	//generate refresh token and insert into database
-	refreshToken, err := generateAndInsertRefreshToken(ctx, userId, db)
+	refreshToken, err := generateAndInsertRefreshToken(ctx, userId)
 	if err != nil {
 		logger.Error("", zap.Error(err))
 		return nil, status.Errorf(codes.Internal, "internal err.")

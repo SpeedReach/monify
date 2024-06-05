@@ -12,7 +12,8 @@ import (
 	monify "monify/protobuf/gen/go"
 )
 
-func emailExists(ctx context.Context, email string, db *sql.DB) (bool, error) {
+func emailExists(ctx context.Context, email string) (bool, error) {
+	db := ctx.Value(middlewares.DatabaseContextKey{}).(*sql.DB)
 	rows, err := db.QueryContext(ctx, `
 		SELECT user_id
 		FROM email_login
@@ -25,7 +26,8 @@ func emailExists(ctx context.Context, email string, db *sql.DB) (bool, error) {
 	return rows.Next(), nil
 }
 
-func CreateUser(ctx context.Context, db *sql.DB, email string, password string) (uuid.UUID, error) {
+func CreateUser(ctx context.Context, email string, password string) (uuid.UUID, error) {
+	db := ctx.Value(middlewares.DatabaseContextKey{}).(*sql.DB)
 	if email == "" || password == "" {
 		return uuid.Nil, status.Error(codes.InvalidArgument, "Email and password is required.")
 	}
@@ -50,9 +52,8 @@ func CreateUser(ctx context.Context, db *sql.DB, email string, password string) 
 }
 
 func (s Service) EmailRegister(ctx context.Context, req *monify.EmailRegisterRequest) (*monify.EmailRegisterResponse, error) {
-	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
 	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
-	exists, err := emailExists(ctx, req.Email, db)
+	exists, err := emailExists(ctx, req.Email)
 	if err != nil {
 		logger.Error("failed to query email", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Internal err.")
@@ -61,7 +62,7 @@ func (s Service) EmailRegister(ctx context.Context, req *monify.EmailRegisterReq
 		return nil, status.Error(codes.AlreadyExists, "Email already exists.")
 	}
 
-	userId, err := CreateUser(ctx, db, req.Email, req.Password)
+	userId, err := CreateUser(ctx, req.Email, req.Password)
 	if err != nil {
 		logger.Error("failed to create user", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Internal err.")

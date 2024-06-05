@@ -24,10 +24,10 @@ func (s Service) DeleteGroupBill(ctx context.Context, req *monify.DeleteGroupBil
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "Invalid bill id")
 	}
-	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
+	db := ctx.Value(middlewares.DatabaseContextKey{}).(*sql.DB)
 
 	//Check permission
-	groupId, err := getBillGroupId(ctx, db, billId)
+	groupId, err := getBillGroupId(ctx, billId)
 	if groupId == uuid.Nil {
 		if err != nil {
 			logger.Error("", zap.Error(err))
@@ -35,7 +35,7 @@ func (s Service) DeleteGroupBill(ctx context.Context, req *monify.DeleteGroupBil
 		}
 		return nil, status.Error(codes.NotFound, "Not found")
 	}
-	memberId, err := group.GetMemberId(ctx, db, groupId, userId)
+	memberId, err := group.GetMemberId(ctx, groupId, userId)
 	if memberId == uuid.Nil {
 		if err != nil {
 			logger.Error("", zap.Error(err))
@@ -52,7 +52,19 @@ func (s Service) DeleteGroupBill(ctx context.Context, req *monify.DeleteGroupBil
 	defer tx.Rollback()
 
 	//Start delete
-	if err = deleteBill(ctx, tx, billId); err != nil {
+	var title string
+	if title, err = deleteBill(ctx, tx, billId); err != nil {
+		logger.Error("", zap.Error(err))
+		return nil, status.Error(codes.Internal, "Internal")
+	}
+
+	//insert history
+	if err = insertBillHistory(ctx, tx, billHistoryInsertion{
+		billId:   billId,
+		ty:       Delete,
+		operator: memberId,
+		title:    title,
+	}); err != nil {
 		logger.Error("", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Internal")
 	}
@@ -66,19 +78,26 @@ func (s Service) DeleteGroupBill(ctx context.Context, req *monify.DeleteGroupBil
 	return &monify.GroupGroupBillEmpty{}, err
 }
 
-func deleteBill(ctx context.Context, tx *sql.Tx, billId uuid.UUID) error {
+// getBillGroupId returns the deleted title of the bill
+func deleteBill(ctx context.Context, tx *sql.Tx, billId uuid.UUID) (string, error) {
+	var title string
+	if err := tx.QueryRowContext(ctx, "SELECT title FROM group_bill_history WHERE bill_id=$1", billId).Scan(&title); err != nil {
+		return "", err
+	}
+
 	_, err := tx.ExecContext(ctx,
 		`DELETE FROM group_split_bill WHERE bill_id = $1`, billId,
 	)
+
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	_, err = tx.ExecContext(ctx,
 		`DELETE FROM group_prepaid_bill WHERE bill_id = $1`, billId,
 	)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	_, err = tx.ExecContext(ctx,
@@ -86,7 +105,7 @@ func deleteBill(ctx context.Context, tx *sql.Tx, billId uuid.UUID) error {
 	)
 
 	if err != nil {
-		return err
+		return "", err
 	}
-	return nil
+	return title, err
 }

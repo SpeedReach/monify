@@ -24,7 +24,7 @@ const (
 
 func (s Service) GenerateInviteCode(ctx context.Context, req *monify.GenerateInviteCodeRequest) (*monify.GenerateInviteCodeResponse, error) {
 	userId, ok := ctx.Value(middlewares.UserIdContextKey{}).(uuid.UUID)
-	db := ctx.Value(middlewares.StorageContextKey{}).(*sql.DB)
+	db := ctx.Value(middlewares.DatabaseContextKey{}).(*sql.DB)
 	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "Unauthorized.")
@@ -33,7 +33,7 @@ func (s Service) GenerateInviteCode(ctx context.Context, req *monify.GenerateInv
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "Invalid group ID")
 	}
-	hasPerm, err := CheckPermission(ctx, db, groupId, userId)
+	hasPerm, err := CheckPermission(ctx, groupId, userId)
 	if err != nil {
 		logger.Error("Failed to check permission", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Internal")
