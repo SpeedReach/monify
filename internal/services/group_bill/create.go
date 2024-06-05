@@ -53,7 +53,7 @@ func (s Service) CreateGroupBill(ctx context.Context, req *monify.CreateGroupBil
 	defer tx.Rollback()
 	//Insert
 	billId := uuid.New()
-	if err = insertBill(ctx, tx, logger, insertBillInfo{
+	if err = insertBill(ctx, tx, insertBillInfo{
 		billId:        billId,
 		groupId:       groupId,
 		createdBy:     memberId,
@@ -97,7 +97,8 @@ type insertBillInfo struct {
 	prepaidPeople []*monify.InsertPrepaidPerson
 }
 
-func insertBill(ctx context.Context, tx *sql.Tx, logger *zap.Logger, info insertBillInfo) error {
+func insertBill(ctx context.Context, tx *sql.Tx, info insertBillInfo) error {
+	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
 	_, err := tx.ExecContext(ctx, `
 		INSERT INTO group_bill (bill_id, group_id, created_by, total_money, title, description)
 		VALUES ($1, $2, $3, $4, $5, $6)

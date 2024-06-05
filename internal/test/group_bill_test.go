@@ -101,5 +101,4 @@ func TestCreateAndGetGroupBill(t *testing.T) {
 	assert.NoError(t, err)
 	response2, err = client.GetGroupBills(context.TODO(), &monify.GetGroupBillsRequest{GroupId: group.GroupId})
 	assert.Empty(t, response2.GroupBills)
-
 }

@@ -11,7 +11,7 @@ INSERT INTO group_bill_history_type (name, type) VALUES  ('modify', 2);
 CREATE TABLE group_bill_history(
     history_id uuid PRIMARY KEY,
     type int REFERENCES group_bill_history_type(type),
-    bill_id uuid UNIQUE,
+    bill_id uuid,
     group_id uuid REFERENCES "group"(group_id),
     title varchar(30) NOT NULL,
     operator uuid REFERENCES group_member(group_member_id),

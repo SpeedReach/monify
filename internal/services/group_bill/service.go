@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/google/uuid"
+	"go.uber.org/zap"
 	"monify/internal/middlewares"
 	monify "monify/protobuf/gen/go"
 )
@@ -28,19 +29,25 @@ type billHistoryInsertion struct {
 }
 
 func insertBillHistory(ctx context.Context, db *sql.Tx, history billHistoryInsertion) error {
+	logger := ctx.Value(middlewares.LoggerContextKey{}).(*zap.Logger)
 	row := db.QueryRowContext(ctx, `
 		SELECT group_id FROM group_member WHERE group_member_id = $1
 	`, history.operator)
 
 	var groupId uuid.UUID
 	if err := row.Scan(&groupId); err != nil {
+		logger.Error("failed to get group_id", zap.Error(err))
 		return err
 	}
 
-	_, err := db.ExecContext(ctx, `
+	if _, err := db.ExecContext(ctx, `
 		INSERT INTO group_bill_history( history_id, type, bill_id, title, operator, group_id) VALUES ($1, $2, $3, $4, $5, $6)
-	`, uuid.New(), history.ty, history.billId, history.title, history.operator, groupId)
-	return err
+	`, uuid.New(), history.ty, history.billId, history.title, history.operator, groupId); err != nil {
+		logger.Error("failed to insert bill history", zap.Error(err))
+		return err
+	}
+
+	return nil
 }
 
 // context requires middlewares.DatabaseContextKey:*sql.DB

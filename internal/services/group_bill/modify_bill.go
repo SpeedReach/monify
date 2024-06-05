@@ -58,7 +58,7 @@ func (s Service) ModifyGroupBill(ctx context.Context, req *monify.ModifyGroupBil
 	}
 
 	//Insert
-	if err = insertBill(ctx, tx, logger, insertBillInfo{
+	if err = insertBill(ctx, tx, insertBillInfo{
 		billId:        billId,
 		groupId:       groupId,
 		createdBy:     createdBy,
