@@ -50,7 +50,15 @@ service GroupService{
     };
   }
 
+  rpc DeleteGroup(DeleteGroupRequest) returns (Empty) {
+    option (google.api.http) = {
+      delete: "/v1/group/{group_id}"
+    };
+  }
+
 }
+
+
 
 message CreateGroupRequest{
   string name = 1;
@@ -109,3 +117,9 @@ message GroupMember{
   string user_name = 3;
   string avatar_url = 4;
 }
+
+
+message DeleteGroupRequest{
+  string group_id = 1;
+}
+

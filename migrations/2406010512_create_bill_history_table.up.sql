@@ -6,7 +6,7 @@ CREATE TABLE group_bill_history_type(
 
 INSERT INTO group_bill_history_type (name, type) VALUES  ('create', 0);
 INSERT INTO group_bill_history_type (name, type) VALUES  ('delete', 1);
-INSERT INTO group_bill_history_type (name, type) VALUES  ('modify', 2);
+INSERT INTO group_bill_history_type (name, type) VALUES  ('update', 2);
 
 CREATE TABLE group_bill_history(
     history_id uuid PRIMARY KEY,

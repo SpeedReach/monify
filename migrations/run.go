@@ -8,7 +8,7 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/joho/godotenv"
 	"log"
-	"monify/internal/utils"
+	"monify/lib/utils"
 )
 
 func main() {

@@ -29,7 +29,7 @@ docker_build: docker_build_proxy docker_build_monify
 docker_build_proxy:
 	 docker build -f Dockerfile.proxy -t registry.nccupass.com/monify_restful_proxy .
 docker_build_monify:
-	 docker build -f Dockerfile.monify -t registry.nccupass.com/monify .
+	 docker build -f Dockerfile.api -t registry.nccupass.com/monify .
 
 
 .PHONY: $(SUB_DIRS)
