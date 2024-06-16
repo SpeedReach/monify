@@ -1,0 +1,18 @@
+syntax = "proto3";
+option go_package = "github.com/SpeedReach/monify";
+
+
+message UEmpty {}
+
+service UserService {
+  rpc UpdateUserName (UpdateUserNameRequest) returns (UEmpty) {}
+
+}
+
+
+
+message UpdateUserNameRequest {
+  string name = 1;
+}
+
+

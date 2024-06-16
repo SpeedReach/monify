@@ -2,7 +2,9 @@ package notification
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"monify/lib/group_bill"
 )
 
 func Start(config Config) {
@@ -13,6 +15,11 @@ func Start(config Config) {
 
 	for {
 		m, err := consumers.GroupBillsConsumer.ReadMessage(context.Background())
+		if err != nil {
+			panic(err)
+		}
+		modification := group_bill.GroupBillModification{}
+		err = json.Unmarshal(m.Value, &modification)
 		if err != nil {
 			panic(err)
 		}
