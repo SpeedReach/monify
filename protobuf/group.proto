@@ -3,6 +3,7 @@ option go_package = "github.com/SpeedReach/monify";
 
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/duration.proto";
 
 
 message Empty {}
@@ -53,6 +54,18 @@ service GroupService{
   rpc DeleteGroup(DeleteGroupRequest) returns (Empty) {
     option (google.api.http) = {
       delete: "/v1/group/{group_id}"
+    };
+  }
+
+  rpc DeleteInviteCode(DeleteInviteCodeRequest) returns (Empty) {
+    option (google.api.http) = {
+      delete: "/v1/group/invite-code/{group_id}"
+    };
+  }
+
+  rpc GetInviteCode(GetInviteCodeRequest) returns (GetInviteCodeResponse) {
+    option (google.api.http) = {
+      get: "/v1/group/invite-code/{group_id}"
     };
   }
 
@@ -123,3 +136,16 @@ message DeleteGroupRequest{
   string group_id = 1;
 }
 
+message DeleteInviteCodeRequest{
+  string group_id = 1;
+}
+
+
+message GetInviteCodeRequest{
+  string group_id = 1;
+}
+
+message GetInviteCodeResponse{
+  string invite_code = 1;
+  google.protobuf.Duration expires_after = 2;
+}

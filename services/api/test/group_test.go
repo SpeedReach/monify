@@ -11,16 +11,16 @@ import (
 func TestCreateGroup(t *testing.T) {
 	client := GetTestClient(t)
 	_ = client.CreateTestUser()
-	group, err := client.CreateGroup(context.TODO(), &monify.CreateGroupRequest{Name: "test"})
+	group, err := client.CreateGroup(context.Background(), &monify.CreateGroupRequest{Name: "test"})
 	assert.NoError(t, err)
 	assert.NotEmpty(t, group)
 	code, err := client.GenerateInviteCode(context.TODO(), &monify.GenerateInviteCodeRequest{GroupId: group.GroupId})
 	assert.NoError(t, err)
 	user1 := client.CreateTestUser()
-	println("code: " + code.InviteCode)
+
 	joinGroup, err := client.JoinGroup(context.TODO(), &monify.JoinGroupRequest{InviteCode: code.InviteCode})
 	assert.NoError(t, err)
-	println(joinGroup.GroupId)
+
 	groups, err := client.ListJoinedGroups(context.TODO(), &monify.Empty{})
 	assert.NoError(t, err)
 	assert.Equal(t, joinGroup.GetGroupId(), groups.Groups[0].GroupId)
@@ -38,4 +38,24 @@ func TestCreateGroup(t *testing.T) {
 	groups, err = client.ListJoinedGroups(context.TODO(), &monify.Empty{})
 	assert.NoError(t, err)
 	assert.Empty(t, groups.Groups)
+}
+
+func TestGroupInviteCode(t *testing.T) {
+	client := GetTestClient(t)
+	_ = client.CreateTestUser()
+	group, err := client.CreateGroup(context.Background(), &monify.CreateGroupRequest{Name: "test"})
+	assert.NoError(t, err)
+	assert.NotEmpty(t, group)
+	code, err := client.GenerateInviteCode(context.Background(), &monify.GenerateInviteCodeRequest{GroupId: group.GroupId})
+	assert.NoError(t, err)
+	assert.NotEmpty(t, code)
+	inviteCode, err := client.GetInviteCode(context.Background(), &monify.GetInviteCodeRequest{GroupId: group.GroupId})
+	assert.NoError(t, err)
+	assert.Equal(t, code.InviteCode, inviteCode.InviteCode)
+
+	_, err = client.DeleteInviteCode(context.Background(), &monify.DeleteInviteCodeRequest{GroupId: group.GroupId})
+	assert.NoError(t, err)
+	inviteCode, err = client.GetInviteCode(context.Background(), &monify.GetInviteCodeRequest{GroupId: group.GroupId})
+	assert.Error(t, err)
+	assert.Nil(t, inviteCode)
 }

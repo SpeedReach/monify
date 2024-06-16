@@ -18,6 +18,7 @@ func TestCreateAndGetGroupBill(t *testing.T) {
 	inviteCode, err := client.GenerateInviteCode(context.Background(), &monify.GenerateInviteCodeRequest{GroupId: group.GroupId})
 	assert.NoError(t, err)
 	_ = client.CreateTestUser()
+
 	memberId2, err := client.JoinGroup(context.Background(), &monify.JoinGroupRequest{InviteCode: inviteCode.InviteCode})
 	assert.NoError(t, err)
 

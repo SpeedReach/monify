@@ -14,7 +14,7 @@ func TestLogin(t *testing.T) {
 	password := "qwer1234"
 	client := GetTestClient(t)
 	_, err := client.EmailLogin(context.TODO(), &monify.EmailLoginRequest{Email: email, Password: password})
-	assert.Error(t, err)
+	assert.Error(t, err, "Perhaps sqlite file is not properly deleted")
 	res1, err := client.EmailRegister(context.TODO(), &monify.EmailRegisterRequest{Email: email, Password: password})
 	assert.NoError(t, err)
 	res2, err := client.EmailLogin(context.TODO(), &monify.EmailLoginRequest{Email: email, Password: password})

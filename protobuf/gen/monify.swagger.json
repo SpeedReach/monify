@@ -251,6 +251,52 @@
         ]
       }
     },
+    "/v1/group/invite-code/{groupId}": {
+      "get": {
+        "operationId": "GroupService_GetInviteCode",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetInviteCodeResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "groupId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GroupService"
+        ]
+      },
+      "delete": {
+        "operationId": "GroupService_DeleteInviteCode",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "groupId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GroupService"
+        ]
+      }
+    },
     "/v1/groups_bill": {
       "post": {
         "operationId": "GroupsBillService_CreateGroupBill",
@@ -588,6 +634,17 @@
             "type": "object",
             "$ref": "#/definitions/GroupBillHistory"
           }
+        }
+      }
+    },
+    "GetInviteCodeResponse": {
+      "type": "object",
+      "properties": {
+        "inviteCode": {
+          "type": "string"
+        },
+        "expiresAfter": {
+          "type": "string"
         }
       }
     },
