@@ -45,7 +45,6 @@ func run() error {
 
 func allowCORS(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		println("warawrwrawrt")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		preflightHandler(w, r)
 		if r.Method == http.MethodOptions {
