@@ -8,12 +8,12 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"monify/lib"
+	authLib "monify/lib/auth"
 	monify "monify/protobuf/gen/go"
 	"monify/services/api/controllers/auth"
 	"monify/services/api/controllers/group"
 	"monify/services/api/controllers/group_bill"
 	"monify/services/api/infra"
-	"monify/services/api/middlewares"
 	"net"
 )
 
@@ -46,9 +46,9 @@ func SetupServices(g *grpc.Server, config ServerConfig) {
 }
 
 func setupInterceptor(resources infra.Resources, config ServerConfig) grpc.ServerOption {
-	authFn := middlewares.AuthMiddleware{JwtSecret: config.JwtSecret}
+	authFn := authLib.AuthMiddleware{JwtSecret: config.JwtSecret}
 	interceptor := func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
-		userId, err := authFn.ExtractUserId(ctx, req, info)
+		userId, err := authFn.GrpcExtractUserId(ctx, req, info)
 		if err != nil {
 			return nil, err
 		}

@@ -16,7 +16,7 @@ func main() {
 	_ = godotenv.Load()
 	secrets, err := utils.LoadSecrets(utils.LoadEnv())
 	if err != nil {
-		panic(secrets)
+		panic(err)
 	}
 
 	db, err := sql.Open("pgx", secrets["POSTGRES_URI"])

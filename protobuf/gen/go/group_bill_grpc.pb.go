@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v4.25.2
-// source: groups_bill.proto
+// source: group_bill.proto
 
 package monify
 
@@ -253,5 +253,5 @@ var GroupsBillService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "groups_bill.proto",
+	Metadata: "group_bill.proto",
 }

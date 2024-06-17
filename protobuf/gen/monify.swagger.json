@@ -12,6 +12,9 @@
       "name": "GroupService"
     },
     {
+      "name": "UserService"
+    },
+    {
       "name": "GroupsBillService"
     }
   ],
@@ -842,6 +845,9 @@
           "type": "string"
         }
       }
+    },
+    "UEmpty": {
+      "type": "object"
     }
   },
   "securityDefinitions": {

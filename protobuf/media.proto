@@ -1,0 +1,21 @@
+
+syntax = "proto3";
+option go_package = "github.com/SpeedReach/monify";
+
+
+message MEmpty{}
+service MediaService {
+  rpc ConfirmImageUsage(ConfirmImageUsageRequest) returns (MEmpty);
+}
+
+
+message ConfirmImageUsageRequest {
+  string image_id = 1;
+  Usage usage = 2;
+}
+
+enum Usage {
+  Undefined = 0;
+  UserAvatar = 1;
+  GroupAvatar = 2;
+}

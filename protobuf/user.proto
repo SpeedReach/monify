@@ -6,7 +6,9 @@ message UEmpty {}
 
 service UserService {
   rpc UpdateUserName (UpdateUserNameRequest) returns (UEmpty) {}
-
+  
+  rpc AddDeviceToken (AddDeviceTokenRequest) returns (UEmpty) {}
+  rpc RemoveDeviceToken (RemoveDeviceTokenRequest) returns (UEmpty) {}
 }
 
 
@@ -15,4 +17,10 @@ message UpdateUserNameRequest {
   string name = 1;
 }
 
+message AddDeviceTokenRequest {
+  string device_token = 1;
+}
 
+message RemoveDeviceTokenRequest {
+  string device_token = 1;
+}
