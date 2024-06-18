@@ -12,7 +12,7 @@ all: $(OUTPUT) $(SWAGGER_DIR)/monify.swagger.json
 
 
 
-$(SWAGGER_DIR)/monify.swagger.json:
+$(SWAGGER_DIR)/monify.swagger.json: $(SWAGGER_MODULES)
 	-mkdir $(SWAGGER_DIR)
 	protoc -I . --openapiv2_out $(SWAGGER_DIR) --openapiv2_opt=preserve_rpc_order=true \
   		--openapiv2_opt=allow_merge=true \
