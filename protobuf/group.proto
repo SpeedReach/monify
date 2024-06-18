@@ -45,6 +45,8 @@ service GroupService{
     };
   }
 
+
+
   rpc GetGroupMembers(GetGroupMembersRequest) returns (GetGroupMembersResponse) {
     option (google.api.http) = {
       get: "/v1/group/members/{group_id}"
@@ -65,7 +67,19 @@ service GroupService{
 
   rpc GetInviteCode(GetInviteCodeRequest) returns (GetInviteCodeResponse) {
     option (google.api.http) = {
-      get: "/v1/group/invite-code/{group_id}"
+      get: "/v1/group/invite-code/g2i/{group_id}"
+    };
+  }
+
+  rpc GetGroupInfo(GetGroupInfoRequest) returns (GetGroupInfoResponse) {
+    option (google.api.http) = {
+      get: "/v1/group/{group_id}"
+    };
+  }
+
+  rpc GetGroupByInviteCode(GetGroupByInviteCodeRequest) returns (GetGroupInfoResponse) {
+    option (google.api.http) = {
+      get: "/v1/group/invite-code/i2g/{invite_code}"
     };
   }
 
@@ -148,4 +162,19 @@ message GetInviteCodeRequest{
 message GetInviteCodeResponse{
   string invite_code = 1;
   google.protobuf.Duration expires_after = 2;
+}
+
+message GetGroupInfoRequest{
+  string group_id = 1;
+}
+
+message GetGroupInfoResponse{
+  string group_id = 1;
+  string name = 2;
+  string description = 3;
+  string avatar_url = 4;
+}
+
+message GetGroupByInviteCodeRequest{
+  string invite_code = 1;
 }

@@ -19,14 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	GroupService_CreateGroup_FullMethodName        = "/GroupService/CreateGroup"
-	GroupService_ListJoinedGroups_FullMethodName   = "/GroupService/ListJoinedGroups"
-	GroupService_GenerateInviteCode_FullMethodName = "/GroupService/GenerateInviteCode"
-	GroupService_JoinGroup_FullMethodName          = "/GroupService/JoinGroup"
-	GroupService_GetGroupMembers_FullMethodName    = "/GroupService/GetGroupMembers"
-	GroupService_DeleteGroup_FullMethodName        = "/GroupService/DeleteGroup"
-	GroupService_DeleteInviteCode_FullMethodName   = "/GroupService/DeleteInviteCode"
-	GroupService_GetInviteCode_FullMethodName      = "/GroupService/GetInviteCode"
+	GroupService_CreateGroup_FullMethodName          = "/GroupService/CreateGroup"
+	GroupService_ListJoinedGroups_FullMethodName     = "/GroupService/ListJoinedGroups"
+	GroupService_GenerateInviteCode_FullMethodName   = "/GroupService/GenerateInviteCode"
+	GroupService_JoinGroup_FullMethodName            = "/GroupService/JoinGroup"
+	GroupService_GetGroupMembers_FullMethodName      = "/GroupService/GetGroupMembers"
+	GroupService_DeleteGroup_FullMethodName          = "/GroupService/DeleteGroup"
+	GroupService_DeleteInviteCode_FullMethodName     = "/GroupService/DeleteInviteCode"
+	GroupService_GetInviteCode_FullMethodName        = "/GroupService/GetInviteCode"
+	GroupService_GetGroupInfo_FullMethodName         = "/GroupService/GetGroupInfo"
+	GroupService_GetGroupByInviteCode_FullMethodName = "/GroupService/GetGroupByInviteCode"
 )
 
 // GroupServiceClient is the client API for GroupService service.
@@ -41,6 +43,8 @@ type GroupServiceClient interface {
 	DeleteGroup(ctx context.Context, in *DeleteGroupRequest, opts ...grpc.CallOption) (*Empty, error)
 	DeleteInviteCode(ctx context.Context, in *DeleteInviteCodeRequest, opts ...grpc.CallOption) (*Empty, error)
 	GetInviteCode(ctx context.Context, in *GetInviteCodeRequest, opts ...grpc.CallOption) (*GetInviteCodeResponse, error)
+	GetGroupInfo(ctx context.Context, in *GetGroupInfoRequest, opts ...grpc.CallOption) (*GetGroupInfoResponse, error)
+	GetGroupByInviteCode(ctx context.Context, in *GetGroupByInviteCodeRequest, opts ...grpc.CallOption) (*GetGroupInfoResponse, error)
 }
 
 type groupServiceClient struct {
@@ -123,6 +127,24 @@ func (c *groupServiceClient) GetInviteCode(ctx context.Context, in *GetInviteCod
 	return out, nil
 }
 
+func (c *groupServiceClient) GetGroupInfo(ctx context.Context, in *GetGroupInfoRequest, opts ...grpc.CallOption) (*GetGroupInfoResponse, error) {
+	out := new(GetGroupInfoResponse)
+	err := c.cc.Invoke(ctx, GroupService_GetGroupInfo_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *groupServiceClient) GetGroupByInviteCode(ctx context.Context, in *GetGroupByInviteCodeRequest, opts ...grpc.CallOption) (*GetGroupInfoResponse, error) {
+	out := new(GetGroupInfoResponse)
+	err := c.cc.Invoke(ctx, GroupService_GetGroupByInviteCode_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GroupServiceServer is the server API for GroupService service.
 // All implementations must embed UnimplementedGroupServiceServer
 // for forward compatibility
@@ -135,6 +157,8 @@ type GroupServiceServer interface {
 	DeleteGroup(context.Context, *DeleteGroupRequest) (*Empty, error)
 	DeleteInviteCode(context.Context, *DeleteInviteCodeRequest) (*Empty, error)
 	GetInviteCode(context.Context, *GetInviteCodeRequest) (*GetInviteCodeResponse, error)
+	GetGroupInfo(context.Context, *GetGroupInfoRequest) (*GetGroupInfoResponse, error)
+	GetGroupByInviteCode(context.Context, *GetGroupByInviteCodeRequest) (*GetGroupInfoResponse, error)
 	mustEmbedUnimplementedGroupServiceServer()
 }
 
@@ -165,6 +189,12 @@ func (UnimplementedGroupServiceServer) DeleteInviteCode(context.Context, *Delete
 }
 func (UnimplementedGroupServiceServer) GetInviteCode(context.Context, *GetInviteCodeRequest) (*GetInviteCodeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetInviteCode not implemented")
+}
+func (UnimplementedGroupServiceServer) GetGroupInfo(context.Context, *GetGroupInfoRequest) (*GetGroupInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGroupInfo not implemented")
+}
+func (UnimplementedGroupServiceServer) GetGroupByInviteCode(context.Context, *GetGroupByInviteCodeRequest) (*GetGroupInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGroupByInviteCode not implemented")
 }
 func (UnimplementedGroupServiceServer) mustEmbedUnimplementedGroupServiceServer() {}
 
@@ -323,6 +353,42 @@ func _GroupService_GetInviteCode_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GroupService_GetGroupInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGroupInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GroupServiceServer).GetGroupInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GroupService_GetGroupInfo_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GroupServiceServer).GetGroupInfo(ctx, req.(*GetGroupInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GroupService_GetGroupByInviteCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGroupByInviteCodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GroupServiceServer).GetGroupByInviteCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GroupService_GetGroupByInviteCode_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GroupServiceServer).GetGroupByInviteCode(ctx, req.(*GetGroupByInviteCodeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GroupService_ServiceDesc is the grpc.ServiceDesc for GroupService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -361,6 +427,14 @@ var GroupService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetInviteCode",
 			Handler:    _GroupService_GetInviteCode_Handler,
+		},
+		{
+			MethodName: "GetGroupInfo",
+			Handler:    _GroupService_GetGroupInfo_Handler,
+		},
+		{
+			MethodName: "GetGroupByInviteCode",
+			Handler:    _GroupService_GetGroupByInviteCode_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

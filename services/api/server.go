@@ -15,6 +15,7 @@ import (
 	"monify/services/api/controllers/group_bill"
 	"monify/services/api/infra"
 	"net"
+	"time"
 )
 
 type Server struct {
@@ -56,10 +57,13 @@ func setupInterceptor(resources infra.Resources, config ServerConfig) grpc.Serve
 			ctx = context.WithValue(ctx, lib.UserIdContextKey{}, userId)
 		}
 		requestId := uuid.New()
+		logger := resources.Logger.With(zap.String("request_id", requestId.String()))
 		ctx = context.WithValue(ctx, lib.KafkaWriterContextKey{}, resources.KafkaWriters)
 		ctx = context.WithValue(ctx, lib.DatabaseContextKey{}, resources.DBConn)
-		ctx = context.WithValue(ctx, lib.LoggerContextKey{}, resources.Logger.With(zap.String("request_id", requestId.String())))
+		ctx = context.WithValue(ctx, lib.LoggerContextKey{}, logger)
+		start := time.Now()
 		m, err := handler(ctx, req)
+		logger.Log(zap.InfoLevel, "request completed", zap.Duration("duration", time.Since(start)), zap.String("method", info.FullMethod))
 		return m, err
 	}
 	return grpc.UnaryInterceptor(interceptor)

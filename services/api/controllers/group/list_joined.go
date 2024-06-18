@@ -20,7 +20,7 @@ func (s Service) ListJoinedGroups(ctx context.Context, _ *monify.Empty) (*monify
 
 	db := ctx.Value(lib.DatabaseContextKey{}).(*sql.DB)
 	query, err := db.QueryContext(ctx, `
-		SELECT "group".group_id, "group".name
+		SELECT "group".group_id, "group".name, "group".description
 		FROM "group" JOIN group_member ON "group".group_id = group_member.group_id
 		WHERE user_id = $1 AND is_deleted = false`, userId)
 	if err != nil {
@@ -35,7 +35,7 @@ func (s Service) ListJoinedGroups(ctx context.Context, _ *monify.Empty) (*monify
 			break
 		}
 		var group monify.Group
-		if err = query.Scan(&group.GroupId, &group.Name); err != nil {
+		if err = query.Scan(&group.GroupId, &group.Name, &group.Description); err != nil {
 			logger.Error("scan group_id error", zap.Error(err))
 			return nil, status.Error(codes.Internal, "")
 		}

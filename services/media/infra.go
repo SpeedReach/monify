@@ -8,6 +8,7 @@ import (
 type Infra struct {
 	db         *sql.DB
 	objStorage S3ImageStorage
+	config     Config
 }
 
 func Setup(config Config) (Infra, error) {
@@ -20,6 +21,8 @@ func Setup(config Config) (Infra, error) {
 	}
 
 	return Infra{
-		db: db,
+		db:         db,
+		config:     config,
+		objStorage: NewS3ImageStorage(config),
 	}, nil
 }

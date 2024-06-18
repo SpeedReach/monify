@@ -13,11 +13,11 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func createGroup(ctx context.Context, tx *sql.Tx, name string) (uuid.UUID, error) {
+func createGroup(ctx context.Context, tx *sql.Tx, name string, description string) (uuid.UUID, error) {
 	groupId := uuid.New()
 	_, err := tx.ExecContext(ctx, `
-		INSERT INTO "group" (group_id, name) VALUES ($1, $2)
-	`, groupId, name)
+		INSERT INTO "group" (group_id, name, description) VALUES ($1, $2, $3)
+	`, groupId, name, description)
 	return groupId, err
 }
 
@@ -42,7 +42,7 @@ func (s Service) CreateGroup(ctx context.Context, req *monify.CreateGroupRequest
 	defer tx.Rollback()
 
 	var groupId uuid.UUID
-	if groupId, err = createGroup(ctx, tx, groupName); err != nil {
+	if groupId, err = createGroup(ctx, tx, groupName, req.Description); err != nil {
 		logger.Error("", zap.Error(err))
 		return nil, status.Error(codes.Internal, "internal")
 	}
