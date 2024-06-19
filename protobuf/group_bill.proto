@@ -16,7 +16,7 @@ service GroupsBillService{
 
     rpc GetGroupBills(GetGroupBillsRequest) returns (GetGroupBillsResponse){
         option (google.api.http) = {
-            get: "/v1/groups_bill/{group_id}"
+            get: "/v1/groups_bill"
         };
     }
 
@@ -35,7 +35,7 @@ service GroupsBillService{
 
     rpc GetHistory(GetHistoryRequest) returns (GetHistoryResponse) {
         option (google.api.http) = {
-            get: "/v1/group_bill/history/{group_id}/{skip}/{limit}"
+            get: "/v1/group_bill/history"
         };
     }
 }

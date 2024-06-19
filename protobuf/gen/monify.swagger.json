@@ -108,6 +108,28 @@
       }
     },
     "/v1/group": {
+      "get": {
+        "operationId": "GroupService_GetGroupInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetGroupInfoResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "groupId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GroupService"
+        ]
+      },
       "post": {
         "operationId": "GroupService_CreateGroup",
         "responses": {
@@ -206,7 +228,7 @@
         ]
       }
     },
-    "/v1/group/members/{groupId}": {
+    "/v1/group/members": {
       "get": {
         "operationId": "GroupService_GetGroupMembers",
         "responses": {
@@ -220,8 +242,8 @@
         "parameters": [
           {
             "name": "groupId",
-            "in": "path",
-            "required": true,
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ],
@@ -231,28 +253,6 @@
       }
     },
     "/v1/group/{groupId}": {
-      "get": {
-        "operationId": "GroupService_GetGroupInfo",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/GetGroupInfoResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "groupId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "GroupService"
-        ]
-      },
       "delete": {
         "operationId": "GroupService_DeleteGroup",
         "responses": {
@@ -300,7 +300,7 @@
         ]
       }
     },
-    "/v1/group/invite-code/g2i/{groupId}": {
+    "/v1/group/invite-code/g2i": {
       "get": {
         "operationId": "GroupService_GetInviteCode",
         "responses": {
@@ -314,8 +314,8 @@
         "parameters": [
           {
             "name": "groupId",
-            "in": "path",
-            "required": true,
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ],
@@ -324,7 +324,7 @@
         ]
       }
     },
-    "/v1/group/invite-code/i2g/{inviteCode}": {
+    "/v1/group/invite-code/i2g": {
       "get": {
         "operationId": "GroupService_GetGroupByInviteCode",
         "responses": {
@@ -338,8 +338,8 @@
         "parameters": [
           {
             "name": "inviteCode",
-            "in": "path",
-            "required": true,
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ],
@@ -349,6 +349,28 @@
       }
     },
     "/v1/groups_bill": {
+      "get": {
+        "operationId": "GroupsBillService_GetGroupBills",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetGroupBillsResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "groupId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GroupsBillService"
+        ]
+      },
       "post": {
         "operationId": "GroupsBillService_CreateGroupBill",
         "responses": {
@@ -367,30 +389,6 @@
             "schema": {
               "$ref": "#/definitions/CreateGroupBillRequest"
             }
-          }
-        ],
-        "tags": [
-          "GroupsBillService"
-        ]
-      }
-    },
-    "/v1/groups_bill/{groupId}": {
-      "get": {
-        "operationId": "GroupsBillService_GetGroupBills",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/GetGroupBillsResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "groupId",
-            "in": "path",
-            "required": true,
-            "type": "string"
           }
         ],
         "tags": [
@@ -452,7 +450,7 @@
         ]
       }
     },
-    "/v1/group_bill/history/{groupId}/{skip}/{limit}": {
+    "/v1/group_bill/history": {
       "get": {
         "operationId": "GroupsBillService_GetHistory",
         "responses": {
@@ -465,24 +463,24 @@
         },
         "parameters": [
           {
-            "name": "groupId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
             "name": "skip",
-            "in": "path",
-            "required": true,
+            "in": "query",
+            "required": false,
             "type": "integer",
             "format": "int32"
           },
           {
             "name": "limit",
-            "in": "path",
-            "required": true,
+            "in": "query",
+            "required": false,
             "type": "integer",
             "format": "int32"
+          },
+          {
+            "name": "groupId",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
