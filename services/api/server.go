@@ -7,6 +7,8 @@ import (
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"monify/lib"
 	authLib "monify/lib/auth"
 	monify "monify/protobuf/gen/go"
@@ -64,6 +66,16 @@ func setupInterceptor(resources infra.Resources, config ServerConfig) grpc.Serve
 		start := time.Now()
 		m, err := handler(ctx, req)
 		logger.Log(zap.InfoLevel, "request completed", zap.Duration("duration", time.Since(start)), zap.String("method", info.FullMethod))
+		if err != nil {
+			st, _ := status.FromError(err)
+			if st.Code() == codes.Internal {
+				detail := &monify.RequestDetail{RequestId: requestId.String()}
+				st, err := st.WithDetails(detail)
+				if err == nil {
+					return nil, st.Err()
+				}
+			}
+		}
 		return m, err
 	}
 	return grpc.UnaryInterceptor(interceptor)

@@ -45,18 +45,24 @@ func (s Service) GenerateInviteCode(ctx context.Context, req *monify.GenerateInv
 		return nil, status.Error(codes.PermissionDenied, "Permission denied")
 	}
 
+	logger.Info("Generating invite code", zap.String("group_id", groupId.String()))
+
 	code, err := getExistsInviteCode(ctx, groupId)
 	if err != nil {
 		logger.Error("Failed to get invite code", zap.Error(err))
 		return nil, err
 	}
-	if code != (group.InviteCode{}) && !code.IsExpired() {
-		_, err := db.ExecContext(ctx, `DELETE FROM group_invite_code WHERE invite_code = $1`, code.GroupId)
+	//clean up old invite code or return if not expired
+	if code != (group.InviteCode{}) {
+		if !code.IsExpired() {
+			return &monify.GenerateInviteCodeResponse{InviteCode: code.Code}, nil
+		}
+		logger.Info("Deleting expired invite code", zap.String("group_id", groupId.String()), zap.String("invite_code", code.Code))
+		_, err := db.ExecContext(ctx, `DELETE FROM group_invite_code WHERE invite_code = $1`, code.Code)
 		if err != nil {
 			logger.Error("Failed to delete invite code", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Internal")
 		}
-		return &monify.GenerateInviteCodeResponse{InviteCode: code.Code}, nil
 	}
 
 	// generate invite code, we retry when the invite code already exists and is active
@@ -76,9 +82,8 @@ func (s Service) GenerateInviteCode(ctx context.Context, req *monify.GenerateInv
 		defer tx.Rollback()
 
 		//check if invite code already exists and is active
-		row := tx.QueryRowContext(ctx, "SELECT created_at FROM group_invite_code WHERE invite_code = $1", inviteCode)
 		var createdAt time.Time
-		err = row.Scan(&createdAt)
+		err = tx.QueryRowContext(ctx, "SELECT created_at FROM group_invite_code WHERE invite_code = $1", inviteCode).Scan(&createdAt)
 		if err != nil && err != sql.ErrNoRows {
 			logger.Error("", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Internal")

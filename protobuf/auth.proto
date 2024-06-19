@@ -22,6 +22,10 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   }
 };
 
+message RequestDetail{
+  string requestId = 1;
+}
+
 service AuthService{
   rpc EmailLogin(EmailLoginRequest) returns (EmailLoginResponse) {
     option (google.api.http) = {
@@ -74,3 +78,4 @@ message RefreshTokenResponse{
   string refreshToken = 1;
   string accessToken = 2;
 }
+
