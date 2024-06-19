@@ -60,7 +60,7 @@ func GetGroupInfo(ctx context.Context, groupId uuid.UUID) (*monify.GetGroupInfoR
 	response := &monify.GetGroupInfoResponse{
 		GroupId: groupId.String(),
 	}
-	err := db.QueryRowContext(ctx, "SELECT name, description, avatar_url FROM 'group' WHERE group_id = $1", groupId).Scan(&response.Name, &response.Description, &response.AvatarUrl)
+	err := db.QueryRowContext(ctx, `SELECT name, description, avatar_url FROM "group" WHERE group_id = $1`, groupId).Scan(&response.Name, &response.Description, &response.AvatarUrl)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, status.Error(codes.NotFound, "Group not found")

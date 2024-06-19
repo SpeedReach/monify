@@ -74,7 +74,7 @@ func (s Service) CreateGroupBill(ctx context.Context, req *monify.CreateGroupBil
 		BillId:           billId,
 		Title:            req.Title,
 	}); err != nil {
-		logger.Error("", zap.Error(err))
+
 		return nil, status.Error(codes.Internal, "Internal")
 	}
 

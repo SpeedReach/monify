@@ -3,12 +3,15 @@ package media
 import (
 	"database/sql"
 	_ "github.com/jackc/pgx/v5/stdlib"
+	"go.uber.org/zap"
+	"monify/lib/media"
 )
 
 type Infra struct {
 	db         *sql.DB
-	objStorage S3ImageStorage
+	objStorage media.Storage
 	config     Config
+	logger     *zap.Logger
 }
 
 func Setup(config Config) (Infra, error) {
@@ -23,6 +26,6 @@ func Setup(config Config) (Infra, error) {
 	return Infra{
 		db:         db,
 		config:     config,
-		objStorage: NewS3ImageStorage(config),
+		objStorage: NewS3MediaStorage(config),
 	}, nil
 }

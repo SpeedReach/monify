@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/joho/godotenv"
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 )
 
 type idLoginBody struct {
@@ -67,6 +69,7 @@ func GetSecrets(token string, environment string) (Secrets, error) {
 }
 
 func LoadSecrets(env string) (map[string]string, error) {
+	loadEnvFile()
 	println("Loading secrets with env: ", env)
 	id, ok := os.LookupEnv("CLIENT_ID")
 	if !ok {
@@ -92,6 +95,7 @@ func LoadSecrets(env string) (map[string]string, error) {
 }
 
 func LoadEnv() string {
+	loadEnvFile()
 	env, ok := os.LookupEnv("ENVIRONMENT")
 	if !ok {
 		return "dev"
@@ -106,4 +110,12 @@ func LoadEnv() string {
 	default:
 		return "dev"
 	}
+}
+
+func loadEnvFile() {
+	envFilePath, err := filepath.Abs("../../.env")
+	if err != nil {
+		panic(err)
+	}
+	_ = godotenv.Load(envFilePath)
 }

@@ -28,11 +28,13 @@ func processGroupBillModifyEvent(ctx context.Context, db *sql.Tx, history group_
 	kfWriter := ctx.Value(lib.KafkaWriterContextKey{}).(infra.KafkaWriters)
 	serialized, err := json.Marshal(history)
 	if err != nil {
+		logger.Error("", zap.Error(err))
 		return err
 	}
 	if err = kfWriter.GroupBill.WriteMessages(ctx,
 		kafka.Message{Value: serialized},
 	); err != nil {
+		logger.Error("", zap.Error(err))
 		return err
 	}
 	return nil

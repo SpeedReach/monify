@@ -3,44 +3,32 @@ package media
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/google/uuid"
 	"monify/lib/media"
-	"time"
 )
 
-type S3ImageStorage struct {
+type S3MediaStorage struct {
 	svc    *s3.S3
 	config Config
-	media.ImageStorage
+	media.Storage
 }
 
-func (m S3ImageStorage) Store(fileSuffix string, imageData []byte, imageId string) (string, error) {
-	now := time.Now()
-	if imageId == "" {
-		uid, err := uuid.NewRandom()
-		if err != nil {
-			return "", nil
-		}
-		imageId = uid.String()
-	}
-	key := fmt.Sprintf("/images/%d/%d/%d/%s.%s", now.Year(), now.Month(), now.Day(), imageId, fileSuffix)
+func (m S3MediaStorage) Store(path string, imageData []byte) error {
 	_, err := m.svc.PutObject(&s3.PutObjectInput{
 		Bucket: aws.String(m.config.S3Bucket),
-		Key:    aws.String(key),
+		Key:    aws.String(path),
 		Body:   bytes.NewReader(imageData),
 	})
 	if err != nil {
-		return "", errors.Join(errors.New("could not upload to s3"), err)
+		return errors.Join(errors.New("could not upload to s3"), err)
 	}
-	return key, nil
+	return nil
 }
 
-func (m S3ImageStorage) Delete(path string) error {
+func (m S3MediaStorage) Delete(path string) error {
 	_, err := m.svc.DeleteObject(&s3.DeleteObjectInput{
 		Bucket: aws.String(m.config.S3Bucket),
 		Key:    aws.String(path),
@@ -48,14 +36,21 @@ func (m S3ImageStorage) Delete(path string) error {
 	return err
 }
 
-func NewS3ImageStorage(config Config) S3ImageStorage {
+func (m S3MediaStorage) GetHost() string {
+	return m.config.S3Host
+}
+func (m S3MediaStorage) GetUrl(path string) string {
+	return m.config.S3Host + "/" + path
+}
+
+func NewS3MediaStorage(config Config) S3MediaStorage {
 	sess := session.Must(session.NewSession(&aws.Config{
 		Credentials:                   credentials.NewStaticCredentials(config.S3KeyId, config.S3KeyValue, ""),
 		CredentialsChainVerboseErrors: aws.Bool(true),
 		Region:                        aws.String(config.S3Region),
 	}))
 	svc := s3.New(sess)
-	return S3ImageStorage{
+	return S3MediaStorage{
 		svc:    svc,
 		config: config,
 	}

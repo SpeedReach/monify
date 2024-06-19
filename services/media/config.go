@@ -1,6 +1,7 @@
 package media
 
 type Config struct {
+	Environment string
 	PostgresURI string
 	S3Host      string
 	S3Bucket    string
@@ -10,8 +11,9 @@ type Config struct {
 	JwtSecret   string
 }
 
-func NewConfig(secrets map[string]string) Config {
+func NewConfig(env string, secrets map[string]string) Config {
 	return Config{
+		Environment: env,
 		JwtSecret:   secrets["JWT_SECRET"],
 		PostgresURI: secrets["POSTGRES_URI"],
 		S3Host:      secrets["S3_HOST"],

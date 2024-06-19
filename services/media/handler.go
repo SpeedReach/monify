@@ -31,8 +31,8 @@ func uploadImage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Parse our multipart form, 10 << 20 specifies a maximum upload of 10 MB files.
-	parseErr := r.ParseMultipartForm(10 << 20)
+	// Parse our multipart form, a maximum upload of 5 MB files.
+	parseErr := r.ParseMultipartForm(5 << 20)
 	if parseErr != nil {
 		http.Error(w, "Could not parse multipart form", http.StatusBadRequest)
 		return
@@ -47,10 +47,12 @@ func uploadImage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get the file from the form data
-	file, handler, err := r.FormFile("image")
+	file, fileHeader, err := r.FormFile("image")
 	if err != nil {
 		fmt.Println("Error Retrieving the File")
 		fmt.Println(err)
+		http.Error(w, "Could not retrieve the file", http.StatusBadRequest)
+		return
 	}
 	defer file.Close()
 
@@ -59,23 +61,26 @@ func uploadImage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("Error Reading the File")
 		fmt.Println(err)
+		http.Error(w, "Could not read the file", http.StatusBadRequest)
+		return
 	}
 
 	if !strings.Contains(http.DetectContentType(imageData), "image") {
 		http.Error(w, "該檔案不是圖片", http.StatusBadRequest)
+		return
 	}
 
-	imageStorage := r.Context().Value(lib.ImageStorageContextKey{}).(media.ImageStorage)
-	config := r.Context().Value(lib.ConfigContextKey{}).(Config)
+	imageStorage := r.Context().Value(lib.ImageStorageContextKey{}).(media.Storage)
 	imgId := uuid.New()
-	url, err := imageStorage.Store(extractFileNameSuffix(handler.Filename), imageData, imgId.String())
+	path := generatePath(fileHeader.Filename, imgId)
+	err = imageStorage.Store(path, imageData)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	tmpImage := media.TmpImage{
-		URL:           url,
+		Path:          path,
 		ExpectedUsage: usage,
 		Uploader:      userId,
 		Id:            imgId,
@@ -89,7 +94,7 @@ func uploadImage(w http.ResponseWriter, r *http.Request) {
 
 	//Success Response
 	res := UploadImageResponse{
-		Url:     config.S3Host + url,
+		Url:     imageStorage.GetUrl(path),
 		ImageId: imgId.String(),
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -106,6 +111,13 @@ func uploadImage(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func generatePath(originFileName string, imgId uuid.UUID) string {
+	now := time.Now()
+	fn := imgId.String() + "/" + extractFileNameSuffix(originFileName)
+	dir := fmt.Sprintf("%d/%d/%d", now.Year(), now.Month(), now.Day())
+	return dir + "/" + fn
+}
+
 func extractFileNameSuffix(fileName string) string {
 	split := strings.Split(fileName, ".")
 	return split[len(split)-1]
@@ -113,6 +125,6 @@ func extractFileNameSuffix(fileName string) string {
 
 func StoreTmpImg(ctx context.Context, img media.TmpImage) error {
 	db := ctx.Value(lib.DatabaseContextKey{}).(*sql.DB)
-	_, err := db.ExecContext(ctx, "INSERT INTO tmpimage (imgid, url, uploader, expected_usage, uploaded_at) VALUES ($1, $2, $3, $4, $5)", img.Id, img.URL, img.Uploader, img.ExpectedUsage, img.UploadedAt)
+	_, err := db.ExecContext(ctx, "INSERT INTO tmpimage (imgid, url, uploader, expected_usage, uploaded_at) VALUES ($1, $2, $3, $4, $5)", img.Id, img.Path, img.Uploader, img.ExpectedUsage, img.UploadedAt)
 	return err
 }

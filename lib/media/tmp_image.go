@@ -10,7 +10,7 @@ type TmpImage struct {
 	ExpectedUsage Usage
 	Uploader      uuid.UUID
 	UploadedAt    time.Time
-	URL           string
+	Path          string
 }
 
 type ConfirmedImage struct {
@@ -18,6 +18,6 @@ type ConfirmedImage struct {
 	Usage       Usage
 	Uploader    uuid.UUID
 	UploadedAt  time.Time
-	URL         string
+	Path        string
 	ConfirmedAt time.Time
 }

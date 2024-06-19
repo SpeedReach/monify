@@ -9,13 +9,14 @@ import (
 func main() {
 	//Load secrets
 	_ = godotenv.Load()
-	secrets, err := utils.LoadSecrets(utils.LoadEnv())
+	env := utils.LoadEnv()
+	secrets, err := utils.LoadSecrets(env)
 	if err != nil {
 		panic(err)
 	}
-	infra, err := media.Setup(media.NewConfig(secrets))
+	infra, err := media.Setup(media.NewConfig(env, secrets))
 	if err != nil {
 		panic(err)
 	}
-	media.NewServer(infra).Start()
+	media.NewHttpServer(infra)
 }
