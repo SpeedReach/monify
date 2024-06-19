@@ -1,1 +1,0 @@
-ALTER TABLE group_invite_code DROP CONSTRAINT group_id_unique;

@@ -1,1 +1,0 @@
-ALTER TABLE group_invite_code ADD CONSTRAINT group_id_unique UNIQUE (group_id);

@@ -1,5 +1,5 @@
 CREATE TABLE group_invite_code (
-  group_id uuid NOT NULL,
+  group_id uuid NOT NULL UNIQUE,
   invite_code varchar(10) PRIMARY KEY ,
   created_at timestamp default CURRENT_TIMESTAMP,
   FOREIGN KEY (group_id) REFERENCES "group"(group_id)
