@@ -15,22 +15,18 @@ service GroupService{
       post: "/v1/group"
       body: "*"
     };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={
-      security: {
-        security_requirement: {
-          key: "Bearer"
-        }
-      }
-    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={security: {security_requirement: {key: "Bearer"}}};
   }
 
   rpc ListJoinedGroups(Empty) returns (ListJoinedGroupsResponse) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={security: {security_requirement: {key: "Bearer"}}};
     option (google.api.http) = {
       get: "/v1/group/joined"
     };
   }
 
   rpc GenerateInviteCode(GenerateInviteCodeRequest) returns (GenerateInviteCodeResponse) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={security: {security_requirement: {key: "Bearer"}}};
     option (google.api.http) = {
       post: "/v1/group/invite-code"
       body: "*"
@@ -38,6 +34,7 @@ service GroupService{
   }
 
   rpc JoinGroup(JoinGroupRequest) returns (JoinGroupResponse) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={security: {security_requirement: {key: "Bearer"}}};
     option (google.api.http) = {
       post: "/v1/group/join"
       body: "*"
@@ -47,36 +44,42 @@ service GroupService{
 
 
   rpc GetGroupMembers(GetGroupMembersRequest) returns (GetGroupMembersResponse) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={security: {security_requirement: {key: "Bearer"}}};
     option (google.api.http) = {
       get: "/v1/group/members"
     };
   }
 
   rpc DeleteGroup(DeleteGroupRequest) returns (Empty) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={security: {security_requirement: {key: "Bearer"}}};
     option (google.api.http) = {
       delete: "/v1/group/{group_id}"
     };
   }
 
   rpc DeleteInviteCode(DeleteInviteCodeRequest) returns (Empty) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={security: {security_requirement: {key: "Bearer"}}};
     option (google.api.http) = {
       delete: "/v1/group/invite-code/{group_id}"
     };
   }
 
   rpc GetInviteCode(GetInviteCodeRequest) returns (GetInviteCodeResponse) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={security: {security_requirement: {key: "Bearer"}}};
     option (google.api.http) = {
       get: "/v1/group/invite-code/g2i"
     };
   }
 
   rpc GetGroupInfo(GetGroupInfoRequest) returns (GetGroupInfoResponse) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={security: {security_requirement: {key: "Bearer"}}};
     option (google.api.http) = {
       get: "/v1/group"
     };
   }
 
   rpc GetGroupByInviteCode(GetGroupByInviteCodeRequest) returns (GetGroupInfoResponse) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={security: {security_requirement: {key: "Bearer"}}};
     option (google.api.http) = {
       get: "/v1/group/invite-code/i2g"
     };

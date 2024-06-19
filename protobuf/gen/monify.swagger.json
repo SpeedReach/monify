@@ -128,6 +128,11 @@
         ],
         "tags": [
           "GroupService"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ]
       },
       "post": {
@@ -173,6 +178,11 @@
         },
         "tags": [
           "GroupService"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ]
       }
     },
@@ -199,6 +209,11 @@
         ],
         "tags": [
           "GroupService"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ]
       }
     },
@@ -225,6 +240,11 @@
         ],
         "tags": [
           "GroupService"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ]
       }
     },
@@ -249,6 +269,11 @@
         ],
         "tags": [
           "GroupService"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ]
       }
     },
@@ -273,6 +298,11 @@
         ],
         "tags": [
           "GroupService"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ]
       }
     },
@@ -297,6 +327,11 @@
         ],
         "tags": [
           "GroupService"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ]
       }
     },
@@ -321,6 +356,11 @@
         ],
         "tags": [
           "GroupService"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ]
       }
     },
@@ -345,6 +385,11 @@
         ],
         "tags": [
           "GroupService"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ]
       }
     },
@@ -369,6 +414,11 @@
         ],
         "tags": [
           "GroupsBillService"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ]
       },
       "post": {
@@ -393,6 +443,11 @@
         ],
         "tags": [
           "GroupsBillService"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ]
       }
     },
@@ -417,6 +472,11 @@
         ],
         "tags": [
           "GroupsBillService"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ]
       },
       "put": {
@@ -447,6 +507,11 @@
         ],
         "tags": [
           "GroupsBillService"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ]
       }
     },
@@ -485,6 +550,11 @@
         ],
         "tags": [
           "GroupsBillService"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ]
       }
     }

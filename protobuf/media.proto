@@ -5,7 +5,7 @@ option go_package = "github.com/SpeedReach/monify";
 
 message MEmpty{}
 service MediaService {
-  rpc ConfirmImageUsage(ConfirmImageUsageRequest) returns (MEmpty);
+  rpc ConfirmImageUsage(ConfirmImageUsageRequest) returns (MEmpty){}
 }
 
 

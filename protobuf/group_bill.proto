@@ -3,11 +3,13 @@ option go_package = "github.com/SpeedReach/monify";
 
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 
 message GroupGroupBillEmpty{}
 
 service GroupsBillService{
     rpc CreateGroupBill(CreateGroupBillRequest) returns (CreateGroupBillResponse){
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={security: {security_requirement: {key: "Bearer"}}};
         option (google.api.http) = {
             post: "/v1/groups_bill"
             body: "*"
@@ -15,18 +17,21 @@ service GroupsBillService{
     }
 
     rpc GetGroupBills(GetGroupBillsRequest) returns (GetGroupBillsResponse){
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={security: {security_requirement: {key: "Bearer"}}};
         option (google.api.http) = {
             get: "/v1/groups_bill"
         };
     }
 
     rpc DeleteGroupBill(DeleteGroupBillRequest) returns (GroupGroupBillEmpty){
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={security: {security_requirement: {key: "Bearer"}}};
         option (google.api.http) = {
             delete: "/v1/groups_bill/{bill_id}"
         };
     }
 
     rpc ModifyGroupBill(ModifyGroupBillRequest) returns (GroupGroupBillEmpty){
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={security: {security_requirement: {key: "Bearer"}}};
         option (google.api.http) = {
             put: "/v1/groups_bill/{bill_id}"
             body: "*"
@@ -34,6 +39,7 @@ service GroupsBillService{
     }
 
     rpc GetHistory(GetHistoryRequest) returns (GetHistoryResponse) {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={security: {security_requirement: {key: "Bearer"}}};
         option (google.api.http) = {
             get: "/v1/group_bill/history"
         };
