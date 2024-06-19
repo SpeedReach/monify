@@ -10,6 +10,7 @@ import (
 	"math"
 	"math/rand"
 	"monify/lib"
+	"monify/lib/group"
 	monify "monify/protobuf/gen/go"
 	"time"
 )
@@ -19,7 +20,6 @@ const (
 	timeDeterLength  = 4
 	randomLength     = 2
 	inviteCodeLength = timeDeterLength + randomLength
-	expiresInterval  = time.Minute * 10
 )
 
 func (s Service) GenerateInviteCode(ctx context.Context, req *monify.GenerateInviteCodeRequest) (*monify.GenerateInviteCodeResponse, error) {
@@ -43,6 +43,20 @@ func (s Service) GenerateInviteCode(ctx context.Context, req *monify.GenerateInv
 	}
 	if !hasPerm {
 		return nil, status.Error(codes.PermissionDenied, "Permission denied")
+	}
+
+	code, err := getExistsInviteCode(ctx, groupId)
+	if err != nil {
+		logger.Error("Failed to get invite code", zap.Error(err))
+		return nil, err
+	}
+	if code != (group.InviteCode{}) && !code.IsExpired() {
+		_, err := db.ExecContext(ctx, `DELETE FROM group_invite_code WHERE invite_code = $1`, code.GroupId)
+		if err != nil {
+			logger.Error("Failed to delete invite code", zap.Error(err))
+			return nil, status.Error(codes.Internal, "Internal")
+		}
+		return &monify.GenerateInviteCodeResponse{InviteCode: code.Code}, nil
 	}
 
 	// generate invite code, we retry when the invite code already exists and is active
@@ -83,7 +97,7 @@ func (s Service) GenerateInviteCode(ctx context.Context, req *monify.GenerateInv
 			break
 		case nil:
 			// if invite code exists and is active, we wait and retry
-			if createdAt.Add(expiresInterval).After(time.Now()) {
+			if createdAt.Add(group.ExpiresInterval).After(time.Now()) {
 				// valid invite code already exists retry
 				time.Sleep(time.Millisecond * 83)
 				continue
@@ -116,7 +130,7 @@ func indexToChar(index int) byte {
 }
 func generateInviteCode() string {
 	charsCount := len(inviteCodeChars)
-	seed := time.Now().UnixMilli() % int64(expiresInterval)
+	seed := time.Now().UnixMilli() % int64(group.ExpiresInterval)
 	inviteCodeRange := int(math.Pow(float64(charsCount), timeDeterLength))
 	code := int(seed) % inviteCodeRange
 	inviteCode := ""
@@ -131,4 +145,19 @@ func generateInviteCode() string {
 		inviteCode += string(indexToChar(rand.Int() % charsCount))
 	}
 	return inviteCode
+}
+
+func getExistsInviteCode(ctx context.Context, groupId uuid.UUID) (group.InviteCode, error) {
+	db := ctx.Value(lib.DatabaseContextKey{}).(*sql.DB)
+	logger := ctx.Value(lib.LoggerContextKey{}).(*zap.Logger)
+	inviteCode := group.InviteCode{GroupId: groupId}
+	err := db.QueryRowContext(ctx, "SELECT invite_code, created_at FROM group_invite_code WHERE group_id = $1", groupId).Scan(&inviteCode.Code, &inviteCode.CreatedAt)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return group.InviteCode{}, nil
+		}
+		logger.Error("Failed to get invite code", zap.Error(err))
+		return group.InviteCode{}, status.Error(codes.Internal, "Internal")
+	}
+	return inviteCode, nil
 }

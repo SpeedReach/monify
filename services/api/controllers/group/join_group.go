@@ -8,9 +8,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"monify/lib"
+	"monify/lib/group"
 	monify "monify/protobuf/gen/go"
 	"monify/services/api/utils"
-	"time"
 )
 
 func (s Service) JoinGroup(ctx context.Context, req *monify.JoinGroupRequest) (*monify.JoinGroupResponse, error) {
@@ -37,11 +37,11 @@ func (s Service) JoinGroup(ctx context.Context, req *monify.JoinGroupRequest) (*
 
 // findActiveInviteCode
 // context requires middlewares.DatabaseContextKey:*sql.DB
-func findActiveInviteCode(ctx context.Context, logger *zap.Logger, inviteCode string) (uuid.UUID, error) {
+func findActiveInviteCode(ctx context.Context, logger *zap.Logger, inviteCodeStr string) (uuid.UUID, error) {
 	db := ctx.Value(lib.DatabaseContextKey{}).(*sql.DB)
 	rows, err := db.QueryContext(ctx, `
 		SELECT group_id, created_at FROM group_invite_code WHERE invite_code = $1
-	`, inviteCode)
+	`, inviteCodeStr)
 	if err != nil {
 		logger.Error("Failed to query group invite code", zap.Error(err))
 		return uuid.Nil, status.Error(codes.Internal, "Internal")
@@ -50,18 +50,17 @@ func findActiveInviteCode(ctx context.Context, logger *zap.Logger, inviteCode st
 	if !rows.Next() {
 		return uuid.Nil, status.Error(codes.NotFound, "Group invite code not found")
 	}
-	var groupId uuid.UUID
-	var createdAt time.Time
-	err = rows.Scan(&groupId, &createdAt)
+	inviteCode := group.InviteCode{}
+	err = rows.Scan(&inviteCode.GroupId, &inviteCode.CreatedAt)
 	if err != nil {
 		logger.Error("Failed to scan group invite code", zap.Error(err))
 		return uuid.Nil, status.Error(codes.Internal, "Internal")
 	}
-	if time.Since(createdAt) > time.Duration(expiresInterval) {
+	if inviteCode.IsExpired() {
 		return uuid.Nil, status.Error(codes.InvalidArgument, "Group invite code expired")
 	}
 
-	return groupId, nil
+	return inviteCode.GroupId, nil
 }
 
 // context requires middlewares.DatabaseContextKey:*sql.DB

@@ -55,6 +55,9 @@ func TestGroupInviteCode(t *testing.T) {
 	inviteCode, err := client.GetInviteCode(context.Background(), &monify.GetInviteCodeRequest{GroupId: group.GroupId})
 	assert.NoError(t, err)
 	assert.Equal(t, code.InviteCode, inviteCode.InviteCode)
+	code2, err := client.GenerateInviteCode(context.Background(), &monify.GenerateInviteCodeRequest{GroupId: group.GroupId})
+	assert.NoError(t, err)
+	assert.Equal(t, code.InviteCode, code2.InviteCode)
 
 	groupBrief, err := client.GetGroupByInviteCode(context.Background(), &monify.GetGroupByInviteCodeRequest{InviteCode: code.InviteCode})
 	assert.NoError(t, err)

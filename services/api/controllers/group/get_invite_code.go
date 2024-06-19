@@ -9,8 +9,8 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/durationpb"
 	"monify/lib"
+	"monify/lib/group"
 	monify "monify/protobuf/gen/go"
-	"time"
 )
 
 func (s Service) GetInviteCode(ctx context.Context, req *monify.GetInviteCodeRequest) (*monify.GetInviteCodeResponse, error) {
@@ -33,9 +33,8 @@ func (s Service) GetInviteCode(ctx context.Context, req *monify.GetInviteCodeReq
 	db := ctx.Value(lib.DatabaseContextKey{}).(*sql.DB)
 	logger := ctx.Value(lib.LoggerContextKey{}).(*zap.Logger)
 
-	var inviteCode string
-	var createdAt time.Time
-	err = db.QueryRowContext(ctx, "SELECT invite_code, created_at FROM group_invite_code WHERE group_id = $1", groupId).Scan(&inviteCode, &createdAt)
+	inviteCode := group.InviteCode{GroupId: groupId}
+	err = db.QueryRowContext(ctx, "SELECT invite_code, created_at FROM group_invite_code WHERE group_id = $1", groupId).Scan(&inviteCode.Code, &inviteCode.CreatedAt)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, status.Error(codes.NotFound, "Invite code not found")
@@ -43,12 +42,11 @@ func (s Service) GetInviteCode(ctx context.Context, req *monify.GetInviteCodeReq
 		logger.Error("Failed to get invite code", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Internal")
 	}
-	expiresAfter := createdAt.Add(expiresInterval).Sub(time.Now())
 
-	if expiresAfter < 0 {
+	if inviteCode.IsExpired() {
 		logger.Info("queried a expired invite code")
 		return nil, status.Error(codes.NotFound, "Invite code expired")
 	}
 
-	return &monify.GetInviteCodeResponse{InviteCode: inviteCode, ExpiresAfter: durationpb.New(expiresAfter)}, nil
+	return &monify.GetInviteCodeResponse{InviteCode: inviteCode.Code, ExpiresAfter: durationpb.New(inviteCode.ExpiresAfter())}, nil
 }
