@@ -3,12 +3,15 @@ package infra
 import (
 	"database/sql"
 	"go.uber.org/zap"
+	"google.golang.org/grpc"
+	monify "monify/protobuf/gen/go"
 )
 
 type Resources struct {
 	DBConn       *sql.DB
 	Logger       *zap.Logger
 	KafkaWriters KafkaWriters
+	ImageService *monify.MediaServiceClient
 }
 
 func SetupResources(config Config) Resources {
@@ -21,6 +24,8 @@ func SetupResources(config Config) Resources {
 	if err != nil {
 		panic(err)
 	}
+
+	grpc.NewClient("")
 	return Resources{
 		DBConn:       dbConn,
 		Logger:       logger,

@@ -1,12 +1,26 @@
 syntax = "proto3";
 option go_package = "github.com/SpeedReach/monify";
 
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 
 message UEmpty {}
 
 service UserService {
-  rpc UpdateUserName (UpdateUserNameRequest) returns (UEmpty) {}
-  
+  rpc UpdateUserName (UpdateUserNameRequest) returns (UEmpty) {
+    option (google.api.http) = {
+      put: "/v1/user/name"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={security: {security_requirement: {key: "Bearer"}}};
+  }
+  rpc UpdateUserAvatar (UpdateUserAvatarRequest) returns (UEmpty) {
+    option (google.api.http) = {
+      put: "/v1/user/avatar"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={security: {security_requirement: {key: "Bearer"}}};
+  }
   rpc AddDeviceToken (AddDeviceTokenRequest) returns (UEmpty) {}
   rpc RemoveDeviceToken (RemoveDeviceTokenRequest) returns (UEmpty) {}
 }
@@ -23,4 +37,8 @@ message AddDeviceTokenRequest {
 
 message RemoveDeviceTokenRequest {
   string device_token = 1;
+}
+
+message UpdateUserAvatarRequest {
+  string image_id = 1;
 }

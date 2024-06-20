@@ -393,6 +393,68 @@
         ]
       }
     },
+    "/v1/user/name": {
+      "put": {
+        "operationId": "UserService_UpdateUserName",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateUserNameRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/v1/user/avatar": {
+      "put": {
+        "operationId": "UserService_UpdateUserAvatar",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateUserAvatarRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
     "/v1/groups_bill": {
       "get": {
         "operationId": "GroupsBillService_GetGroupBills",
@@ -981,6 +1043,22 @@
     },
     "UEmpty": {
       "type": "object"
+    },
+    "UpdateUserAvatarRequest": {
+      "type": "object",
+      "properties": {
+        "imageId": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateUserNameRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
     }
   },
   "securityDefinitions": {

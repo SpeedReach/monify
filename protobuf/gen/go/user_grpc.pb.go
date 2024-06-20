@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	UserService_UpdateUserName_FullMethodName    = "/UserService/UpdateUserName"
+	UserService_UpdateUserAvatar_FullMethodName  = "/UserService/UpdateUserAvatar"
 	UserService_AddDeviceToken_FullMethodName    = "/UserService/AddDeviceToken"
 	UserService_RemoveDeviceToken_FullMethodName = "/UserService/RemoveDeviceToken"
 )
@@ -29,6 +30,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
 	UpdateUserName(ctx context.Context, in *UpdateUserNameRequest, opts ...grpc.CallOption) (*UEmpty, error)
+	UpdateUserAvatar(ctx context.Context, in *UpdateUserAvatarRequest, opts ...grpc.CallOption) (*UEmpty, error)
 	AddDeviceToken(ctx context.Context, in *AddDeviceTokenRequest, opts ...grpc.CallOption) (*UEmpty, error)
 	RemoveDeviceToken(ctx context.Context, in *RemoveDeviceTokenRequest, opts ...grpc.CallOption) (*UEmpty, error)
 }
@@ -44,6 +46,15 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 func (c *userServiceClient) UpdateUserName(ctx context.Context, in *UpdateUserNameRequest, opts ...grpc.CallOption) (*UEmpty, error) {
 	out := new(UEmpty)
 	err := c.cc.Invoke(ctx, UserService_UpdateUserName_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) UpdateUserAvatar(ctx context.Context, in *UpdateUserAvatarRequest, opts ...grpc.CallOption) (*UEmpty, error) {
+	out := new(UEmpty)
+	err := c.cc.Invoke(ctx, UserService_UpdateUserAvatar_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -73,6 +84,7 @@ func (c *userServiceClient) RemoveDeviceToken(ctx context.Context, in *RemoveDev
 // for forward compatibility
 type UserServiceServer interface {
 	UpdateUserName(context.Context, *UpdateUserNameRequest) (*UEmpty, error)
+	UpdateUserAvatar(context.Context, *UpdateUserAvatarRequest) (*UEmpty, error)
 	AddDeviceToken(context.Context, *AddDeviceTokenRequest) (*UEmpty, error)
 	RemoveDeviceToken(context.Context, *RemoveDeviceTokenRequest) (*UEmpty, error)
 	mustEmbedUnimplementedUserServiceServer()
@@ -84,6 +96,9 @@ type UnimplementedUserServiceServer struct {
 
 func (UnimplementedUserServiceServer) UpdateUserName(context.Context, *UpdateUserNameRequest) (*UEmpty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserName not implemented")
+}
+func (UnimplementedUserServiceServer) UpdateUserAvatar(context.Context, *UpdateUserAvatarRequest) (*UEmpty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserAvatar not implemented")
 }
 func (UnimplementedUserServiceServer) AddDeviceToken(context.Context, *AddDeviceTokenRequest) (*UEmpty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddDeviceToken not implemented")
@@ -118,6 +133,24 @@ func _UserService_UpdateUserName_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).UpdateUserName(ctx, req.(*UpdateUserNameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_UpdateUserAvatar_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateUserAvatarRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UpdateUserAvatar(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_UpdateUserAvatar_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UpdateUserAvatar(ctx, req.(*UpdateUserAvatarRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -168,6 +201,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateUserName",
 			Handler:    _UserService_UpdateUserName_Handler,
+		},
+		{
+			MethodName: "UpdateUserAvatar",
+			Handler:    _UserService_UpdateUserAvatar_Handler,
 		},
 		{
 			MethodName: "AddDeviceToken",

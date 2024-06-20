@@ -38,6 +38,7 @@ func run() error {
 	}
 	_ = gw.RegisterGroupServiceHandlerFromEndpoint(ctx, mux, *grpcServerEndpoint, opts)
 	_ = gw.RegisterGroupsBillServiceHandlerFromEndpoint(ctx, mux, *grpcServerEndpoint, opts)
+	_ = gw.RegisterUserServiceHandlerFromEndpoint(ctx, mux, *grpcServerEndpoint, opts)
 	handler := allowCORS(mux)
 	// Start HTTP server (and proxy calls to gRPC server endpoint)
 	return http.ListenAndServe(":8081", handler)

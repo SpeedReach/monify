@@ -12,6 +12,7 @@ service MediaService {
 message ConfirmImageUsageRequest {
   string image_id = 1;
   Usage usage = 2;
+  string user_id = 3;
 }
 
 enum Usage {

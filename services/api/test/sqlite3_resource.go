@@ -16,6 +16,9 @@ import (
 	"testing"
 )
 
+func SetupTestDB() {
+
+}
 func SetupTestResource(t *testing.T, secrets map[string]string) infra.Resources {
 	dbFile, err := filepath.Abs("../../../build/test.db")
 	if err != nil {

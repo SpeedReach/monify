@@ -1,14 +1,9 @@
 package media
 
 import (
-	"bytes"
-	"encoding/json"
 	"github.com/stretchr/testify/assert"
-	"io"
-	"mime/multipart"
 	"monify/lib/utils"
 	"net/http"
-	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"sync"
@@ -76,37 +71,4 @@ func TestS3Storage(t *testing.T) {
 	response, err = http.Get(state.infra.objStorage.GetUrl("test.png"))
 	assert.NoError(t, err)
 	assert.Equal(t, http.StatusForbidden, response.StatusCode)
-}
-
-func TestUpload(t *testing.T) {
-	return
-	SetupTestServer()
-	fp := getTestFilePath()
-	file, err := os.Open(fp)
-	assert.NoError(t, err)
-	defer file.Close()
-
-	var requestBody bytes.Buffer
-	writer := multipart.NewWriter(&requestBody)
-	// Add the file to the form
-	part, err := writer.CreateFormFile("image", filepath.Base("test.png"))
-	assert.NoError(t, err)
-	_, err = io.Copy(part, file)
-	assert.NoError(t, err)
-	err = writer.Close()
-	assert.NoError(t, err)
-	req, err := http.NewRequest("POST", "/image", &requestBody)
-	assert.NoError(t, err)
-	req.Header.Set("Content-Type", writer.FormDataContentType())
-
-	// Create a response recorder
-	response := httptest.NewRecorder()
-	state.server.mux.ServeHTTP(response, req)
-	assert.Equal(t, http.StatusOK, response.Code)
-
-	resBody := UploadImageResponse{}
-	err = json.Unmarshal(response.Body.Bytes(), &resBody)
-	assert.NoError(t, err)
-	println(resBody.Url)
-	println(resBody.ImageId)
 }
