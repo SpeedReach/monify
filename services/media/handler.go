@@ -129,6 +129,6 @@ func extractFileNameSuffix(fileName string) string {
 
 func StoreTmpFile(ctx context.Context, file media.TmpFile) error {
 	db := ctx.Value(lib.DatabaseContextKey{}).(*sql.DB)
-	_, err := db.ExecContext(ctx, "INSERT INTO tmp_file (fileid, path, uploader, expected_usage, uploaded_at) VALUES ($1, $2, $3, $4, $5)", file.Id, file.Path, file.Uploader, file.ExpectedUsage, file.UploadedAt)
+	_, err := db.ExecContext(ctx, "INSERT INTO tmp_file (file_id, path, uploader, expected_usage, uploaded_at) VALUES ($1, $2, $3, $4, $5)", file.Id, file.Path, file.Uploader, file.ExpectedUsage, file.UploadedAt)
 	return err
 }

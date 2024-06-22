@@ -34,9 +34,10 @@ func (s Service) GetGroupMembers(ctx context.Context, req *monify.GetGroupMember
 
 	fileService := ctx.Value(lib.FileServiceContextKey{}).(infra.FileService)
 	rows, err := db.QueryContext(ctx, `
-		SELECT gm.user_id, gm.group_member_id, ui.name, ui.avatar_url
+		SELECT gm.user_id, gm.group_member_id, ui.name, cf.path
 		FROM group_member gm
 		LEFT JOIN user_identity ui on gm.user_id = ui.user_id
+		LEFT JOIN confirmed_file cf on ui.avatar_id = cf.file_id
 		WHERE group_id = $1
 	`, groupId)
 	if err != nil {

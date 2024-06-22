@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 	"monify/lib"
 	monify "monify/protobuf/gen/go"
+	"monify/services/api/infra"
 )
 
 func (Service) GetUserInfo(ctx context.Context, req *monify.GetUserInfoRequest) (*monify.GetUserInfoResponse, error) {
@@ -20,7 +21,11 @@ func (Service) GetUserInfo(ctx context.Context, req *monify.GetUserInfoRequest) 
 	logger := ctx.Value(lib.LoggerContextKey{}).(*zap.Logger)
 	response := monify.GetUserInfoResponse{}
 
-	err := db.QueryRowContext(ctx, "SELECT name, avatar_url FROM user_identity WHERE user_id = $1", userId).Scan(&response.Name, &response.AvatarUrl)
+	err := db.QueryRowContext(ctx, `
+		SELECT name, cf.path
+		FROM user_identity 
+		LEFT JOIN confirmed_file cf on user_identity.avatar_id = cf.file_id
+		WHERE user_id = $1`, userId).Scan(&response.Name, &response.AvatarUrl)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, status.Error(codes.NotFound, "Not found")
@@ -28,5 +33,7 @@ func (Service) GetUserInfo(ctx context.Context, req *monify.GetUserInfoRequest) 
 		logger.Error("failed to get user info", zap.Error(err))
 		return nil, status.Error(codes.Internal, "Internal")
 	}
+	fileService := ctx.Value(lib.FileServiceContextKey{}).(infra.FileService)
+	response.AvatarUrl = fileService.GetUrl(response.AvatarUrl)
 	return &response, nil
 }

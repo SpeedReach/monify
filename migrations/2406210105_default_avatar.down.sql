@@ -1,1 +1,3 @@
-ALTER TABLE user_identity DROP COLUMN avatar_url;
+ALTER TABLE user_identity DROP COLUMN avatar_id;
+DELETE FROM confirmed_file WHERE file_id = '00000000-0000-0000-0000-000000000000';
+DELETE FROM user_identity WHERE user_id = '00000000-0000-0000-0000-000000000000';

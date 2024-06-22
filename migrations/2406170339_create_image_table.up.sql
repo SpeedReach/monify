@@ -1,5 +1,5 @@
 CREATE TABLE tmp_file(
-                         fileId uuid PRIMARY KEY,
+                         file_id uuid PRIMARY KEY,
                          path varchar(100) NOT NULL ,
                          expected_usage int8 NOT NULL ,
                          uploader uuid references user_identity(user_id) NOT NULL,
@@ -7,7 +7,7 @@ CREATE TABLE tmp_file(
 );
 
 CREATE TABLE confirmed_file(
-                               fileId uuid PRIMARY KEY,
+                               file_id uuid PRIMARY KEY,
                                path varchar(100) NOT NULL ,
                                usage int8 NOT NULL ,
                                uploader uuid references user_identity(user_id) NOT NULL,

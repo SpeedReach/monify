@@ -14,6 +14,7 @@ RUN go build -o /app /usr/src/app/cmd/media_service/main.go
 FROM alpine:3.19
 COPY --from=build /app /app
 EXPOSE 8080
+EXPOSE 8081
 CMD ["/app"]
 
 
