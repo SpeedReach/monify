@@ -31,7 +31,7 @@ docker_build: docker_build_proxy docker_build_monify docker_build_media
 docker_build_proxy:
 	 docker build -f Dockerfile.proxy -t registry.nccupass.com/monify_restful_proxy .
 docker_build_monify:
-
+	 docker build -f Dockerfile.api -t registry.nccupass.com/monify .
 docker_build_media:
 	 docker build -f Dockerfile.media -t registry.nccupass.com/media_service .
 

@@ -15,6 +15,7 @@ import (
 	"monify/services/api/controllers/auth"
 	"monify/services/api/controllers/group"
 	"monify/services/api/controllers/group_bill"
+	"monify/services/api/controllers/user"
 	"monify/services/api/infra"
 	"net"
 	"time"
@@ -46,6 +47,7 @@ func SetupServices(g *grpc.Server, config ServerConfig) {
 	})
 	monify.RegisterGroupServiceServer(g, group.Service{})
 	monify.RegisterGroupsBillServiceServer(g, group_bill.Service{})
+	monify.RegisterUserServiceServer(g, user.Service{})
 }
 
 func setupInterceptor(resources infra.Resources, config ServerConfig) grpc.ServerOption {
