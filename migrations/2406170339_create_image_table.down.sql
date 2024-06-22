@@ -1,2 +1,2 @@
-DROP TABLE TmpImage;
-DROP TABLE ConfirmedImage;
+DROP TABLE tmp_file;
+DROP TABLE confirmed_file;

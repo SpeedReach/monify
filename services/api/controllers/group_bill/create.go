@@ -135,30 +135,30 @@ func insertBill(ctx context.Context, tx *sql.Tx, info insertBillInfo) error {
 
 func validateGroupBill(req *monify.CreateGroupBillRequest) error {
 	if req.Title == "" {
-		return status.Error(codes.InvalidArgument, "Title is required")
+		return status.Error(codes.InvalidArgument, "標題不能為空")
 	}
 	if req.TotalMoney <= 0 {
-		return status.Error(codes.InvalidArgument, "Total money must be greater than 0")
+		return status.Error(codes.InvalidArgument, "總金額必須大於0")
 	}
 	if len(req.SplitPeople) == 0 {
-		return status.Error(codes.InvalidArgument, "Split people is required")
+		return status.Error(codes.InvalidArgument, "分帳名單不能為空")
 	}
 	if len(req.PrepaidPeople) == 0 {
-		return status.Error(codes.InvalidArgument, "Prepaid people is required")
+		return status.Error(codes.InvalidArgument, "代墊的人不能為空")
 	}
 	totalPrepaid := 0.0
 	for _, prepaidPerson := range req.PrepaidPeople {
 		totalPrepaid += prepaidPerson.Amount
 	}
 	if totalPrepaid != req.TotalMoney {
-		return status.Error(codes.InvalidArgument, "Total money must be equal to total prepaid")
+		return status.Error(codes.InvalidArgument, "分帳與代墊必須相等")
 	}
 	totalSplit := 0.0
 	for _, splitPerson := range req.SplitPeople {
 		totalSplit += splitPerson.Amount
 	}
 	if totalSplit != req.TotalMoney {
-		return status.Error(codes.InvalidArgument, "Total money must be equal to total split")
+		return status.Error(codes.InvalidArgument, "分帳與代墊必須相等")
 	}
 	return nil
 }

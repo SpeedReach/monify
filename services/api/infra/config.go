@@ -1,10 +1,11 @@
 package infra
 
 type Config struct {
-	PostgresURI   string
-	KafkaUsername string
-	KafkaPassword string
-	KafkaConn     string
+	PostgresURI    string
+	KafkaUsername  string
+	KafkaPassword  string
+	KafkaConn      string
+	FileServerHost string
 }
 
 func NewConfigFromSecrets(secrets map[string]string) Config {
@@ -12,6 +13,8 @@ func NewConfigFromSecrets(secrets map[string]string) Config {
 	kafkaU := secrets["KAFKA_USER"]
 	kafkaP := secrets["KAFKA_PWD"]
 	kafkaConn := secrets["KAFKA_CONN"]
+	fileServerHost := secrets["FILE_SERVER_HOST"]
+
 	if kafkaU == "" {
 		panic("Missing KAFKA_USER")
 	}
@@ -24,10 +27,14 @@ func NewConfigFromSecrets(secrets map[string]string) Config {
 	if postgresUri == "" {
 		panic("Missing POSTGRES_URI")
 	}
+	if fileServerHost == "" {
+		panic("Missing FILE_SERVER_HOST")
+	}
 	return Config{
-		PostgresURI:   postgresUri,
-		KafkaUsername: kafkaU,
-		KafkaPassword: kafkaP,
-		KafkaConn:     kafkaConn,
+		PostgresURI:    postgresUri,
+		KafkaUsername:  kafkaU,
+		KafkaPassword:  kafkaP,
+		KafkaConn:      kafkaConn,
+		FileServerHost: fileServerHost,
 	}
 }

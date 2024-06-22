@@ -31,11 +31,11 @@ func NewServer(infra Infra) Server {
 
 func NewHttpServer(infra Infra) *http.ServeMux {
 	mux := http.NewServeMux()
-	authMiddleware := auth.AuthMiddleware{JwtSecret: infra.config.JwtSecret}
+	authMiddleware := auth.Middleware{JwtSecret: infra.config.JwtSecret}
 	resourceMiddleware := func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx := r.Context()
-			ctx = context.WithValue(ctx, lib.ImageStorageContextKey{}, infra.objStorage)
+			ctx = context.WithValue(ctx, lib.FileServiceContextKey{}, infra.objStorage)
 			ctx = context.WithValue(ctx, lib.DatabaseContextKey{}, infra.db)
 			ctx = context.WithValue(ctx, lib.ConfigContextKey{}, infra.config)
 			next.ServeHTTP(w, r.WithContext(ctx))
@@ -60,12 +60,14 @@ func (s Server) Start() {
 		if err != nil {
 			panic(err)
 		}
+		log.Println("gRPC server started on port", port2)
 		log.Fatal(s.gServer.Serve(lis))
 	}()
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port1))
 	if err != nil {
 		panic(err)
 	}
+	log.Println("HTTP server started on port", port1)
 	log.Fatal(http.Serve(lis, s.mux))
 }
 
@@ -75,7 +77,7 @@ func setupInterceptor(resources Infra) grpc.ServerOption {
 		logger := resources.logger.With(zap.String("request_id", requestId.String()))
 		ctx = context.WithValue(ctx, lib.DatabaseContextKey{}, resources.db)
 		ctx = context.WithValue(ctx, lib.LoggerContextKey{}, logger)
-		ctx = context.WithValue(ctx, lib.ImageStorageContextKey{}, resources.objStorage)
+		ctx = context.WithValue(ctx, lib.FileServiceContextKey{}, resources.objStorage)
 		start := time.Now()
 		m, err := handler(ctx, req)
 		logger.Log(zap.InfoLevel, "request completed", zap.Duration("duration", time.Since(start)), zap.String("method", info.FullMethod))

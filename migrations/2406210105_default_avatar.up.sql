@@ -1,0 +1,1 @@
+ALTER TABLE user_identity ADD COLUMN avatar_url VARCHAR(255) DEFAULT '/default_avatar.png' NOT NULL;

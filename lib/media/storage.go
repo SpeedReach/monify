@@ -7,6 +7,10 @@ type Storage interface {
 
 	Delete(path string) error
 
+	FileHost
+}
+
+type FileHost interface {
 	GetHost() string
 	GetUrl(path string) string
 }

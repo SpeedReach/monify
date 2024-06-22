@@ -5,4 +5,4 @@ type DatabaseContextKey struct{}
 type LoggerContextKey struct{}
 type KafkaWriterContextKey struct{}
 type ConfigContextKey struct{}
-type ImageStorageContextKey struct{}
+type FileServiceContextKey struct{}

@@ -18,5 +18,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	media.NewHttpServer(infra)
+	media.NewServer(infra).Start()
 }

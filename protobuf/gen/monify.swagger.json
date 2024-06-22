@@ -455,6 +455,35 @@
         ]
       }
     },
+    "/v1/user/info": {
+      "get": {
+        "operationId": "UserService_GetUserInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetUserInfoResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "UserService"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
     "/v1/groups_bill": {
       "get": {
         "operationId": "GroupsBillService_GetGroupBills",
@@ -842,6 +871,17 @@
           "type": "string"
         },
         "expiresAfter": {
+          "type": "string"
+        }
+      }
+    },
+    "GetUserInfoResponse": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "avatarUrl": {
           "type": "string"
         }
       }

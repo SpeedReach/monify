@@ -4,14 +4,13 @@ import (
 	"database/sql"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
-	monify "monify/protobuf/gen/go"
 )
 
 type Resources struct {
 	DBConn       *sql.DB
 	Logger       *zap.Logger
 	KafkaWriters KafkaWriters
-	ImageService *monify.MediaServiceClient
+	FileService  FileService
 }
 
 func SetupResources(config Config) Resources {

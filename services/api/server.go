@@ -49,7 +49,7 @@ func SetupServices(g *grpc.Server, config ServerConfig) {
 }
 
 func setupInterceptor(resources infra.Resources, config ServerConfig) grpc.ServerOption {
-	authFn := authLib.AuthMiddleware{JwtSecret: config.JwtSecret}
+	authFn := authLib.Middleware{JwtSecret: config.JwtSecret}
 	interceptor := func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
 		userId, err := authFn.GrpcExtractUserId(ctx, req, info)
 		if err != nil {
@@ -63,6 +63,8 @@ func setupInterceptor(resources infra.Resources, config ServerConfig) grpc.Serve
 		ctx = context.WithValue(ctx, lib.KafkaWriterContextKey{}, resources.KafkaWriters)
 		ctx = context.WithValue(ctx, lib.DatabaseContextKey{}, resources.DBConn)
 		ctx = context.WithValue(ctx, lib.LoggerContextKey{}, logger)
+		ctx = context.WithValue(ctx, lib.ConfigContextKey{}, config)
+		ctx = context.WithValue(ctx, lib.FileServiceContextKey{}, resources.FileService)
 		start := time.Now()
 		m, err := handler(ctx, req)
 		logger.Log(zap.InfoLevel, "request completed", zap.Duration("duration", time.Since(start)), zap.String("method", info.FullMethod))

@@ -7,8 +7,10 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"io"
+	"log"
 	"monify/lib"
 	"monify/lib/media"
+	monify "monify/protobuf/gen/go"
 	"net/http"
 	"strings"
 	"time"
@@ -34,6 +36,7 @@ func uploadImage(w http.ResponseWriter, r *http.Request) {
 	// Parse our multipart form, a maximum upload of 5 MB files.
 	parseErr := r.ParseMultipartForm(5 << 20)
 	if parseErr != nil {
+		log.Printf("Could not parse multipart form: %v", parseErr)
 		http.Error(w, "Could not parse multipart form", http.StatusBadRequest)
 		return
 	}
@@ -41,7 +44,7 @@ func uploadImage(w http.ResponseWriter, r *http.Request) {
 	// Get the usage of the image
 	usageId := r.FormValue("usage")
 	usage := media.Parse(usageId)
-	if usage == media.Undefined {
+	if usage == monify.Usage_Undefined {
 		http.Error(w, "Invalid image usage.", http.StatusBadRequest)
 		return
 	}
@@ -70,23 +73,24 @@ func uploadImage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	imageStorage := r.Context().Value(lib.ImageStorageContextKey{}).(media.Storage)
+	imageStorage := r.Context().Value(lib.FileServiceContextKey{}).(media.Storage)
 	imgId := uuid.New()
-	path := generatePath(fileHeader.Filename, imgId)
+	path := generatePath(usage, fileHeader.Filename, imgId)
 	err = imageStorage.Store(path, imageData)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	tmpImage := media.TmpImage{
+	tmpFile := media.TmpFile{
 		Path:          path,
 		ExpectedUsage: usage,
 		Uploader:      userId,
 		Id:            imgId,
 		UploadedAt:    time.Now().UTC(),
 	}
-	err = StoreTmpImg(r.Context(), tmpImage)
+
+	err = StoreTmpFile(r.Context(), tmpFile)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -111,9 +115,9 @@ func uploadImage(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func generatePath(originFileName string, imgId uuid.UUID) string {
+func generatePath(usage monify.Usage, originFileName string, imgId uuid.UUID) string {
 	now := time.Now()
-	fn := imgId.String() + "/" + extractFileNameSuffix(originFileName)
+	fn := usage.String() + "/" + imgId.String() + "." + extractFileNameSuffix(originFileName)
 	dir := fmt.Sprintf("%d/%d/%d", now.Year(), now.Month(), now.Day())
 	return dir + "/" + fn
 }
@@ -123,8 +127,8 @@ func extractFileNameSuffix(fileName string) string {
 	return split[len(split)-1]
 }
 
-func StoreTmpImg(ctx context.Context, img media.TmpImage) error {
+func StoreTmpFile(ctx context.Context, file media.TmpFile) error {
 	db := ctx.Value(lib.DatabaseContextKey{}).(*sql.DB)
-	_, err := db.ExecContext(ctx, "INSERT INTO tmpimage (imgid, url, uploader, expected_usage, uploaded_at) VALUES ($1, $2, $3, $4, $5)", img.Id, img.Path, img.Uploader, img.ExpectedUsage, img.UploadedAt)
+	_, err := db.ExecContext(ctx, "INSERT INTO tmp_file (fileid, path, uploader, expected_usage, uploaded_at) VALUES ($1, $2, $3, $4, $5)", file.Id, file.Path, file.Uploader, file.ExpectedUsage, file.UploadedAt)
 	return err
 }

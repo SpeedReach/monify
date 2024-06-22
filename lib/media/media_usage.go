@@ -1,20 +1,15 @@
 package media
 
-type Usage int
+import monify "monify/protobuf/gen/go"
 
-const (
-	Undefined Usage = iota
-	UserAvatar
-	GroupAvatar
-)
-
-func Parse(str string) Usage {
+func Parse(str string) monify.Usage {
+	println(str)
 	switch str {
 	case "userAvatar":
-		return UserAvatar
+		return monify.Usage_UserAvatar
 	case "groupAvatar":
-		return GroupAvatar
+		return monify.Usage_GroupAvatar
 	default:
-		return Undefined
+		return monify.Usage_Undefined
 	}
 }

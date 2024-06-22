@@ -2,20 +2,21 @@ package media
 
 import (
 	"github.com/google/uuid"
+	monify "monify/protobuf/gen/go"
 	"time"
 )
 
-type TmpImage struct {
+type TmpFile struct {
 	Id            uuid.UUID
-	ExpectedUsage Usage
+	ExpectedUsage monify.Usage
 	Uploader      uuid.UUID
 	UploadedAt    time.Time
 	Path          string
 }
 
-type ConfirmedImage struct {
+type ConfirmedFile struct {
 	Id          uuid.UUID
-	Usage       Usage
+	Usage       monify.Usage
 	Uploader    uuid.UUID
 	UploadedAt  time.Time
 	Path        string

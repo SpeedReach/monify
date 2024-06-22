@@ -14,11 +14,11 @@ import (
 	"strings"
 )
 
-type AuthMiddleware struct {
+type Middleware struct {
 	JwtSecret string
 }
 
-func (m AuthMiddleware) HttpMiddleware(next http.Handler) http.Handler {
+func (m Middleware) HttpMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		auth := r.Header.Get("Authorization")
 		if auth != "" {
@@ -34,7 +34,7 @@ func (m AuthMiddleware) HttpMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func (m AuthMiddleware) GrpcExtractUserId(ctx context.Context, req any, info *grpc.UnaryServerInfo) (uuid.UUID, error) {
+func (m Middleware) GrpcExtractUserId(ctx context.Context, req any, info *grpc.UnaryServerInfo) (uuid.UUID, error) {
 	md, exists := metadata.FromIncomingContext(ctx)
 	if !exists {
 		return uuid.Nil, nil

@@ -7,6 +7,7 @@ import (
 	"google.golang.org/grpc/status"
 	"monify/lib"
 	monify "monify/protobuf/gen/go"
+	"monify/services/api/infra"
 )
 
 func (s Service) UpdateUserAvatar(ctx context.Context, req *monify.UpdateUserAvatarRequest) (*monify.UEmpty, error) {
@@ -14,16 +15,14 @@ func (s Service) UpdateUserAvatar(ctx context.Context, req *monify.UpdateUserAva
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "Unauthorized")
 	}
-	imageService := ctx.Value(lib.ImageStorageContextKey{}).(monify.MediaServiceClient)
-	_, err := imageService.ConfirmImageUsage(ctx, &monify.ConfirmImageUsageRequest{
-		ImageId: req.ImageId,
-		Usage:   monify.Usage_UserAvatar,
-		UserId:  userId.String(),
+	imageService := ctx.Value(lib.FileServiceContextKey{}).(infra.FileService)
+	_, err := imageService.ConfirmFileUsage(ctx, &monify.ConfirmFileUsageRequest{
+		FileId: req.ImageId,
+		Usage:  monify.Usage_UserAvatar,
+		UserId: userId.String(),
 	})
 	if err != nil {
 		return nil, err
 	}
-
-	//db := ctx.Value(lib.DatabaseContextKey{}).(*sql.DB)
-	return nil, nil
+	return &monify.UEmpty{}, nil
 }

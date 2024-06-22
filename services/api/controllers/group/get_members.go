@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 	"monify/lib"
 	monify "monify/protobuf/gen/go"
+	"monify/services/api/infra"
 )
 
 func (s Service) GetGroupMembers(ctx context.Context, req *monify.GetGroupMembersRequest) (*monify.GetGroupMembersResponse, error) {
@@ -31,8 +32,9 @@ func (s Service) GetGroupMembers(ctx context.Context, req *monify.GetGroupMember
 		return nil, status.Error(codes.PermissionDenied, "permission denied")
 	}
 
+	fileService := ctx.Value(lib.FileServiceContextKey{}).(infra.FileService)
 	rows, err := db.QueryContext(ctx, `
-		SELECT gm.user_id, gm.group_member_id, ui.name
+		SELECT gm.user_id, gm.group_member_id, ui.name, ui.avatar_url
 		FROM group_member gm
 		LEFT JOIN user_identity ui on gm.user_id = ui.user_id
 		WHERE group_id = $1
@@ -44,9 +46,10 @@ func (s Service) GetGroupMembers(ctx context.Context, req *monify.GetGroupMember
 	var members []*monify.GroupMember
 	for rows.Next() {
 		var member monify.GroupMember
-		if err := rows.Scan(&member.UserId, &member.MemberId, &member.UserName); err != nil {
+		if err := rows.Scan(&member.UserId, &member.MemberId, &member.UserName, &member.AvatarUrl); err != nil {
 			return nil, status.Error(codes.Internal, "failed to fetch group members")
 		}
+		member.AvatarUrl = fileService.GetUrl(member.AvatarUrl)
 		members = append(members, &member)
 	}
 	return &monify.GetGroupMembersResponse{Members: members}, nil

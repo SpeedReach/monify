@@ -19,14 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	MediaService_ConfirmImageUsage_FullMethodName = "/MediaService/ConfirmImageUsage"
+	MediaService_ConfirmFileUsage_FullMethodName = "/MediaService/ConfirmFileUsage"
+	MediaService_GetFileUrl_FullMethodName       = "/MediaService/GetFileUrl"
 )
 
 // MediaServiceClient is the client API for MediaService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MediaServiceClient interface {
-	ConfirmImageUsage(ctx context.Context, in *ConfirmImageUsageRequest, opts ...grpc.CallOption) (*MEmpty, error)
+	ConfirmFileUsage(ctx context.Context, in *ConfirmFileUsageRequest, opts ...grpc.CallOption) (*MEmpty, error)
+	GetFileUrl(ctx context.Context, in *GetFileUrlRequest, opts ...grpc.CallOption) (*GetFileUrlResponse, error)
 }
 
 type mediaServiceClient struct {
@@ -37,9 +39,18 @@ func NewMediaServiceClient(cc grpc.ClientConnInterface) MediaServiceClient {
 	return &mediaServiceClient{cc}
 }
 
-func (c *mediaServiceClient) ConfirmImageUsage(ctx context.Context, in *ConfirmImageUsageRequest, opts ...grpc.CallOption) (*MEmpty, error) {
+func (c *mediaServiceClient) ConfirmFileUsage(ctx context.Context, in *ConfirmFileUsageRequest, opts ...grpc.CallOption) (*MEmpty, error) {
 	out := new(MEmpty)
-	err := c.cc.Invoke(ctx, MediaService_ConfirmImageUsage_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MediaService_ConfirmFileUsage_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mediaServiceClient) GetFileUrl(ctx context.Context, in *GetFileUrlRequest, opts ...grpc.CallOption) (*GetFileUrlResponse, error) {
+	out := new(GetFileUrlResponse)
+	err := c.cc.Invoke(ctx, MediaService_GetFileUrl_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +61,8 @@ func (c *mediaServiceClient) ConfirmImageUsage(ctx context.Context, in *ConfirmI
 // All implementations must embed UnimplementedMediaServiceServer
 // for forward compatibility
 type MediaServiceServer interface {
-	ConfirmImageUsage(context.Context, *ConfirmImageUsageRequest) (*MEmpty, error)
+	ConfirmFileUsage(context.Context, *ConfirmFileUsageRequest) (*MEmpty, error)
+	GetFileUrl(context.Context, *GetFileUrlRequest) (*GetFileUrlResponse, error)
 	mustEmbedUnimplementedMediaServiceServer()
 }
 
@@ -58,8 +70,11 @@ type MediaServiceServer interface {
 type UnimplementedMediaServiceServer struct {
 }
 
-func (UnimplementedMediaServiceServer) ConfirmImageUsage(context.Context, *ConfirmImageUsageRequest) (*MEmpty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ConfirmImageUsage not implemented")
+func (UnimplementedMediaServiceServer) ConfirmFileUsage(context.Context, *ConfirmFileUsageRequest) (*MEmpty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConfirmFileUsage not implemented")
+}
+func (UnimplementedMediaServiceServer) GetFileUrl(context.Context, *GetFileUrlRequest) (*GetFileUrlResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFileUrl not implemented")
 }
 func (UnimplementedMediaServiceServer) mustEmbedUnimplementedMediaServiceServer() {}
 
@@ -74,20 +89,38 @@ func RegisterMediaServiceServer(s grpc.ServiceRegistrar, srv MediaServiceServer)
 	s.RegisterService(&MediaService_ServiceDesc, srv)
 }
 
-func _MediaService_ConfirmImageUsage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ConfirmImageUsageRequest)
+func _MediaService_ConfirmFileUsage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConfirmFileUsageRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MediaServiceServer).ConfirmImageUsage(ctx, in)
+		return srv.(MediaServiceServer).ConfirmFileUsage(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MediaService_ConfirmImageUsage_FullMethodName,
+		FullMethod: MediaService_ConfirmFileUsage_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MediaServiceServer).ConfirmImageUsage(ctx, req.(*ConfirmImageUsageRequest))
+		return srv.(MediaServiceServer).ConfirmFileUsage(ctx, req.(*ConfirmFileUsageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MediaService_GetFileUrl_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFileUrlRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MediaServiceServer).GetFileUrl(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MediaService_GetFileUrl_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MediaServiceServer).GetFileUrl(ctx, req.(*GetFileUrlRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -100,8 +133,12 @@ var MediaService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MediaServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "ConfirmImageUsage",
-			Handler:    _MediaService_ConfirmImageUsage_Handler,
+			MethodName: "ConfirmFileUsage",
+			Handler:    _MediaService_ConfirmFileUsage_Handler,
+		},
+		{
+			MethodName: "GetFileUrl",
+			Handler:    _MediaService_GetFileUrl_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

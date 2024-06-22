@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	UserService_UpdateUserName_FullMethodName    = "/UserService/UpdateUserName"
 	UserService_UpdateUserAvatar_FullMethodName  = "/UserService/UpdateUserAvatar"
+	UserService_GetUserInfo_FullMethodName       = "/UserService/GetUserInfo"
 	UserService_AddDeviceToken_FullMethodName    = "/UserService/AddDeviceToken"
 	UserService_RemoveDeviceToken_FullMethodName = "/UserService/RemoveDeviceToken"
 )
@@ -31,6 +32,7 @@ const (
 type UserServiceClient interface {
 	UpdateUserName(ctx context.Context, in *UpdateUserNameRequest, opts ...grpc.CallOption) (*UEmpty, error)
 	UpdateUserAvatar(ctx context.Context, in *UpdateUserAvatarRequest, opts ...grpc.CallOption) (*UEmpty, error)
+	GetUserInfo(ctx context.Context, in *GetUserInfoRequest, opts ...grpc.CallOption) (*GetUserInfoResponse, error)
 	AddDeviceToken(ctx context.Context, in *AddDeviceTokenRequest, opts ...grpc.CallOption) (*UEmpty, error)
 	RemoveDeviceToken(ctx context.Context, in *RemoveDeviceTokenRequest, opts ...grpc.CallOption) (*UEmpty, error)
 }
@@ -61,6 +63,15 @@ func (c *userServiceClient) UpdateUserAvatar(ctx context.Context, in *UpdateUser
 	return out, nil
 }
 
+func (c *userServiceClient) GetUserInfo(ctx context.Context, in *GetUserInfoRequest, opts ...grpc.CallOption) (*GetUserInfoResponse, error) {
+	out := new(GetUserInfoResponse)
+	err := c.cc.Invoke(ctx, UserService_GetUserInfo_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userServiceClient) AddDeviceToken(ctx context.Context, in *AddDeviceTokenRequest, opts ...grpc.CallOption) (*UEmpty, error) {
 	out := new(UEmpty)
 	err := c.cc.Invoke(ctx, UserService_AddDeviceToken_FullMethodName, in, out, opts...)
@@ -85,6 +96,7 @@ func (c *userServiceClient) RemoveDeviceToken(ctx context.Context, in *RemoveDev
 type UserServiceServer interface {
 	UpdateUserName(context.Context, *UpdateUserNameRequest) (*UEmpty, error)
 	UpdateUserAvatar(context.Context, *UpdateUserAvatarRequest) (*UEmpty, error)
+	GetUserInfo(context.Context, *GetUserInfoRequest) (*GetUserInfoResponse, error)
 	AddDeviceToken(context.Context, *AddDeviceTokenRequest) (*UEmpty, error)
 	RemoveDeviceToken(context.Context, *RemoveDeviceTokenRequest) (*UEmpty, error)
 	mustEmbedUnimplementedUserServiceServer()
@@ -99,6 +111,9 @@ func (UnimplementedUserServiceServer) UpdateUserName(context.Context, *UpdateUse
 }
 func (UnimplementedUserServiceServer) UpdateUserAvatar(context.Context, *UpdateUserAvatarRequest) (*UEmpty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserAvatar not implemented")
+}
+func (UnimplementedUserServiceServer) GetUserInfo(context.Context, *GetUserInfoRequest) (*GetUserInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserInfo not implemented")
 }
 func (UnimplementedUserServiceServer) AddDeviceToken(context.Context, *AddDeviceTokenRequest) (*UEmpty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddDeviceToken not implemented")
@@ -155,6 +170,24 @@ func _UserService_UpdateUserAvatar_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GetUserInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetUserInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetUserInfo_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetUserInfo(ctx, req.(*GetUserInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UserService_AddDeviceToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddDeviceTokenRequest)
 	if err := dec(in); err != nil {
@@ -205,6 +238,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateUserAvatar",
 			Handler:    _UserService_UpdateUserAvatar_Handler,
+		},
+		{
+			MethodName: "GetUserInfo",
+			Handler:    _UserService_GetUserInfo_Handler,
 		},
 		{
 			MethodName: "AddDeviceToken",
