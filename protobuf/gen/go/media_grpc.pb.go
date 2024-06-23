@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -27,7 +28,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MediaServiceClient interface {
-	ConfirmFileUsage(ctx context.Context, in *ConfirmFileUsageRequest, opts ...grpc.CallOption) (*MEmpty, error)
+	ConfirmFileUsage(ctx context.Context, in *ConfirmFileUsageRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetFileUrl(ctx context.Context, in *GetFileUrlRequest, opts ...grpc.CallOption) (*GetFileUrlResponse, error)
 }
 
@@ -39,8 +40,8 @@ func NewMediaServiceClient(cc grpc.ClientConnInterface) MediaServiceClient {
 	return &mediaServiceClient{cc}
 }
 
-func (c *mediaServiceClient) ConfirmFileUsage(ctx context.Context, in *ConfirmFileUsageRequest, opts ...grpc.CallOption) (*MEmpty, error) {
-	out := new(MEmpty)
+func (c *mediaServiceClient) ConfirmFileUsage(ctx context.Context, in *ConfirmFileUsageRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, MediaService_ConfirmFileUsage_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -61,7 +62,7 @@ func (c *mediaServiceClient) GetFileUrl(ctx context.Context, in *GetFileUrlReque
 // All implementations must embed UnimplementedMediaServiceServer
 // for forward compatibility
 type MediaServiceServer interface {
-	ConfirmFileUsage(context.Context, *ConfirmFileUsageRequest) (*MEmpty, error)
+	ConfirmFileUsage(context.Context, *ConfirmFileUsageRequest) (*emptypb.Empty, error)
 	GetFileUrl(context.Context, *GetFileUrlRequest) (*GetFileUrlResponse, error)
 	mustEmbedUnimplementedMediaServiceServer()
 }
@@ -70,7 +71,7 @@ type MediaServiceServer interface {
 type UnimplementedMediaServiceServer struct {
 }
 
-func (UnimplementedMediaServiceServer) ConfirmFileUsage(context.Context, *ConfirmFileUsageRequest) (*MEmpty, error) {
+func (UnimplementedMediaServiceServer) ConfirmFileUsage(context.Context, *ConfirmFileUsageRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConfirmFileUsage not implemented")
 }
 func (UnimplementedMediaServiceServer) GetFileUrl(context.Context, *GetFileUrlRequest) (*GetFileUrlResponse, error) {

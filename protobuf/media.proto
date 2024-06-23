@@ -2,10 +2,11 @@
 syntax = "proto3";
 option go_package = "github.com/SpeedReach/monify";
 
+import "google/protobuf/empty.proto";
 
 message MEmpty{}
 service MediaService {
-  rpc ConfirmFileUsage(ConfirmFileUsageRequest) returns (MEmpty){}
+  rpc ConfirmFileUsage(ConfirmFileUsageRequest) returns (google.protobuf.Empty){}
   rpc GetFileUrl(GetFileUrlRequest) returns (GetFileUrlResponse){}
 }
 

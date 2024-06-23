@@ -1,6 +1,7 @@
 package media
 
 import (
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"monify/lib/utils"
 	"net/http"
@@ -25,7 +26,8 @@ func SetupTestServer() {
 		state.mutex.Unlock()
 		return
 	}
-
+	envPath, _ := filepath.Abs("../../.env")
+	_ = godotenv.Load(envPath)
 	secrets, err := utils.LoadSecrets(utils.LoadEnv())
 	if err != nil {
 		panic(err)

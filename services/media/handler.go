@@ -117,8 +117,8 @@ func uploadImage(w http.ResponseWriter, r *http.Request) {
 
 func generatePath(usage monify.Usage, originFileName string, imgId uuid.UUID) string {
 	now := time.Now()
-	fn := usage.String() + "/" + imgId.String() + "." + extractFileNameSuffix(originFileName)
-	dir := fmt.Sprintf("%d/%d/%d", now.Year(), now.Month(), now.Day())
+	fn := imgId.String() + "." + extractFileNameSuffix(originFileName)
+	dir := usage.String() + "/" + fmt.Sprintf("%d/%d/%d", now.Year(), now.Month(), now.Day())
 	return dir + "/" + fn
 }
 

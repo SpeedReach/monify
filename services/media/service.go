@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"monify/lib"
 	"monify/lib/media"
 	monify "monify/protobuf/gen/go"
@@ -15,7 +16,7 @@ type Service struct {
 	monify.MediaServiceServer
 }
 
-func (Service) ConfirmImageUsage(ctx context.Context, req *monify.ConfirmFileUsageRequest) (*monify.MEmpty, error) {
+func (Service) ConfirmFileUsage(ctx context.Context, req *monify.ConfirmFileUsageRequest) (*emptypb.Empty, error) {
 	db := ctx.Value(lib.DatabaseContextKey{}).(*sql.DB)
 	tmpImage := media.TmpFile{}
 	err := db.QueryRowContext(ctx, "SELECT path, expected_usage, uploader, uploaded_at FROM tmp_file WHERE file_id = $1", req.FileId).Scan(&tmpImage.Path, &tmpImage.ExpectedUsage, &tmpImage.Uploader, &tmpImage.UploadedAt)
@@ -31,7 +32,7 @@ func (Service) ConfirmImageUsage(ctx context.Context, req *monify.ConfirmFileUsa
 		return nil, status.Errorf(codes.Internal, "error inserting image: %v", err)
 	}
 	_, _ = db.ExecContext(ctx, "DELETE FROM tmp_file WHERE file_id = $1", req.FileId)
-	return &monify.MEmpty{}, nil
+	return &emptypb.Empty{}, nil
 }
 
 func (Service) GetFileUrl(ctx context.Context, req *monify.GetFileUrlRequest) (*monify.GetFileUrlResponse, error) {

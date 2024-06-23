@@ -2,7 +2,6 @@ package infra
 
 import (
 	"context"
-	"google.golang.org/grpc"
 	"monify/lib/media"
 	monify "monify/protobuf/gen/go"
 )
@@ -13,8 +12,9 @@ type FileService struct {
 	media.FileHost
 }
 
-func (s FileService) ConfirmFileUsage(ctx context.Context, in *monify.ConfirmFileUsageRequest, opts ...grpc.CallOption) (*monify.MEmpty, error) {
-	return s.client.ConfirmFileUsage(ctx, in, opts...)
+func (s FileService) ConfirmFileUsage(ctx context.Context, in *monify.ConfirmFileUsageRequest) error {
+	_, err := s.client.ConfirmFileUsage(ctx, in)
+	return err
 }
 
 func (s FileService) GetHost() string {
@@ -22,5 +22,5 @@ func (s FileService) GetHost() string {
 }
 
 func (s FileService) GetUrl(path string) string {
-	return s.GetHost() + path
+	return s.GetHost() + "/" + path
 }

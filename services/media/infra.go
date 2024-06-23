@@ -22,10 +22,16 @@ func Setup(config Config) (Infra, error) {
 	if err = db.Ping(); err != nil {
 		return Infra{}, err
 	}
-
+	var logger *zap.Logger
+	if config.Environment == "dev" {
+		logger, _ = zap.NewDevelopment()
+	} else {
+		logger, _ = zap.NewProduction()
+	}
 	return Infra{
 		db:         db,
 		config:     config,
 		objStorage: NewS3MediaStorage(config),
+		logger:     logger,
 	}, nil
 }
