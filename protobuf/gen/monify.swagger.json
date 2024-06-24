@@ -606,7 +606,7 @@
         ]
       }
     },
-    "/v1/group_bill/history": {
+    "/v1/groups_bill/history": {
       "get": {
         "operationId": "GroupsBillService_GetHistory",
         "responses": {

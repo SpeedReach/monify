@@ -7,9 +7,11 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"monify/lib"
 	monify "monify/protobuf/gen/go"
 	"monify/services/api/controllers/group"
+	"time"
 )
 
 func (s Service) GetHistory(ctx context.Context, req *monify.GetHistoryRequest) (*monify.GetHistoryResponse, error) {
@@ -48,10 +50,12 @@ func (s Service) GetHistory(ctx context.Context, req *monify.GetHistoryRequest) 
 	var histories []*monify.GroupBillHistory
 	for rows.Next() {
 		var history monify.GroupBillHistory
-		if err := rows.Scan(&history.Type, &history.Title, &history.Timestamp, &history.OperatorName); err != nil {
+		var t time.Time
+		if err := rows.Scan(&history.Type, &history.Title, &history.OperatorName, &t); err != nil {
 			logger.Error("Failed to scan group bill history", zap.Error(err))
 			return nil, status.Error(codes.Internal, "Internal")
 		}
+		history.Timestamp = timestamppb.New(t)
 		histories = append(histories, &history)
 	}
 	return &monify.GetHistoryResponse{Histories: histories}, nil
