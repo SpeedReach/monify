@@ -38,7 +38,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
+        env:
+          DOCKER_REGISTRY_HOST: ${{ secrets.DOCKER_REGISTRY_HOST }}
+          DOCKER_REGISTRY_USER: ${{ secrets.DOCKER_REGISTRY_USER }}
+          DOCKER_REGISTRY_PWD: ${{ secrets.DOCKER_REGISTRY_PWD }}
       - name: Log in to Docker Hub
         run: echo "${DOCKER_REGISTRY_PWD}" | docker login "${DOCKER_REGISTRY_HOST}" --username "${DOCKER_REGISTRY_USER}" --password-stdin
 
