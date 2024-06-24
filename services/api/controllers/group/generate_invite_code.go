@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	inviteCodeChars  = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	inviteCodeChars  = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	timeDeterLength  = 4
 	randomLength     = 2
 	inviteCodeLength = timeDeterLength + randomLength

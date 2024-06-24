@@ -58,6 +58,9 @@ func validateBearerToken(token string, secret string) (uuid.UUID, error) {
 		token, err := jwt.ParseWithClaims(tokenStr, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
 			return []byte(secret), nil
 		})
+		if err != nil {
+			return uuid.Nil, err
+		}
 		if claims, ok := token.Claims.(*jwt.RegisteredClaims); ok {
 			userId, err := uuid.Parse(claims.Subject)
 			if err != nil {
