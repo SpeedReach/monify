@@ -12,7 +12,6 @@ on:
 
 
 jobs:
-
   test:
     environment: test
     runs-on: ubuntu-latest
@@ -29,3 +28,22 @@ jobs:
         CLIENT_ID: ${{ secrets.CLIENT_ID }}
         CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
       run: make test
+
+  build_and_publish:
+    needs: test
+    if: github.ref == 'refs/heads/main' && success()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Log in to Docker Hub
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_REGISTRY_USER }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PWD }}
+          DOCKER_REGISTRY_HOST: ${{ secrets.DOCKER_REGISTRY_HOST }}
+        run: echo "${DOCKER_PASSWORD}" | docker login "${DOCKER_REGISTRY_HOST}" -u "${DOCKER_USERNAME}" --password-stdin
+
+      - name: Build and push Docker image
+        run: make docker_push
