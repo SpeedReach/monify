@@ -1,0 +1,97 @@
+syntax = "proto3";
+option go_package = "github.com/SpeedReach/monify";
+
+import "google/api/annotations.proto";
+
+message FriendEmpty{}
+
+service FriendService{
+
+    rpc DeleteFriend(DeleteFriendRequest) returns (FriendEmpty){
+        option (google.api.http) = {
+            delete: "/v1/friend/{relation_id}"
+        };
+    }
+
+    rpc ListFriend(FriendEmpty) returns (ListFriendResponse){
+        option (google.api.http) = {
+            get: "/v1/friend"
+        };
+    }
+
+    rpc InviteFriend(InviteFriendRequest) returns (InviteFriendResponse){
+        option (google.api.http) = {
+            post: "/v1/friend/invite"
+            body: "*"
+        };
+    }
+
+    rpc ListFriendInvitation(FriendEmpty) returns (ListFriendInvitationResponse){
+        option (google.api.http) = {
+            get: "/v1/friend/invite"
+        };
+    }
+    
+    // Add the record on the table(friend)
+    rpc AcceptInvitation_post_(AcceptInvitation_post_Request) returns (FriendEmpty){
+        option (google.api.http) = {
+            post: "/v1/friend"
+        };
+    }
+
+    // Delete the record from the table(friend invite)
+    rpc AcceptInvitation_delete_(AcceptInvitation_delete_Request) returns (FriendEmpty){
+        option (google.api.http) = {
+            delete: "/v1/friend/accept_invitation/{invite_id}"
+        };
+    }
+
+    rpc RejectInvitation(RejectInvitationRequest) returns  (FriendEmpty){
+        option (google.api.http) = {
+            delete: "/v1/friend/reject_invitation/{invite_id}"
+        };
+    }
+}
+
+message DeleteFriendRequest{
+    string relation_id = 1;
+}
+
+message ListFriendResponse{
+    repeated Friend friends = 1;
+}
+
+message Friend{
+    string friend_id = 1;
+    string name = 2;
+}
+
+message InviteFriendRequest{
+    string receiver_email = 1;
+}
+
+message InviteFriendResponse{
+    string invite_id = 1;
+}
+
+message ListFriendInvitationResponse{
+    repeated Invitation invitation = 1;
+}
+
+message Invitation{
+    string sender_id = 1;
+    string name = 2;
+}
+
+message AcceptInvitation_post_Request{
+    string user1_id = 1;
+    string user2_id = 2;
+}
+
+message AcceptInvitation_delete_Request{
+    string invite_id = 1;
+}
+
+message RejectInvitationRequest{
+    string invite_id = 1;
+}
