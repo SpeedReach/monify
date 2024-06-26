@@ -29,7 +29,7 @@ func (s Service) InviteFriend(ctx context.Context, req *monify.InviteFriendReque
 		return nil, status.Error(codes.Internal, "")
 	}
 	query.Next()
-	var receiverId uuid.UUIDs
+	var receiverId string // uuid.UUIDs
 	if err = query.Scan(&receiverId); err != nil {
 		logger.Error("Scan receiver_id error.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "")
