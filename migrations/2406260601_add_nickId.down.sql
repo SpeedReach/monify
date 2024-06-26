@@ -1,1 +1,1 @@
-ALTER TABLE user_identity DELETE COLUMN nick_id;
+ALTER TABLE user_identity DROP COLUMN nick_id;
