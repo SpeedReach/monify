@@ -27,7 +27,7 @@ type UserServiceClient interface {
 	GetUserInfo(ctx context.Context, in *GetUserInfoRequest, opts ...grpc.CallOption) (*GetUserInfoResponse, error)
 	AddDeviceToken(ctx context.Context, in *AddDeviceTokenRequest, opts ...grpc.CallOption) (*UEmpty, error)
 	RemoveDeviceToken(ctx context.Context, in *RemoveDeviceTokenRequest, opts ...grpc.CallOption) (*UEmpty, error)
-	UpdateNickId(ctx context.Context, in *UpdateNickIdRequest, opts ...grpc.CallOption) (*UEmpty, error)
+	UpdateUserNickId(ctx context.Context, in *UpdateUserNickIdRequest, opts ...grpc.CallOption) (*UEmpty, error)
 }
 
 type userServiceClient struct {
@@ -83,9 +83,9 @@ func (c *userServiceClient) RemoveDeviceToken(ctx context.Context, in *RemoveDev
 	return out, nil
 }
 
-func (c *userServiceClient) UpdateNickId(ctx context.Context, in *UpdateNickIdRequest, opts ...grpc.CallOption) (*UEmpty, error) {
+func (c *userServiceClient) UpdateUserNickId(ctx context.Context, in *UpdateUserNickIdRequest, opts ...grpc.CallOption) (*UEmpty, error) {
 	out := new(UEmpty)
-	err := c.cc.Invoke(ctx, "/UserService/UpdateNickId", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/UserService/UpdateUserNickId", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +101,7 @@ type UserServiceServer interface {
 	GetUserInfo(context.Context, *GetUserInfoRequest) (*GetUserInfoResponse, error)
 	AddDeviceToken(context.Context, *AddDeviceTokenRequest) (*UEmpty, error)
 	RemoveDeviceToken(context.Context, *RemoveDeviceTokenRequest) (*UEmpty, error)
-	UpdateNickId(context.Context, *UpdateNickIdRequest) (*UEmpty, error)
+	UpdateUserNickId(context.Context, *UpdateUserNickIdRequest) (*UEmpty, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -124,8 +124,8 @@ func (UnimplementedUserServiceServer) AddDeviceToken(context.Context, *AddDevice
 func (UnimplementedUserServiceServer) RemoveDeviceToken(context.Context, *RemoveDeviceTokenRequest) (*UEmpty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveDeviceToken not implemented")
 }
-func (UnimplementedUserServiceServer) UpdateNickId(context.Context, *UpdateNickIdRequest) (*UEmpty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateNickId not implemented")
+func (UnimplementedUserServiceServer) UpdateUserNickId(context.Context, *UpdateUserNickIdRequest) (*UEmpty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserNickId not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -230,20 +230,20 @@ func _UserService_RemoveDeviceToken_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_UpdateNickId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateNickIdRequest)
+func _UserService_UpdateUserNickId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateUserNickIdRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).UpdateNickId(ctx, in)
+		return srv.(UserServiceServer).UpdateUserNickId(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/UserService/UpdateNickId",
+		FullMethod: "/UserService/UpdateUserNickId",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).UpdateNickId(ctx, req.(*UpdateNickIdRequest))
+		return srv.(UserServiceServer).UpdateUserNickId(ctx, req.(*UpdateUserNickIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -276,8 +276,8 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_RemoveDeviceToken_Handler,
 		},
 		{
-			MethodName: "UpdateNickId",
-			Handler:    _UserService_UpdateNickId_Handler,
+			MethodName: "UpdateUserNickId",
+			Handler:    _UserService_UpdateUserNickId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

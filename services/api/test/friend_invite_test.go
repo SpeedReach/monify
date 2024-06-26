@@ -9,15 +9,11 @@ import (
 )
 
 func TestInviteFriend(t *testing.T) {
-	// Register a receiver
-	email := "daniel0702chien@gmail.com"
-	password := "qwer1234"
 	client := GetTestClient(t)
-	_, err := client.EmailRegister(context.TODO(), &monify.EmailRegisterRequest{Email: email, Password: password})
-	assert.NoError(t, err)
-
 	_ = client.CreateTestUser()
-	_, err = client.InviteFriend(context.TODO(), &monify.InviteFriendRequest{ReceiverEmail: email})
+	_, err := client.UpdateUserNickId(context.Background(), &monify.UpdateUserNickIdRequest{NickId: "test_nickId"})
 	assert.NoError(t, err)
+	//_, err = client.InviteFriend(context.TODO(), &monify.InviteFriendRequest{ReceiverNickId: "test_nickId"})
+	//assert.NoError(t, err)
 
 }

@@ -67,7 +67,7 @@ message Friend{
 }
 
 message InviteFriendRequest{
-    string receiver_email = 1;
+    string receiver_nickId = 1;
 }
 
 message InviteFriendResponse{

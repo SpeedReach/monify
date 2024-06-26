@@ -19,17 +19,17 @@ func (s Service) InviteFriend(ctx context.Context, req *monify.InviteFriendReque
 	if userId == nil {
 		return nil, status.Error(codes.Unauthenticated, "Unauthorized.")
 	}
-	receiverEmail := req.GetReceiverEmail()
+	receiver_nickId := req.GetReceiverNickId()
 	db := ctx.Value(lib.DatabaseContextKey{}).(*sql.DB)
 
 	query, err := db.QueryContext(ctx,
-		`SELECT user_id FROM email_login WHERE email = $1`, receiverEmail)
+		`SELECT user_id FROM user_identity WHERE nick_id = $1`, receiver_nickId)
 	if err != nil {
 		logger.Error("Select user_id by email error.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "")
 	}
 	query.Next()
-	var receiverId string // uuid.UUIDs
+	var receiverId string
 	if err = query.Scan(&receiverId); err != nil {
 		logger.Error("Scan receiver_id error.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "")

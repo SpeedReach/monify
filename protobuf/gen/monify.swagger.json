@@ -486,7 +486,7 @@
     },
     "/v1/user/nick_id": {
       "put": {
-        "operationId": "UserService_UpdateNickId",
+        "operationId": "UserService_UpdateUserNickId",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -501,7 +501,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UpdateNickIdRequest"
+              "$ref": "#/definitions/UpdateUserNickIdRequest"
             }
           }
         ],
@@ -1118,14 +1118,6 @@
     "UEmpty": {
       "type": "object"
     },
-    "UpdateNickIdRequest": {
-      "type": "object",
-      "properties": {
-        "nickId": {
-          "type": "string"
-        }
-      }
-    },
     "UpdateUserAvatarRequest": {
       "type": "object",
       "properties": {
@@ -1138,6 +1130,14 @@
       "type": "object",
       "properties": {
         "name": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateUserNickIdRequest": {
+      "type": "object",
+      "properties": {
+        "nickId": {
           "type": "string"
         }
       }
