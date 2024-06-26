@@ -4,21 +4,23 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
-	"go.uber.org/zap"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"monify/lib"
 	authLib "monify/lib/auth"
 	monify "monify/protobuf/gen/go"
 	"monify/services/api/controllers/auth"
+	"monify/services/api/controllers/friend"
 	"monify/services/api/controllers/group"
 	"monify/services/api/controllers/group_bill"
 	"monify/services/api/controllers/user"
 	"monify/services/api/infra"
 	"net"
 	"time"
+
+	"github.com/google/uuid"
+	"go.uber.org/zap"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type Server struct {
@@ -48,6 +50,7 @@ func SetupServices(g *grpc.Server, config ServerConfig) {
 	monify.RegisterGroupServiceServer(g, group.Service{})
 	monify.RegisterGroupsBillServiceServer(g, group_bill.Service{})
 	monify.RegisterUserServiceServer(g, user.Service{})
+	monify.RegisterFriendServiceServer(g, friend.Service{})
 }
 
 func setupInterceptor(resources infra.Resources, config ServerConfig) grpc.ServerOption {
