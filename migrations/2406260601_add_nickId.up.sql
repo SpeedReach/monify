@@ -1,0 +1,1 @@
+ALTER TABLE user_identity ADD COLUMN nick_id VARCHAR(30) UNIQUE;
