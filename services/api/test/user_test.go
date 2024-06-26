@@ -15,11 +15,11 @@ func TestChangeUsernameAndUsernickId(t *testing.T) {
 	_, err := client.UpdateUserName(context.Background(), &monify.UpdateUserNameRequest{Name: "testname"})
 	assert.NoError(t, err)
 
-	_, err = client.UpdateUserNickId(context.TODO(), &monify.UpdateUserNickIdRequest{NickId: "test_nickId"})
+	_, err = client.UpdateUserNickId(context.Background(), &monify.UpdateUserNickIdRequest{NickId: "test_update_nickId"})
 	assert.NoError(t, err)
 
-	info, err := client.GetUserInfo(context.TODO(), &monify.GetUserInfoRequest{UserId: userId})
+	info, err := client.GetUserInfo(context.Background(), &monify.GetUserInfoRequest{UserId: userId})
 	assert.NoError(t, err)
 	assert.Equal(t, "testname", info.Name)
-	assert.Equal(t, "test_nickId", info.NickId)
+	assert.Equal(t, "test_update_nickId", info.NickId)
 }

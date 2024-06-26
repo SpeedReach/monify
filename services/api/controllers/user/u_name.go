@@ -3,11 +3,12 @@ package user
 import (
 	"context"
 	"database/sql"
+	"monify/lib"
+	monify "monify/protobuf/gen/go"
+
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"monify/lib"
-	monify "monify/protobuf/gen/go"
 )
 
 func (s Service) UpdateUserName(ctx context.Context, req *monify.UpdateUserNameRequest) (*monify.UEmpty, error) {
