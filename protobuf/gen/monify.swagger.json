@@ -484,6 +484,37 @@
         ]
       }
     },
+    "/v1/user/nick_id": {
+      "put": {
+        "operationId": "UserService_UpdateUserNickId",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateUserNickIdRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
     "/v1/groups_bill": {
       "get": {
         "operationId": "GroupsBillService_GetGroupBills",
@@ -883,6 +914,9 @@
         },
         "avatarUrl": {
           "type": "string"
+        },
+        "nickId": {
+          "type": "string"
         }
       }
     },
@@ -1096,6 +1130,14 @@
       "type": "object",
       "properties": {
         "name": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateUserNickIdRequest": {
+      "type": "object",
+      "properties": {
+        "nickId": {
           "type": "string"
         }
       }

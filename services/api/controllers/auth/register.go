@@ -3,13 +3,14 @@ package auth
 import (
 	"context"
 	"database/sql"
+	"monify/lib"
+	monify "monify/protobuf/gen/go"
+
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"monify/lib"
-	monify "monify/protobuf/gen/go"
 )
 
 func emailExists(ctx context.Context, email string) (bool, error) {
@@ -38,8 +39,8 @@ func CreateUser(ctx context.Context, email string, password string) (uuid.UUID, 
 
 	userId := uuid.New()
 	_, err = db.ExecContext(ctx, `
-		INSERT INTO user_identity (user_id) VALUES ($1)
-	`, userId)
+		INSERT INTO user_identity (user_id, nick_id) VALUES ($1, $2)
+	`, userId, userId.String())
 	if err != nil {
 		return uuid.Nil, err
 	}

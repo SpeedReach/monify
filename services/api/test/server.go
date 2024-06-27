@@ -2,12 +2,6 @@ package test
 
 import (
 	"context"
-	"github.com/google/uuid"
-	"github.com/joho/godotenv"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/metadata"
-	"google.golang.org/grpc/test/bufconn"
 	"log"
 	"monify/lib/utils"
 	monify "monify/protobuf/gen/go"
@@ -15,6 +9,13 @@ import (
 	"net"
 	"sync"
 	"testing"
+
+	"github.com/google/uuid"
+	"github.com/joho/godotenv"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/test/bufconn"
 )
 
 type State struct {
@@ -29,6 +30,7 @@ type Client struct {
 	monify.GroupServiceClient
 	monify.GroupsBillServiceClient
 	monify.UserServiceClient
+	monify.FriendServiceClient
 	users       *map[string]string
 	currentUser *string
 }
@@ -108,6 +110,7 @@ func createClient(lis *bufconn.Listener) Client {
 		GroupServiceClient:      monify.NewGroupServiceClient(conn),
 		GroupsBillServiceClient: monify.NewGroupsBillServiceClient(conn),
 		UserServiceClient:       monify.NewUserServiceClient(conn),
+		FriendServiceClient:     monify.NewFriendServiceClient(conn),
 		users:                   &users,
 		currentUser:             &currentUser,
 	}

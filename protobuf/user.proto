@@ -29,6 +29,14 @@ service UserService {
   }
   rpc AddDeviceToken (AddDeviceTokenRequest) returns (UEmpty) {}
   rpc RemoveDeviceToken (RemoveDeviceTokenRequest) returns (UEmpty) {}
+
+  rpc UpdateUserNickId (UpdateUserNickIdRequest) returns (UEmpty){
+    option (google.api.http) = {
+      put: "/v1/user/nick_id"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) ={security: {security_requirement: {key: "Bearer"}}};
+  }
 }
 
 message GetUserInfoRequest {
@@ -38,6 +46,7 @@ message GetUserInfoRequest {
 message GetUserInfoResponse {
   string name = 1;
   string avatar_url = 2;
+  string nick_id = 3;
 }
 
 message UpdateUserNameRequest {
@@ -54,4 +63,8 @@ message RemoveDeviceTokenRequest {
 
 message UpdateUserAvatarRequest {
   string image_id = 1;
+}
+
+message UpdateUserNickIdRequest {
+  string nick_id = 1;
 }
