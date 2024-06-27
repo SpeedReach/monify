@@ -79,8 +79,8 @@ message ListFriendInvitationResponse{
 }
 
 message Invitation{
-    string sender_id = 1;
-    string name = 2;
+    string sender_nickId = 1;
+    string sender_name = 2;
 }
 
 message AcceptInvitation_post_Request{
