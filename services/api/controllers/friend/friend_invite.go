@@ -22,15 +22,11 @@ func (s Service) InviteFriend(ctx context.Context, req *monify.InviteFriendReque
 	receiver_nickId := req.GetReceiverNickId()
 	db := ctx.Value(lib.DatabaseContextKey{}).(*sql.DB)
 
-	query, err := db.QueryContext(ctx,
+	query := db.QueryRowContext(ctx,
 		`SELECT user_id FROM user_identity WHERE nick_id = $1`, receiver_nickId)
-	if err != nil {
-		logger.Error("Select user_id by email error.", zap.Error(err))
-		return nil, status.Error(codes.Internal, "")
-	}
-	query.Next()
+
 	var receiverId string
-	if err = query.Scan(&receiverId); err != nil {
+	if err := query.Scan(&receiverId); err != nil {
 		logger.Error("Scan receiver_id error.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "")
 	}
@@ -40,7 +36,7 @@ func (s Service) InviteFriend(ctx context.Context, req *monify.InviteFriendReque
 	}
 
 	inviteId := uuid.New()
-	_, err = db.ExecContext(ctx,
+	_, err := db.ExecContext(ctx,
 		`INSERT INTO friend_invite (invite_id, sender, receiver) VALUES ($1, $2, $3)`,
 		inviteId, userId, receiverId)
 	if err != nil {
