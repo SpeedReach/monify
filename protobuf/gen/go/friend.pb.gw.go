@@ -146,89 +146,37 @@ func local_request_FriendService_ListFriendInvitation_0(ctx context.Context, mar
 }
 
 var (
-	filter_FriendService_AcceptInvitationPost__0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+	filter_FriendService_AcceptInvitation_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_FriendService_AcceptInvitationPost__0(ctx context.Context, marshaler runtime.Marshaler, client FriendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq AcceptInvitationPost_Request
+func request_FriendService_AcceptInvitation_0(ctx context.Context, marshaler runtime.Marshaler, client FriendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AcceptInvitationRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FriendService_AcceptInvitationPost__0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FriendService_AcceptInvitation_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.AcceptInvitationPost_(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.AcceptInvitation(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_FriendService_AcceptInvitationPost__0(ctx context.Context, marshaler runtime.Marshaler, server FriendServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq AcceptInvitationPost_Request
+func local_request_FriendService_AcceptInvitation_0(ctx context.Context, marshaler runtime.Marshaler, server FriendServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AcceptInvitationRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FriendService_AcceptInvitationPost__0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FriendService_AcceptInvitation_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.AcceptInvitationPost_(ctx, &protoReq)
-	return msg, metadata, err
-
-}
-
-func request_FriendService_AcceptInvitationDelete__0(ctx context.Context, marshaler runtime.Marshaler, client FriendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq AcceptInvitationDelete_Request
-	var metadata runtime.ServerMetadata
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["invite_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "invite_id")
-	}
-
-	protoReq.InviteId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "invite_id", err)
-	}
-
-	msg, err := client.AcceptInvitationDelete_(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_FriendService_AcceptInvitationDelete__0(ctx context.Context, marshaler runtime.Marshaler, server FriendServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq AcceptInvitationDelete_Request
-	var metadata runtime.ServerMetadata
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["invite_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "invite_id")
-	}
-
-	protoReq.InviteId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "invite_id", err)
-	}
-
-	msg, err := server.AcceptInvitationDelete_(ctx, &protoReq)
+	msg, err := server.AcceptInvitation(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -391,7 +339,7 @@ func RegisterFriendServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 
 	})
 
-	mux.Handle("POST", pattern_FriendService_AcceptInvitationPost__0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_FriendService_AcceptInvitation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -399,12 +347,12 @@ func RegisterFriendServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.FriendService/AcceptInvitationPost_", runtime.WithHTTPPathPattern("/v1/friend"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.FriendService/AcceptInvitation", runtime.WithHTTPPathPattern("/v1/friend"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_FriendService_AcceptInvitationPost__0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_FriendService_AcceptInvitation_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -412,32 +360,7 @@ func RegisterFriendServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 			return
 		}
 
-		forward_FriendService_AcceptInvitationPost__0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("DELETE", pattern_FriendService_AcceptInvitationDelete__0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/.FriendService/AcceptInvitationDelete_", runtime.WithHTTPPathPattern("/v1/friend/accept_invitation/{invite_id}"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_FriendService_AcceptInvitationDelete__0(annotatedContext, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_FriendService_AcceptInvitationDelete__0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_FriendService_AcceptInvitation_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -595,47 +518,25 @@ func RegisterFriendServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 
 	})
 
-	mux.Handle("POST", pattern_FriendService_AcceptInvitationPost__0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_FriendService_AcceptInvitation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.FriendService/AcceptInvitationPost_", runtime.WithHTTPPathPattern("/v1/friend"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.FriendService/AcceptInvitation", runtime.WithHTTPPathPattern("/v1/friend"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_FriendService_AcceptInvitationPost__0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_FriendService_AcceptInvitation_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FriendService_AcceptInvitationPost__0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("DELETE", pattern_FriendService_AcceptInvitationDelete__0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/.FriendService/AcceptInvitationDelete_", runtime.WithHTTPPathPattern("/v1/friend/accept_invitation/{invite_id}"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_FriendService_AcceptInvitationDelete__0(annotatedContext, inboundMarshaler, client, req, pathParams)
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_FriendService_AcceptInvitationDelete__0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_FriendService_AcceptInvitation_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -673,9 +574,7 @@ var (
 
 	pattern_FriendService_ListFriendInvitation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "friend", "invite"}, ""))
 
-	pattern_FriendService_AcceptInvitationPost__0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "friend"}, ""))
-
-	pattern_FriendService_AcceptInvitationDelete__0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "friend", "accept_invitation", "invite_id"}, ""))
+	pattern_FriendService_AcceptInvitation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "friend"}, ""))
 
 	pattern_FriendService_RejectInvitation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "friend", "reject_invitation", "invite_id"}, ""))
 )
@@ -689,9 +588,7 @@ var (
 
 	forward_FriendService_ListFriendInvitation_0 = runtime.ForwardResponseMessage
 
-	forward_FriendService_AcceptInvitationPost__0 = runtime.ForwardResponseMessage
-
-	forward_FriendService_AcceptInvitationDelete__0 = runtime.ForwardResponseMessage
+	forward_FriendService_AcceptInvitation_0 = runtime.ForwardResponseMessage
 
 	forward_FriendService_RejectInvitation_0 = runtime.ForwardResponseMessage
 )

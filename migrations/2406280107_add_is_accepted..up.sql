@@ -1,0 +1,1 @@
+ALTER TABLE friend_invite ADD is_accepted BOOLEAN NOT NULL DEFAULT FALSE;
