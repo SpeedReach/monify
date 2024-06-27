@@ -4,7 +4,8 @@ CREATE TABLE user_identity(
                               created_at timestamp default CURRENT_TIMESTAMP,
                               activated boolean default false,
                               refresh_token varchar(100),
-                              device_token varchar(100)
+                              device_token varchar(100),
+                              nick_id VARCHAR(150) UNIQUE
 );
 
 CREATE TABLE email_login(

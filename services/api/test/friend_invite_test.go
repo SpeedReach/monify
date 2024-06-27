@@ -15,7 +15,7 @@ func TestInviteFriend(t *testing.T) {
 	_, err := client.UpdateUserNickId(context.Background(), &monify.UpdateUserNickIdRequest{NickId: "test_nickId1"})
 	assert.NoError(t, err)
 	_, err = client.InviteFriend(context.TODO(), &monify.InviteFriendRequest{ReceiverNickId: "test_nickId1"})
-	assert.Error(t, err)
+	assert.Error(t, err) // cannot send invitation to yourself
 	_ = client.CreateTestUser()
 	_, err = client.InviteFriend(context.TODO(), &monify.InviteFriendRequest{ReceiverNickId: "test_nickId1"})
 	assert.NoError(t, err)
