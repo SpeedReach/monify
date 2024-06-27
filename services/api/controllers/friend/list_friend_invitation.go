@@ -19,7 +19,7 @@ func (s Service) ListFriendInvitation(ctx context.Context, req *monify.FriendEmp
 	}
 	db := ctx.Value(lib.DatabaseContextKey{}).(*sql.DB)
 	query, err := db.QueryContext(ctx, `
-		SELECT nick_id, name
+		SELECT nick_id, name, invite_id
 		FROM user_identity JOIN friend_invite ON user_identity.user_id = friend_invite.sender
 		WHERE friend_invite.receiver = $1`, userId)
 	if err != nil {
@@ -33,7 +33,7 @@ func (s Service) ListFriendInvitation(ctx context.Context, req *monify.FriendEmp
 			break
 		}
 		var invitaion monify.Invitation
-		if err = query.Scan(&invitaion.SenderNickId, &invitaion.SenderName); err != nil {
+		if err = query.Scan(&invitaion.SenderNickId, &invitaion.SenderName, &invitaion.InviteId); err != nil {
 			logger.Error("Scan invitation nick_id and name error.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "")
 		}

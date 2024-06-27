@@ -73,6 +73,7 @@ message ListFriendInvitationResponse{
 message Invitation{
     string sender_nickId = 1;
     string sender_name = 2;
+    string invite_id = 3;
 }
 
 message AcceptInvitationRequest{
