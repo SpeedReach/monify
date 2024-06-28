@@ -36,4 +36,10 @@ func TestInviteFriend(t *testing.T) {
 	}
 	_, err = client.AcceptInvitation(context.TODO(), &monify.AcceptInvitationRequest{User1Id: user1, User2Id: user2, InviteId: inviteId[0]})
 	assert.NoError(t, err)
+
+	// test reject invitation
+	_, err = client.RejectInvitation(context.TODO(), &monify.RejectInvitationRequest{InviteId: inviteId[1]})
+	assert.NoError(t, err)
+	invitaions, err = client.ListFriendInvitation(context.TODO(), &monify.FriendEmpty{})
+	assert.Equal(t, len(invitaions.GetInvitation()), 1)
 }
