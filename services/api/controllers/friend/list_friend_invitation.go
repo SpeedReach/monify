@@ -26,6 +26,7 @@ func (s Service) ListFriendInvitation(ctx context.Context, req *monify.FriendEmp
 		logger.Error("Select friend invitation error.", zap.Error(err))
 		return nil, status.Error(codes.Internal, "")
 	}
+	defer query.Close()
 
 	var invitaions []*monify.Invitation
 	for {
