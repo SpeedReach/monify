@@ -53,4 +53,15 @@ func TestInviteFriend(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, len(friends.GetFriends()), 2)
 
+	// test delete friend
+	var friendS_relationId []string
+	for _, friend := range friends.GetFriends() {
+		friendS_relationId = append(friendS_relationId, friend.RelationId)
+	}
+	_, err = client.DeleteFriend(context.TODO(), &monify.DeleteFriendRequest{RelationId: friendS_relationId[0]})
+	assert.NoError(t, err)
+	friends, err = client.ListFriend(context.TODO(), &monify.FriendEmpty{})
+	assert.NoError(t, err)
+	assert.Equal(t, len(friends.GetFriends()), 1)
+
 }

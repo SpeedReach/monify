@@ -43,6 +43,7 @@ service FriendService{
             delete: "/v1/friend/reject_invitation/{invite_id}"
         };
     }
+    
 }
 
 message DeleteFriendRequest{
@@ -56,6 +57,7 @@ message ListFriendResponse{
 message Friend{
     string friend_id = 1;
     string name = 2;
+    string relation_id = 3;
 }
 
 message InviteFriendRequest{

@@ -20,7 +20,7 @@ func (s Service) ListFriend(ctx context.Context, req *monify.FriendEmpty) (*moni
 	}
 	db := ctx.Value(lib.DatabaseContextKey{}).(*sql.DB)
 	query, err := db.QueryContext(ctx, `
-		SELECT user1_id, user2_id, name
+		SELECT user1_id, user2_id, name, relation_id
 		FROM friend, user_identity
 		WHERE (user1_id = $1 AND user2_id = user_id) OR (user2_id = $2 AND user1_id = user_id)`, userId, userId)
 	if err != nil {
@@ -37,7 +37,7 @@ func (s Service) ListFriend(ctx context.Context, req *monify.FriendEmpty) (*moni
 		var friend monify.Friend
 		var user1Id uuid.UUID
 		var user2Id uuid.UUID
-		if err = query.Scan(&user1Id, &user2Id, &friend.Name); err != nil {
+		if err = query.Scan(&user1Id, &user2Id, &friend.Name, &friend.RelationId); err != nil {
 			logger.Error("Scan error.", zap.Error(err))
 			return nil, status.Error(codes.Internal, "")
 		}
