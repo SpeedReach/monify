@@ -14,8 +14,8 @@ import (
 
 func (s Service) ListFriend(ctx context.Context, req *monify.FriendEmpty) (*monify.ListFriendResponse, error) {
 	logger := ctx.Value(lib.LoggerContextKey{}).(*zap.Logger)
-	userId := ctx.Value(lib.UserIdContextKey{})
-	if userId == nil {
+	userId, ok := ctx.Value(lib.UserIdContextKey{}).(uuid.UUID)
+	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "Unauthorized.")
 	}
 	db := ctx.Value(lib.DatabaseContextKey{}).(*sql.DB)
