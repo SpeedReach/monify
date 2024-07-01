@@ -1,0 +1,1 @@
+ALTER TABLE friend_invite DROP is_accepted;

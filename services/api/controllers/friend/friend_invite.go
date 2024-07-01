@@ -15,8 +15,8 @@ import (
 func (s Service) InviteFriend(ctx context.Context, req *monify.InviteFriendRequest) (*monify.InviteFriendResponse, error) {
 
 	logger := ctx.Value(lib.LoggerContextKey{}).(*zap.Logger)
-	userId := ctx.Value(lib.UserIdContextKey{}).(uuid.UUID)
-	if userId == uuid.Nil {
+	userId, ok := ctx.Value(lib.UserIdContextKey{}).(uuid.UUID)
+	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "Unauthorized.")
 	}
 	receiver_nickId := req.GetReceiverNickId()

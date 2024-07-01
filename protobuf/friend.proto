@@ -32,17 +32,9 @@ service FriendService{
         };
     }
     
-    // Add the record on the table(friend)
-    rpc AcceptInvitation_post_(AcceptInvitation_post_Request) returns (FriendEmpty){
+    rpc AcceptInvitation(AcceptInvitationRequest) returns (FriendEmpty){
         option (google.api.http) = {
             post: "/v1/friend"
-        };
-    }
-
-    // Delete the record from the table(friend invite)
-    rpc AcceptInvitation_delete_(AcceptInvitation_delete_Request) returns (FriendEmpty){
-        option (google.api.http) = {
-            delete: "/v1/friend/accept_invitation/{invite_id}"
         };
     }
 
@@ -51,6 +43,7 @@ service FriendService{
             delete: "/v1/friend/reject_invitation/{invite_id}"
         };
     }
+    
 }
 
 message DeleteFriendRequest{
@@ -64,6 +57,7 @@ message ListFriendResponse{
 message Friend{
     string friend_id = 1;
     string name = 2;
+    string relation_id = 3;
 }
 
 message InviteFriendRequest{
@@ -81,15 +75,13 @@ message ListFriendInvitationResponse{
 message Invitation{
     string sender_nickId = 1;
     string sender_name = 2;
+    string invite_id = 3;
 }
 
-message AcceptInvitation_post_Request{
+message AcceptInvitationRequest{
     string user1_id = 1;
     string user2_id = 2;
-}
-
-message AcceptInvitation_delete_Request{
-    string invite_id = 1;
+    string invite_id = 3;
 }
 
 message RejectInvitationRequest{

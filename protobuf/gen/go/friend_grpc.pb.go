@@ -26,10 +26,7 @@ type FriendServiceClient interface {
 	ListFriend(ctx context.Context, in *FriendEmpty, opts ...grpc.CallOption) (*ListFriendResponse, error)
 	InviteFriend(ctx context.Context, in *InviteFriendRequest, opts ...grpc.CallOption) (*InviteFriendResponse, error)
 	ListFriendInvitation(ctx context.Context, in *FriendEmpty, opts ...grpc.CallOption) (*ListFriendInvitationResponse, error)
-	// Add the record on the table(friend)
-	AcceptInvitationPost_(ctx context.Context, in *AcceptInvitationPost_Request, opts ...grpc.CallOption) (*FriendEmpty, error)
-	// Delete the record from the table(friend invite)
-	AcceptInvitationDelete_(ctx context.Context, in *AcceptInvitationDelete_Request, opts ...grpc.CallOption) (*FriendEmpty, error)
+	AcceptInvitation(ctx context.Context, in *AcceptInvitationRequest, opts ...grpc.CallOption) (*FriendEmpty, error)
 	RejectInvitation(ctx context.Context, in *RejectInvitationRequest, opts ...grpc.CallOption) (*FriendEmpty, error)
 }
 
@@ -77,18 +74,9 @@ func (c *friendServiceClient) ListFriendInvitation(ctx context.Context, in *Frie
 	return out, nil
 }
 
-func (c *friendServiceClient) AcceptInvitationPost_(ctx context.Context, in *AcceptInvitationPost_Request, opts ...grpc.CallOption) (*FriendEmpty, error) {
+func (c *friendServiceClient) AcceptInvitation(ctx context.Context, in *AcceptInvitationRequest, opts ...grpc.CallOption) (*FriendEmpty, error) {
 	out := new(FriendEmpty)
-	err := c.cc.Invoke(ctx, "/FriendService/AcceptInvitation_post_", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *friendServiceClient) AcceptInvitationDelete_(ctx context.Context, in *AcceptInvitationDelete_Request, opts ...grpc.CallOption) (*FriendEmpty, error) {
-	out := new(FriendEmpty)
-	err := c.cc.Invoke(ctx, "/FriendService/AcceptInvitation_delete_", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/FriendService/AcceptInvitation", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -112,10 +100,7 @@ type FriendServiceServer interface {
 	ListFriend(context.Context, *FriendEmpty) (*ListFriendResponse, error)
 	InviteFriend(context.Context, *InviteFriendRequest) (*InviteFriendResponse, error)
 	ListFriendInvitation(context.Context, *FriendEmpty) (*ListFriendInvitationResponse, error)
-	// Add the record on the table(friend)
-	AcceptInvitationPost_(context.Context, *AcceptInvitationPost_Request) (*FriendEmpty, error)
-	// Delete the record from the table(friend invite)
-	AcceptInvitationDelete_(context.Context, *AcceptInvitationDelete_Request) (*FriendEmpty, error)
+	AcceptInvitation(context.Context, *AcceptInvitationRequest) (*FriendEmpty, error)
 	RejectInvitation(context.Context, *RejectInvitationRequest) (*FriendEmpty, error)
 	mustEmbedUnimplementedFriendServiceServer()
 }
@@ -136,11 +121,8 @@ func (UnimplementedFriendServiceServer) InviteFriend(context.Context, *InviteFri
 func (UnimplementedFriendServiceServer) ListFriendInvitation(context.Context, *FriendEmpty) (*ListFriendInvitationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListFriendInvitation not implemented")
 }
-func (UnimplementedFriendServiceServer) AcceptInvitationPost_(context.Context, *AcceptInvitationPost_Request) (*FriendEmpty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AcceptInvitationPost_ not implemented")
-}
-func (UnimplementedFriendServiceServer) AcceptInvitationDelete_(context.Context, *AcceptInvitationDelete_Request) (*FriendEmpty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AcceptInvitationDelete_ not implemented")
+func (UnimplementedFriendServiceServer) AcceptInvitation(context.Context, *AcceptInvitationRequest) (*FriendEmpty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AcceptInvitation not implemented")
 }
 func (UnimplementedFriendServiceServer) RejectInvitation(context.Context, *RejectInvitationRequest) (*FriendEmpty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RejectInvitation not implemented")
@@ -230,38 +212,20 @@ func _FriendService_ListFriendInvitation_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
-func _FriendService_AcceptInvitationPost__Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AcceptInvitationPost_Request)
+func _FriendService_AcceptInvitation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AcceptInvitationRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(FriendServiceServer).AcceptInvitationPost_(ctx, in)
+		return srv.(FriendServiceServer).AcceptInvitation(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/FriendService/AcceptInvitation_post_",
+		FullMethod: "/FriendService/AcceptInvitation",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FriendServiceServer).AcceptInvitationPost_(ctx, req.(*AcceptInvitationPost_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _FriendService_AcceptInvitationDelete__Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AcceptInvitationDelete_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(FriendServiceServer).AcceptInvitationDelete_(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/FriendService/AcceptInvitation_delete_",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FriendServiceServer).AcceptInvitationDelete_(ctx, req.(*AcceptInvitationDelete_Request))
+		return srv.(FriendServiceServer).AcceptInvitation(ctx, req.(*AcceptInvitationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -308,12 +272,8 @@ var FriendService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _FriendService_ListFriendInvitation_Handler,
 		},
 		{
-			MethodName: "AcceptInvitation_post_",
-			Handler:    _FriendService_AcceptInvitationPost__Handler,
-		},
-		{
-			MethodName: "AcceptInvitation_delete_",
-			Handler:    _FriendService_AcceptInvitationDelete__Handler,
+			MethodName: "AcceptInvitation",
+			Handler:    _FriendService_AcceptInvitation_Handler,
 		},
 		{
 			MethodName: "RejectInvitation",
